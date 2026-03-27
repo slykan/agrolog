@@ -1,3 +1,7 @@
+<?php
+if (auth()->check()) { header('Location: /dashboard'); exit; }
+else { header('Location: /login'); exit; }
+?>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
