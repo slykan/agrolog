@@ -18,7 +18,25 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="naziv_gospodarstva" value="Naziv gospodarstva" />
+            <x-text-input id="naziv_gospodarstva" name="naziv_gospodarstva" type="text" class="mt-1 block w-full" :value="old('naziv_gospodarstva', $user->naziv_gospodarstva)" required />
+            <x-input-error class="mt-2" :messages="$errors->get('naziv_gospodarstva')" />
+        </div>
+
+        <div>
+            <x-input-label for="mipg" value="MIPG broj" />
+            <x-text-input id="mipg" name="mipg" type="text" class="mt-1 block w-full" :value="old('mipg', $user->mipg)" />
+            <x-input-error class="mt-2" :messages="$errors->get('mipg')" />
+        </div>
+
+        <div>
+            <x-input-label for="oib" value="OIB" />
+            <x-text-input id="oib" name="oib" type="text" class="mt-1 block w-full" :value="old('oib', $user->oib)" />
+            <x-input-error class="mt-2" :messages="$errors->get('oib')" />
+        </div>
+
+        <div>
+            <x-input-label for="name" :value="__('Ime i prezime')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
