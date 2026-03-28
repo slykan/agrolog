@@ -46,6 +46,7 @@
         <table class="w-full border-collapse text-sm agrolog-table">
             <thead>
                 <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wide">
+                    <th class="border border-gray-300 px-2 py-2 text-center w-8">Rb.</th>
                     @if(in_array('arkod', $visibleColumns))
                     <th class="border border-gray-300 px-3 py-2 text-left">
                         ARKOD Parcela
@@ -83,6 +84,7 @@
                 {{-- Forma za novi red --}}
                 @if($showForm)
                 <tr class="bg-yellow-50 no-print">
+                    <td class="p-1 border border-gray-200 text-center text-gray-400">*</td>
                     @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
                     <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                         <select wire:model="form.kultura_id" class="form-input w-full">
@@ -102,7 +104,12 @@
                     @endif
                     @if(in_array('gnojivo', $visibleColumns))
                     <td class="p-1 border border-gray-200">
-                        <input type="text" wire:model="form.tip_gnojiva" placeholder="npr. KAN 27%N" class="form-input w-full">
+                        <input type="text" wire:model="form.tip_gnojiva" placeholder="npr. KAN 27%N" class="form-input w-full" list="tipovi-gnojiva">
+                        <datalist id="tipovi-gnojiva">
+                            @foreach($this->tipoviGnojiva as $tip)
+                                <option value="{{ $tip }}">
+                            @endforeach
+                        </datalist>
                         @error('form.tip_gnojiva')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </td>
                     @endif
@@ -124,6 +131,7 @@
                 <tr class="border-b border-gray-200 hover:bg-gray-50 @if($editingId === $row->id) bg-blue-50 @endif">
                     @if($editingId === $row->id)
                         {{-- Edit mode --}}
+                        <td class="px-2 py-2 border border-gray-200 text-center text-gray-400">*</td>
                         @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
                         <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                             <select wire:model="editForm.kultura_id" class="form-input w-full">
@@ -140,7 +148,12 @@
                         @endif
                         @if(in_array('gnojivo', $visibleColumns))
                         <td class="p-1 border border-gray-200">
-                            <input type="text" wire:model="editForm.tip_gnojiva" class="form-input w-full">
+                            <input type="text" wire:model="editForm.tip_gnojiva" class="form-input w-full" list="tipovi-gnojiva">
+                            <datalist id="tipovi-gnojiva">
+                                @foreach($this->tipoviGnojiva as $tip)
+                                    <option value="{{ $tip }}">
+                                @endforeach
+                            </datalist>
                         </td>
                         @endif
                         @if(in_array('kolicina', $visibleColumns))
@@ -154,6 +167,7 @@
                         </td>
                     @else
                         {{-- View mode --}}
+                        <td class="px-2 py-2 border border-gray-200 text-center">{{ $loop->iteration }}</td>
                         @if(in_array('arkod', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
                         @if(in_array('povrsina', $visibleColumns))<td class="px-3 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
                         @if(in_array('kultura', $visibleColumns))<td class="px-3 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif

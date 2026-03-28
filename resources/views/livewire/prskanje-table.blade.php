@@ -124,7 +124,12 @@
                     @endif
                     @if(in_array('sredstvo', $visibleColumns))
                     <td class="p-1 border border-gray-200">
-                        <input type="text" wire:model="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full">
+                        <input type="text" wire:model="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="trgovacki-nazivi">
+                        <datalist id="trgovacki-nazivi">
+                            @foreach($this->trgovackiNazivi as $naziv)
+                                <option value="{{ $naziv }}">
+                            @endforeach
+                        </datalist>
                         @error('form.trgovacki_naziv_sredstva')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                     </td>
                     @endif
@@ -155,10 +160,10 @@
                 </tr>
                 @endif
 
-                @forelse($this->prskanja as $i => $row)
+                @forelse($this->prskanja as $row)
                 <tr class="border-b border-gray-200 hover:bg-gray-50 @if($editingId === $row->id) bg-blue-50 @endif">
                     @if($editingId === $row->id)
-                        <td class="px-2 py-2 border border-gray-200 text-center text-gray-400">{{ $i + 1 }}</td>
+                        <td class="px-2 py-2 border border-gray-200 text-center text-gray-400">*</td>
                         @if(in_array('datum', $visibleColumns))
                         <td class="p-1 border border-gray-200"><input type="date" wire:model="editForm.datum_tretiranja" class="form-input w-full"></td>
                         @endif
@@ -175,7 +180,12 @@
                         <td class="p-1 border border-gray-200"><input type="number" wire:model="editForm.tretirana_povrsina_ha" step="0.01" class="form-input w-full"></td>
                         @endif
                         @if(in_array('sredstvo', $visibleColumns))
-                        <td class="p-1 border border-gray-200"><input type="text" wire:model="editForm.trgovacki_naziv_sredstva" class="form-input w-full"></td>
+                        <td class="p-1 border border-gray-200"><input type="text" wire:model="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="trgovacki-nazivi"></td>
+                        <datalist id="trgovacki-nazivi">
+                            @foreach($this->trgovackiNazivi as $naziv)
+                                <option value="{{ $naziv }}">
+                            @endforeach
+                        </datalist>
                         @endif
                         @if(in_array('kolicina', $visibleColumns))
                         <td class="p-1 border border-gray-200"><input type="number" wire:model="editForm.kolicina_sredstva_l_ha" step="0.001" class="form-input w-full"></td>
@@ -197,7 +207,7 @@
                             <button wire:click="cancelEdit" class="btn-xs-gray">Odustani</button>
                         </td>
                     @else
-                        <td class="px-2 py-2 border border-gray-200 text-center text-gray-500">{{ $i + 1 }}</td>
+                        <td class="px-2 py-2 border border-gray-200 text-center">{{ $loop->iteration }}</td>
                         @if(in_array('datum', $visibleColumns))<td class="px-2 py-2 border border-gray-200">{{ $row->datum_tretiranja->format('d.m.Y') }}</td>@endif
                         @if(in_array('arkod', $visibleColumns))<td class="px-2 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
                         @if(in_array('kultura', $visibleColumns))<td class="px-2 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
