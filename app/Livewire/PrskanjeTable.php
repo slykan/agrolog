@@ -115,7 +115,12 @@ class PrskanjeTable extends Component
             'form.kolicina_vode_l_ha'       => 'nullable|numeric|min:0',
         ]);
 
-        Prskanje::create(array_merge($this->form, ['user_id' => auth()->id()]));
+        $data = $this->form;
+        $data['tretirana_povrsina_ha'] = $data['tretirana_povrsina_ha'] !== '' ? $data['tretirana_povrsina_ha'] : null;
+        $data['kolicina_vode_l_ha'] = $data['kolicina_vode_l_ha'] !== '' ? $data['kolicina_vode_l_ha'] : null;
+        $data['vrijeme_od'] = $data['vrijeme_od'] !== '' ? $data['vrijeme_od'] : null;
+        $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
+        Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
 
         $this->showForm = false;
         $this->form = [
@@ -155,9 +160,14 @@ class PrskanjeTable extends Component
             'editForm.kolicina_vode_l_ha'       => 'nullable|numeric|min:0',
         ]);
 
+        $data = $this->editForm;
+        $data['tretirana_povrsina_ha'] = $data['tretirana_povrsina_ha'] !== '' ? $data['tretirana_povrsina_ha'] : null;
+        $data['kolicina_vode_l_ha'] = $data['kolicina_vode_l_ha'] !== '' ? $data['kolicina_vode_l_ha'] : null;
+        $data['vrijeme_od'] = $data['vrijeme_od'] !== '' ? $data['vrijeme_od'] : null;
+        $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
         Prskanje::where('id', $this->editingId)
             ->where('user_id', auth()->id())
-            ->update($this->editForm);
+            ->update($data);
 
         $this->editingId = null;
         $this->editForm = [];
