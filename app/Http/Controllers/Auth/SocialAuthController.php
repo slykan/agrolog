@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NoviKorisnikMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -38,6 +40,12 @@ class SocialAuthController extends Controller
                     'naziv_gospodarstva'  => '',
                     'password'            => bcrypt(Str::random(32)),
                 ]);
+
+                try {
+                    Mail::to('slynetwork@gmail.com')->send(new NoviKorisnikMail($user));
+                } catch (\Exception $e) {
+                    // Ne blokiramo login ako mail ne prođe
+                }
             }
         }
 
