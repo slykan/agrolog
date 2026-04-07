@@ -165,13 +165,11 @@ class PrskanjeTable extends Component
             return;
         }
 
+        $nullableFields = ['tretirana_povrsina_ha', 'trgovacki_naziv_sredstva', 'kolicina_sredstva_l_ha', 'kolicina_vode_l_ha', 'vrijeme_od', 'vrijeme_do'];
         $data = $this->form;
-        $data['tretirana_povrsina_ha']    = $data['tretirana_povrsina_ha'] !== ''    ? $data['tretirana_povrsina_ha']    : null;
-        $data['trgovacki_naziv_sredstva'] = $data['trgovacki_naziv_sredstva'] !== '' ? $data['trgovacki_naziv_sredstva'] : null;
-        $data['kolicina_sredstva_l_ha']   = $data['kolicina_sredstva_l_ha'] !== ''   ? $data['kolicina_sredstva_l_ha']   : null;
-        $data['kolicina_vode_l_ha']       = $data['kolicina_vode_l_ha'] !== ''       ? $data['kolicina_vode_l_ha']       : null;
-        $data['vrijeme_od']               = $data['vrijeme_od'] !== ''               ? $data['vrijeme_od']               : null;
-        $data['vrijeme_do']               = $data['vrijeme_do'] !== ''               ? $data['vrijeme_do']               : null;
+        foreach ($nullableFields as $field) {
+            $data[$field] = blank($data[$field]) ? null : $data[$field];
+        }
         $data['user_id'] = auth()->id();
         unset($data['kultura_id']);
 
