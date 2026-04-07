@@ -87,13 +87,15 @@
                     <td class="p-1 border border-gray-200 text-center text-gray-400">*</td>
                     @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
                     <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
-                        <select wire:model="form.kultura_id" class="form-input w-full">
-                            <option value="">-- odaberi kulturu (ARKOD — naziv) --</option>
-                            @foreach($this->kulture as $k)
-                                <option value="{{ $k->id }}">{{ $k->parcela->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)</option>
+                        <input type="text" wire:model.live="formKulturaSearch" placeholder="Traži po ARKOD-u ili kulturi..." class="form-input w-full mb-1">
+                        <select wire:model="form.kultura_id" class="form-input w-full" size="3">
+                            <option value="">-- odaberi jednu --</option>
+                            @foreach($this->filteredKulture as $k)
+                                <option value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)</option>
                             @endforeach
                         </select>
                         @error('form.kultura_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        @error('formKulturaSearch')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </td>
                     @endif
                     @if(in_array('datum', $visibleColumns))
@@ -121,6 +123,11 @@
                     @endif
                     <td class="p-1 border border-gray-200 whitespace-nowrap">
                         <button wire:click="saveNew" class="btn-xs-green">Spremi</button>
+                        @if($formKulturaSearch)
+                        <button wire:click="saveMultiple" class="btn-xs-green" title="Dodaj sve filtrirane kulture kao zasebne zapise">
+                            Dodaj sve ({{ $this->filteredKulture->count() }})
+                        </button>
+                        @endif
                         <button wire:click="$set('showForm', false)" class="btn-xs-gray">Odustani</button>
                     </td>
                 </tr>
@@ -173,7 +180,7 @@
                         @if(in_array('kultura', $visibleColumns))<td class="px-3 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
                         @if(in_array('datum', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->datum->format('d.m.Y') }}</td>@endif
                         @if(in_array('gnojivo', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->tip_gnojiva }}</td>@endif
-                        @if(in_array('kolicina', $visibleColumns))<td class="px-3 py-2 border border-gray-200 text-right font-medium">{{ number_format($row->kolicina_kg_ha, 0) }}</td>@endif
+                        @if(in_array('kolicina', $visibleColumns))<td class="px-3 py-2 border border-gray-200 text-right font-medium">{{ number_format($row->kolicina_kg_ha, 2) }}</td>@endif
                         <td class="px-2 py-2 border border-gray-200 no-print whitespace-nowrap text-center">
                             <button wire:click="startEdit({{ $row->id }})" class="btn-xs-blue">Uredi</button>
                             <button wire:click="deleteRow({{ $row->id }})" wire:confirm="Sigurno obrisati ovaj zapis?" class="btn-xs-red">&#10005;</button>

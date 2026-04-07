@@ -20,6 +20,7 @@ class GnojidbaTable extends Component
     public array $visibleColumns = ['arkod', 'povrsina', 'kultura', 'datum', 'gnojivo', 'kolicina'];
     public string $search = '';
     public array $filters = ['arkod' => '', 'kultura' => '', 'datum' => '', 'gnojivo' => ''];
+    public string $formKulturaSearch = '';
 
     public function mount(): void
     {
@@ -34,6 +35,18 @@ class GnojidbaTable extends Component
             ->orderBy('kulture.naziv')
             ->select('kulture.*', 'parcele.arkod_broj', 'parcele.povrsina_ha')
             ->get();
+    }
+
+    public function getFilteredKultureProperty()
+    {
+        if (!$this->formKulturaSearch) {
+            return $this->kulture;
+        }
+        $search = strtolower($this->formKulturaSearch);
+        return $this->kulture->filter(fn($k) =>
+            str_contains(strtolower($k->arkod_broj), $search) ||
+            str_contains(strtolower($k->naziv), $search)
+        );
     }
 
     public function getGnojidbeProperty()
@@ -80,6 +93,7 @@ class GnojidbaTable extends Component
     public function addRow(): void
     {
         $this->showForm = true;
+        $this->formKulturaSearch = '';
         $this->form = [
             'kultura_id'     => '',
             'datum'          => date('Y-m-d'),
@@ -100,6 +114,38 @@ class GnojidbaTable extends Component
         Gnojidba::create(array_merge($this->form, ['user_id' => auth()->id()]));
 
         $this->showForm = false;
+        $this->formKulturaSearch = '';
+        $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
+    }
+
+    public function saveMultiple(): void
+    {
+        $this->validate([
+            'form.datum'          => 'required|date',
+            'form.tip_gnojiva'    => 'required|string|max:100',
+            'form.kolicina_kg_ha' => 'required|numeric|min:0.01',
+        ]);
+
+        $kulture = $this->filteredKulture;
+
+        if ($kulture->isEmpty()) {
+            $this->addError('formKulturaSearch', 'Nema kultura koje odgovaraju pretrazi.');
+            return;
+        }
+
+        $data = [
+            'datum'          => $this->form['datum'],
+            'tip_gnojiva'    => $this->form['tip_gnojiva'],
+            'kolicina_kg_ha' => $this->form['kolicina_kg_ha'],
+            'user_id'        => auth()->id(),
+        ];
+
+        foreach ($kulture as $kultura) {
+            Gnojidba::create(array_merge($data, ['kultura_id' => $kultura->id]));
+        }
+
+        $this->showForm = false;
+        $this->formKulturaSearch = '';
         $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
     }
 
