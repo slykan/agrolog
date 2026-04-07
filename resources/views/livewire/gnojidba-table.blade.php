@@ -87,7 +87,14 @@
                     <td class="p-1 border border-gray-200 text-center text-gray-400">*</td>
                     @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
                     <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
-                        <input type="text" wire:model.live="formKulturaSearch" placeholder="Traži po ARKOD-u ili kulturi..." class="form-input w-full mb-1">
+                        <div class="flex gap-1 mb-1">
+                            <input type="text" wire:model.live="formKulturaSearch" placeholder="Traži po ARKOD-u ili kulturi..." class="form-input flex-1">
+                            @if($formKulturaSearch)
+                            <button wire:click="saveMultiple" class="btn-xs-green whitespace-nowrap" title="Dodaj sve filtrirane kulture">
+                                Dodaj sve ({{ $this->filteredKulture->count() }})
+                            </button>
+                            @endif
+                        </div>
                         <select wire:model="form.kultura_id" class="form-input w-full" size="3">
                             <option value="">-- odaberi jednu --</option>
                             @foreach($this->filteredKulture as $k)

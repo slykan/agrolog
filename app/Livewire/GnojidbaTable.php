@@ -122,8 +122,8 @@ class GnojidbaTable extends Component
     {
         $this->validate([
             'form.datum'          => 'required|date',
-            'form.tip_gnojiva'    => 'required|string|max:100',
-            'form.kolicina_kg_ha' => 'required|numeric|min:0.01',
+            'form.tip_gnojiva'    => 'nullable|string|max:100',
+            'form.kolicina_kg_ha' => 'nullable|numeric|min:0.01',
         ]);
 
         $kulture = $this->filteredKulture;
@@ -135,8 +135,8 @@ class GnojidbaTable extends Component
 
         $data = [
             'datum'          => $this->form['datum'],
-            'tip_gnojiva'    => $this->form['tip_gnojiva'],
-            'kolicina_kg_ha' => $this->form['kolicina_kg_ha'],
+            'tip_gnojiva'    => $this->form['tip_gnojiva'] !== '' ? $this->form['tip_gnojiva'] : null,
+            'kolicina_kg_ha' => $this->form['kolicina_kg_ha'] !== '' ? $this->form['kolicina_kg_ha'] : null,
             'user_id'        => auth()->id(),
         ];
 

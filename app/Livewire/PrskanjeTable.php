@@ -151,8 +151,8 @@ class PrskanjeTable extends Component
         $this->validate([
             'form.datum_tretiranja'         => 'required|date',
             'form.tretirana_povrsina_ha'    => 'nullable|numeric|min:0.01',
-            'form.trgovacki_naziv_sredstva' => 'required|string|max:200',
-            'form.kolicina_sredstva_l_ha'   => 'required|numeric|min:0.001',
+            'form.trgovacki_naziv_sredstva' => 'nullable|string|max:200',
+            'form.kolicina_sredstva_l_ha'   => 'nullable|numeric|min:0.001',
             'form.vrijeme_od'               => 'nullable|date_format:H:i',
             'form.vrijeme_do'               => 'nullable|date_format:H:i',
             'form.kolicina_vode_l_ha'       => 'nullable|numeric|min:0',
