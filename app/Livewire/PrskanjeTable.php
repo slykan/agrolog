@@ -166,10 +166,12 @@ class PrskanjeTable extends Component
         }
 
         $data = $this->form;
-        $data['tretirana_povrsina_ha'] = $data['tretirana_povrsina_ha'] !== '' ? $data['tretirana_povrsina_ha'] : null;
-        $data['kolicina_vode_l_ha'] = $data['kolicina_vode_l_ha'] !== '' ? $data['kolicina_vode_l_ha'] : null;
-        $data['vrijeme_od'] = $data['vrijeme_od'] !== '' ? $data['vrijeme_od'] : null;
-        $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
+        $data['tretirana_povrsina_ha']    = $data['tretirana_povrsina_ha'] !== ''    ? $data['tretirana_povrsina_ha']    : null;
+        $data['trgovacki_naziv_sredstva'] = $data['trgovacki_naziv_sredstva'] !== '' ? $data['trgovacki_naziv_sredstva'] : null;
+        $data['kolicina_sredstva_l_ha']   = $data['kolicina_sredstva_l_ha'] !== ''   ? $data['kolicina_sredstva_l_ha']   : null;
+        $data['kolicina_vode_l_ha']       = $data['kolicina_vode_l_ha'] !== ''       ? $data['kolicina_vode_l_ha']       : null;
+        $data['vrijeme_od']               = $data['vrijeme_od'] !== ''               ? $data['vrijeme_od']               : null;
+        $data['vrijeme_do']               = $data['vrijeme_do'] !== ''               ? $data['vrijeme_do']               : null;
         $data['user_id'] = auth()->id();
         unset($data['kultura_id']);
 
