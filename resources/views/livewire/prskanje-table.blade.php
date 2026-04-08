@@ -229,8 +229,21 @@
                         @if(in_array('vrijeme', $visibleColumns))<td class="px-2 py-2 border border-gray-200 text-center">{{ $row->vrijeme_od ? substr($row->vrijeme_od,0,5).'-'.substr($row->vrijeme_do,0,5) : '' }}</td>@endif
                         @if(in_array('voda', $visibleColumns))<td class="px-2 py-2 border border-gray-200 text-right">{{ $row->kolicina_vode_l_ha ? number_format($row->kolicina_vode_l_ha, 2) : '' }}</td>@endif
                         <td class="px-2 py-2 border border-gray-200 no-print whitespace-nowrap text-center">
-                            <button wire:click="startEdit({{ $row->id }})" class="btn-xs-blue">Uredi</button>
-                            <button wire:click="deleteRow({{ $row->id }})" wire:confirm="Sigurno obrisati?" class="btn-xs-red">&#10005;</button>
+                            <button wire:click="startEdit({{ $row->id }})" wire:confirm="Urediti ovaj zapis?" class="btn-icon-green" title="Uredi">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l6.586-6.586a2 2 0 112.828 2.828L11.828 13.828A2 2 0 0110 14H8v-2a2 2 0 01.586-1.414z"/>
+                                </svg>
+                            </button>
+                            <button wire:click="copyRow({{ $row->id }})" wire:confirm="Kopirati ovaj zapis?" class="btn-icon-green" title="Kopiraj">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                </svg>
+                            </button>
+                            <button wire:click="deleteRow({{ $row->id }})" wire:confirm="Obrisati ovaj zapis?" class="btn-icon-red" title="Obriši">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
                         </td>
                     @endif
                 </tr>

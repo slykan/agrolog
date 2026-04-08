@@ -194,6 +194,18 @@ class GnojidbaTable extends Component
         $this->editForm = [];
     }
 
+    public function copyRow(int $id): void
+    {
+        $row = Gnojidba::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        Gnojidba::create([
+            'user_id'        => auth()->id(),
+            'kultura_id'     => $row->kultura_id,
+            'datum'          => $row->datum,
+            'tip_gnojiva'    => $row->tip_gnojiva,
+            'kolicina_kg_ha' => $row->kolicina_kg_ha,
+        ]);
+    }
+
     public function deleteRow(int $id): void
     {
         Gnojidba::where('id', $id)->where('user_id', auth()->id())->delete();

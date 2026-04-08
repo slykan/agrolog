@@ -245,6 +245,22 @@ class PrskanjeTable extends Component
         $this->editForm = [];
     }
 
+    public function copyRow(int $id): void
+    {
+        $row = Prskanje::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+        Prskanje::create([
+            'user_id'                   => auth()->id(),
+            'kultura_id'                => $row->kultura_id,
+            'datum_tretiranja'          => $row->datum_tretiranja,
+            'tretirana_povrsina_ha'     => $row->tretirana_povrsina_ha,
+            'trgovacki_naziv_sredstva'  => $row->trgovacki_naziv_sredstva,
+            'kolicina_sredstva_l_ha'    => $row->kolicina_sredstva_l_ha,
+            'vrijeme_od'                => $row->vrijeme_od,
+            'vrijeme_do'                => $row->vrijeme_do,
+            'kolicina_vode_l_ha'        => $row->kolicina_vode_l_ha,
+        ]);
+    }
+
     public function deleteRow(int $id): void
     {
         Prskanje::where('id', $id)->where('user_id', auth()->id())->delete();
