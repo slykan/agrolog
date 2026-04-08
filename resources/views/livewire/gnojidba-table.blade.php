@@ -89,7 +89,7 @@
                     <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}"
                         x-data="{
                             search: '',
-                            kulture: @json($this->kulture->map(fn($k) => ['id' => $k->id, 'arkod' => $k->arkod_broj, 'naziv' => $k->naziv, 'povrsina' => $k->posadjena_povrsina_ha])),
+                            kulture: @json($this->kulturaOptions),
                             get filtered() {
                                 if (!this.search) return this.kulture;
                                 const s = this.search.toLowerCase();

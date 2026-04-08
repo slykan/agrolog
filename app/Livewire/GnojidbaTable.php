@@ -49,6 +49,16 @@ class GnojidbaTable extends Component
         );
     }
 
+    public function getKulturaOptionsProperty(): array
+    {
+        return $this->kulture->map(fn($k) => [
+            'id'       => $k->id,
+            'arkod'    => $k->arkod_broj,
+            'naziv'    => $k->naziv,
+            'povrsina' => $k->posadjena_povrsina_ha,
+        ])->values()->all();
+    }
+
     public function getGnojidbeProperty()
     {
         $query = Gnojidba::where('gnojidbe.user_id', auth()->id())
@@ -108,7 +118,7 @@ class GnojidbaTable extends Component
             'form.kultura_id'     => 'required|integer',
             'form.datum'          => 'required|date',
             'form.tip_gnojiva'    => 'required|string|max:100',
-            'form.kolicina_kg_ha' => 'required|numeric|min:0.01',
+            'form.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999',
         ]);
 
         Gnojidba::create(array_merge($this->form, ['user_id' => auth()->id()]));
@@ -167,7 +177,7 @@ class GnojidbaTable extends Component
             'editForm.kultura_id'     => 'required|integer',
             'editForm.datum'          => 'required|date',
             'editForm.tip_gnojiva'    => 'required|string|max:100',
-            'editForm.kolicina_kg_ha' => 'required|numeric|min:0.01',
+            'editForm.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999',
         ]);
 
         Gnojidba::where('id', $this->editingId)

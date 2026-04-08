@@ -53,6 +53,16 @@ class PrskanjeTable extends Component
         );
     }
 
+    public function getKulturaOptionsProperty(): array
+    {
+        return $this->kulture->map(fn($k) => [
+            'id'      => $k->id,
+            'arkod'   => $k->arkod_broj,
+            'naziv'   => $k->naziv,
+            'povrsina' => $k->posadjena_povrsina_ha,
+        ])->values()->all();
+    }
+
     public function getPrskanjaProperty()
     {
         $query = Prskanje::where('prskanja.user_id', auth()->id())
