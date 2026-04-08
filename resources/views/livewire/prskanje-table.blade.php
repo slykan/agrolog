@@ -106,20 +106,27 @@
                     </td>
                     @endif
                     @if(in_array('arkod', $visibleColumns) || in_array('kultura', $visibleColumns) || in_array('vel_povrsina', $visibleColumns))
-                    <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','kultura','vel_povrsina'], $visibleColumns)) }}">
+                    <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','kultura','vel_povrsina'], $visibleColumns)) }}"
+                        x-data="{
+                            search: '',
+                            kulture: @json($this->kulture->map(fn($k) => ['id' => $k->id, 'arkod' => $k->arkod_broj, 'naziv' => $k->naziv, 'povrsina' => $k->posadjena_povrsina_ha])),
+                            get filtered() {
+                                if (!this.search) return this.kulture;
+                                const s = this.search.toLowerCase();
+                                return this.kulture.filter(k => k.arkod.toLowerCase().includes(s) || k.naziv.toLowerCase().includes(s));
+                            }
+                        }">
                         <div class="flex gap-1 mb-1">
-                            <input type="text" wire:model.live="formKulturaSearch" placeholder="Traži po ARKOD-u ili kulturi..." class="form-input flex-1">
-                            @if($formKulturaSearch)
-                            <button wire:click="saveMultiple" class="btn-xs-green whitespace-nowrap" title="Dodaj sve filtrirane kulture">
-                                Dodaj sve ({{ $this->filteredKulture->count() }})
+                            <input type="text" x-model="search" @input.debounce.300ms="$wire.set('formKulturaSearch', search)" placeholder="Traži po ARKOD-u ili kulturi..." class="form-input flex-1">
+                            <button x-show="search && filtered.length" @click="$wire.saveMultiple()" class="btn-xs-green whitespace-nowrap">
+                                Dodaj sve (<span x-text="filtered.length"></span>)
                             </button>
-                            @endif
                         </div>
-                        <select wire:model="form.kultura_id" class="form-input w-full" size="3">
+                        <select wire:model="form.kultura_id" class="form-input w-full" size="4">
                             <option value="">-- odaberi jednu --</option>
-                            @foreach($this->filteredKulture as $k)
-                                <option value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)</option>
-                            @endforeach
+                            <template x-for="k in filtered" :key="k.id">
+                                <option :value="k.id" x-text="`${k.arkod} — ${k.naziv} (${k.povrsina} ha)`"></option>
+                            </template>
                         </select>
                         @error('form.kultura_id')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                         @error('formKulturaSearch')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
