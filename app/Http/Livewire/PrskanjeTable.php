@@ -243,7 +243,10 @@ class PrskanjeTable extends Component
         unset($data['kultura_id']);
 
         foreach ($kulture as $kultura) {
-            Prskanje::create(array_merge($data, ['kultura_id' => $kultura->id]));
+            Prskanje::create(array_merge($data, [
+                'kultura_id' => $kultura->id,
+                'tretirana_povrsina_ha' => $kultura->posadjena_povrsina_ha,
+            ]));
         }
 
         $this->showForm = false;
