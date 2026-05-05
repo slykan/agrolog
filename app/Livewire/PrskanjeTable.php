@@ -25,6 +25,7 @@ class PrskanjeTable extends Component
     public string $search = '';
     public array $filters = ['datum' => '', 'arkod' => '', 'kultura' => '', 'sredstvo' => ''];
     public string $formKulturaSearch = '';
+    public bool $showKulturaPicker = false;
 
     public function mount(): void
     {
@@ -61,6 +62,15 @@ class PrskanjeTable extends Component
             'naziv'   => $k->naziv,
             'povrsina' => $k->posadjena_povrsina_ha,
         ])->values()->all();
+    }
+
+    public function getSelectedKulturaProperty()
+    {
+        if (!$this->form['kultura_id']) {
+            return null;
+        }
+
+        return $this->kulture->firstWhere('id', (int) $this->form['kultura_id']);
     }
 
     public function getPrskanjaProperty()
@@ -113,6 +123,7 @@ class PrskanjeTable extends Component
     public function addRow(): void
     {
         $this->showForm = true;
+        $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
         $this->form = [
             'kultura_id'               => '',
@@ -124,6 +135,21 @@ class PrskanjeTable extends Component
             'vrijeme_do'               => '',
             'kolicina_vode_l_ha'       => '',
         ];
+    }
+
+    public function openKulturaPicker(): void
+    {
+        $this->showKulturaPicker = true;
+    }
+
+    public function selectKultura(int $id): void
+    {
+        $kultura = Kultura::where('user_id', auth()->id())->findOrFail($id);
+
+        $this->form['kultura_id'] = $kultura->id;
+        $this->form['tretirana_povrsina_ha'] = $kultura->posadjena_povrsina_ha;
+        $this->formKulturaSearch = '';
+        $this->showKulturaPicker = false;
     }
 
     public function saveNew(): void
@@ -147,6 +173,7 @@ class PrskanjeTable extends Component
         Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
 
         $this->showForm = false;
+        $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
         $this->form = [
             'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),
@@ -188,6 +215,7 @@ class PrskanjeTable extends Component
         }
 
         $this->showForm = false;
+        $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
         $this->form = [
             'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),

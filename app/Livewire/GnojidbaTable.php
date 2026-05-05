@@ -21,6 +21,7 @@ class GnojidbaTable extends Component
     public string $search = '';
     public array $filters = ['arkod' => '', 'kultura' => '', 'datum' => '', 'gnojivo' => ''];
     public string $formKulturaSearch = '';
+    public bool $showKulturaPicker = false;
 
     public function mount(): void
     {
@@ -57,6 +58,15 @@ class GnojidbaTable extends Component
             'naziv'    => $k->naziv,
             'povrsina' => $k->posadjena_povrsina_ha,
         ])->values()->all();
+    }
+
+    public function getSelectedKulturaProperty()
+    {
+        if (!$this->form['kultura_id']) {
+            return null;
+        }
+
+        return $this->kulture->firstWhere('id', (int) $this->form['kultura_id']);
     }
 
     public function getGnojidbeProperty()
@@ -103,6 +113,7 @@ class GnojidbaTable extends Component
     public function addRow(): void
     {
         $this->showForm = true;
+        $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
         $this->form = [
             'kultura_id'     => '',
@@ -110,6 +121,20 @@ class GnojidbaTable extends Component
             'tip_gnojiva'    => '',
             'kolicina_kg_ha' => '',
         ];
+    }
+
+    public function openKulturaPicker(): void
+    {
+        $this->showKulturaPicker = true;
+    }
+
+    public function selectKultura(int $id): void
+    {
+        Kultura::where('user_id', auth()->id())->findOrFail($id);
+
+        $this->form['kultura_id'] = $id;
+        $this->formKulturaSearch = '';
+        $this->showKulturaPicker = false;
     }
 
     public function saveNew(): void
@@ -124,6 +149,7 @@ class GnojidbaTable extends Component
         Gnojidba::create(array_merge($this->form, ['user_id' => auth()->id()]));
 
         $this->showForm = false;
+        $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
         $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
     }
@@ -155,6 +181,7 @@ class GnojidbaTable extends Component
         }
 
         $this->showForm = false;
+        $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
         $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
     }

@@ -87,20 +87,38 @@
                     <td class="p-1 border border-gray-200 text-center text-gray-400">*</td>
                     @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
                     <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
-                        <div class="flex gap-1 mb-1">
-                            <input type="text" wire:model.live.debounce.500ms="formKulturaSearch" placeholder="Traži po ARKOD-u ili kulturi..." class="form-input flex-1">
-                            @if($formKulturaSearch)
-                            <button wire:click="saveMultiple" class="btn-xs-green whitespace-nowrap">
-                                Dodaj sve ({{ $this->filteredKulture->count() }})
-                            </button>
+                        <div class="space-y-1">
+                            <div class="flex gap-1">
+                                <div class="form-input w-full bg-white">
+                                    @if($this->selectedKultura)
+                                        {{ $this->selectedKultura->arkod_broj }} — {{ $this->selectedKultura->naziv }} ({{ $this->selectedKultura->posadjena_povrsina_ha }} ha)
+                                    @else
+                                        <span class="text-gray-400">-- odaberi jednu --</span>
+                                    @endif
+                                </div>
+                                <button type="button" wire:click="openKulturaPicker" class="btn-xs-gray shrink-0">Traži</button>
+                            </div>
+
+                            @if($showKulturaPicker)
+                                <div class="flex gap-1">
+                                    <input type="text" wire:model.live.debounce.500ms="formKulturaSearch" placeholder="Traži po ARKOD-u ili kulturi..." class="form-input flex-1" autofocus>
+                                    @if($formKulturaSearch)
+                                    <button wire:click="saveMultiple" class="btn-xs-green whitespace-nowrap">
+                                        Dodaj sve ({{ $this->filteredKulture->count() }})
+                                    </button>
+                                    @endif
+                                </div>
+                                <div class="max-h-48 overflow-y-auto border border-gray-200 bg-white rounded shadow-sm">
+                                    @forelse($this->filteredKulture as $k)
+                                        <button type="button" wire:key="gno-opt-{{ $k->id }}" wire:click="selectKultura({{ $k->id }})" class="block w-full text-left px-2 py-1 text-sm hover:bg-gray-50">
+                                            {{ $k->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)
+                                        </button>
+                                    @empty
+                                        <div class="px-2 py-2 text-sm text-gray-400">Nema rezultata.</div>
+                                    @endforelse
+                                </div>
                             @endif
                         </div>
-                        <select wire:model="form.kultura_id" class="form-input w-full" size="4">
-                            <option value="">-- odaberi jednu --</option>
-                            @foreach($this->filteredKulture as $k)
-                                <option wire:key="gno-opt-{{ $k->id }}" value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)</option>
-                            @endforeach
-                        </select>
                         @error('form.kultura_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         @error('formKulturaSearch')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </td>
