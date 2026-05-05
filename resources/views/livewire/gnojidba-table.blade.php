@@ -153,7 +153,7 @@
                             Dodaj sve ({{ $this->filteredKulture->count() }})
                         </button>
                         @endif
-                        <button wire:click="$set('showForm', false)" class="btn-xs-gray">Odustani</button>
+                        <button type="button" wire:click="cancelAdd" class="btn-xs-gray">Odustani</button>
                     </td>
                 </tr>
                 @endif

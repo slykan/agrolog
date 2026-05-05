@@ -123,6 +123,15 @@ class GnojidbaTable extends Component
         ];
     }
 
+    public function cancelAdd(): void
+    {
+        $this->showForm = false;
+        $this->showKulturaPicker = false;
+        $this->formKulturaSearch = '';
+        $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
+        $this->resetErrorBag();
+    }
+
     public function openKulturaPicker(): void
     {
         $this->showKulturaPicker = true;
@@ -143,7 +152,7 @@ class GnojidbaTable extends Component
             'form.kultura_id'     => 'required|integer',
             'form.datum'          => 'required|date',
             'form.tip_gnojiva'    => 'required|string|max:100',
-            'form.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999',
+            'form.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999.99',
         ]);
 
         Gnojidba::create(array_merge($this->form, ['user_id' => auth()->id()]));
@@ -159,7 +168,7 @@ class GnojidbaTable extends Component
         $this->validate([
             'form.datum'          => 'required|date',
             'form.tip_gnojiva'    => 'nullable|string|max:100',
-            'form.kolicina_kg_ha' => 'nullable|numeric|min:0.01',
+            'form.kolicina_kg_ha' => 'nullable|numeric|min:0.01|max:999999.99',
         ]);
 
         $kulture = $this->filteredKulture;
@@ -204,7 +213,7 @@ class GnojidbaTable extends Component
             'editForm.kultura_id'     => 'required|integer',
             'editForm.datum'          => 'required|date',
             'editForm.tip_gnojiva'    => 'required|string|max:100',
-            'editForm.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999',
+            'editForm.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999.99',
         ]);
 
         Gnojidba::where('id', $this->editingId)
