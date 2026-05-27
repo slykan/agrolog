@@ -116,7 +116,15 @@ class ParcelaManager extends Component
             'posadjena_povrsina_ha' => $k->posadjena_povrsina_ha,
             'godina'                => $k->godina,
         ];
-        $this->showKulturaForm = true;
+        $this->showKulturaForm = false;
+        $this->clearValidation();
+    }
+
+    public function cancelKulturaEdit(): void
+    {
+        $this->editKulturaId = null;
+        $this->kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => date('Y')];
+        $this->clearValidation();
     }
 
     public function saveKultura($nova = false): void

@@ -27,20 +27,22 @@
     </div>
     @endif
 
-    {{-- Forma za kulturu --}}
+    {{-- Datalist za autocomplete kulture --}}
+    <datalist id="kulture-prijedlozi">
+        @foreach($this->postojeceKulture as $naziv)
+            <option value="{{ $naziv }}">
+        @endforeach
+    </datalist>
+
+    {{-- Forma za novu kulturu --}}
     @if($showKulturaForm)
     <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-4">
-        <h3 class="font-semibold text-gray-700 mb-3">{{ $editKulturaId ? 'Uredi kulturu' : 'Dodaj kulturu na parcelu' }}</h3>
+        <h3 class="font-semibold text-gray-700 mb-3">Dodaj kulturu na parcelu</h3>
         <div class="flex flex-wrap gap-3 items-end">
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Kultura</label>
                 <input type="text" wire:model="kulturaForm.naziv" placeholder="npr. Pšenica"
                        list="kulture-prijedlozi" autocomplete="off" class="form-input w-40">
-                <datalist id="kulture-prijedlozi">
-                    @foreach($this->postojeceKulture as $naziv)
-                        <option value="{{ $naziv }}">
-                    @endforeach
-                </datalist>
                 @error('kulturaForm.naziv')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
@@ -117,6 +119,34 @@
                 </thead>
                 <tbody>
                     @foreach($parcela->kulture as $kultura)
+                    @if($editKulturaId === $kultura->id)
+                    <tr class="border-t border-blue-200 bg-blue-50">
+                        <td colspan="6" class="px-4 py-3">
+                            <div class="flex flex-wrap gap-3 items-end">
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Kultura</label>
+                                    <input type="text" wire:model="kulturaForm.naziv" placeholder="npr. Pšenica"
+                                           list="kulture-prijedlozi" autocomplete="off" class="form-input w-40">
+                                    @error('kulturaForm.naziv')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Posađena površina (ha)</label>
+                                    <input type="number" wire:model="kulturaForm.posadjena_povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                                    @error('kulturaForm.posadjena_povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1">Godina</label>
+                                    <input type="number" wire:model="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
+                                    @error('kulturaForm.godina')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                </div>
+                                <div class="flex gap-2">
+                                    <button wire:click="saveKultura" class="btn-xs-blue">Završi</button>
+                                    <button wire:click="cancelKulturaEdit" class="btn-xs-gray">Odustani</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @else
                     <tr class="border-t border-gray-100 hover:bg-gray-50">
                         <td class="px-4 py-2 font-medium uppercase">{{ $kultura->naziv }}</td>
                         <td class="px-4 py-2 text-right">{{ number_format($kultura->posadjena_povrsina_ha, 2) }}</td>
@@ -128,6 +158,7 @@
                             <button wire:click="deleteKultura({{ $kultura->id }})" wire:confirm="Obrisati kulturu i sve zapise?" class="btn-xs-red">&#10005;</button>
                         </td>
                     </tr>
+                    @endif
                     @endforeach
                 </tbody>
             </table>
