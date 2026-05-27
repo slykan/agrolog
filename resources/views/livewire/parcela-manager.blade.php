@@ -80,6 +80,28 @@
                 </div>
             </div>
 
+            {{-- Inline edit forma --}}
+            @if($editParcelaId === $parcela->id)
+            <div class="bg-yellow-50 border-t border-yellow-200 px-4 py-3">
+                <div class="flex flex-wrap gap-3 items-end">
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
+                        <input type="text" wire:model="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40">
+                        @error('parcelaForm.arkod_broj')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Površina (ha)</label>
+                        <input type="number" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                        @error('parcelaForm.povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    <div class="flex gap-2">
+                        <button wire:click="saveParcela" class="btn-xs-green">Spremi</button>
+                        <button wire:click="cancelParcelaEdit" class="btn-xs-gray">Odustani</button>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             {{-- Kulture na parceli --}}
             @if($parcela->kulture->isNotEmpty())
             <table class="w-full text-sm">

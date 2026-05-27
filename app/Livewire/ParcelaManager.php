@@ -49,7 +49,9 @@ class ParcelaManager extends Component
             'parcelaForm.povrsina_ha' => 'required|numeric|min:0.01',
         ]);
 
+        $isEdit = (bool) $this->editParcelaId;
         $parcela = null;
+
         if ($this->editParcelaId) {
             Parcela::where('id', $this->editParcelaId)->where('user_id', auth()->id())
                 ->update(['arkod_broj' => $this->parcelaForm['arkod_broj'], 'povrsina_ha' => $this->parcelaForm['povrsina_ha']]);
@@ -62,8 +64,8 @@ class ParcelaManager extends Component
         $this->editParcelaId = null;
         $this->parcelaForm = ['arkod_broj' => '', 'povrsina_ha' => ''];
 
-        // Automatski otvori formu za unos kulture sa istom površinom kao parcela
-        if ($parcela) {
+        // Automatski otvori formu za unos kulture samo za novu parcelu
+        if ($parcela && !$isEdit) {
             $this->kulturaParcelaId = $parcela->id;
             $this->showKulturaForm = true;
             $this->editKulturaId = null;
@@ -80,7 +82,15 @@ class ParcelaManager extends Component
         $p = Parcela::findOrFail($id);
         $this->editParcelaId = $id;
         $this->parcelaForm = ['arkod_broj' => $p->arkod_broj, 'povrsina_ha' => $p->povrsina_ha];
-        $this->showParcelaForm = true;
+        $this->showParcelaForm = false;
+        $this->clearValidation();
+    }
+
+    public function cancelParcelaEdit(): void
+    {
+        $this->editParcelaId = null;
+        $this->parcelaForm = ['arkod_broj' => '', 'povrsina_ha' => ''];
+        $this->clearValidation();
     }
 
     public function deleteParcela(int $id): void
