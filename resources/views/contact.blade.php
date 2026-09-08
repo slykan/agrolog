@@ -6,7 +6,8 @@
     <title>Kontakt – AgroLog</title>
     <meta name="description" content="Kontaktirajte nas za pitanja, prijedloge ili tehničku podršku vezanu uz AgroLog aplikaciju.">
     <link rel="canonical" href="{{ route('contact') }}">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('contact') }}">
     <meta property="og:title" content="Kontakt – AgroLog">

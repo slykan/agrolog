@@ -6,7 +6,8 @@
     <title>Politika privatnosti – AgroLog</title>
     <meta name="description" content="Politika privatnosti AgroLog aplikacije. Saznajte kako prikupljamo, koristimo i štitimo vaše osobne podatke.">
     <link rel="canonical" href="{{ route('privacy') }}">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('privacy') }}">
     <meta property="og:title" content="Politika privatnosti – AgroLog">

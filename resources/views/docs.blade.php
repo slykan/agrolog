@@ -6,7 +6,8 @@
     <title>Upute za korištenje – AgroLog</title>
     <meta name="description" content="Upute za korištenje AgroLog aplikacije. Naučite kako unijeti parcele, voditi evidenciju gnojidbe i prskanja te koristiti napredne funkcije.">
     <link rel="canonical" href="{{ route('docs') }}">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('docs') }}">
     <meta property="og:title" content="Upute za korištenje – AgroLog">

@@ -7,7 +7,8 @@
     <meta name="description" content="AgroLog je jednostavna web aplikacija za vođenje evidencije gnojidbe i prskanja po ARKOD parcelama. Digitalizirajte svoje agro zapise i ispišite ih u standardnom obliku.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ route('home') }}">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('home') }}">
@@ -207,6 +208,39 @@
                     <div class="text-3xl font-bold text-green-700 mb-1">{{ $statsGnojidbe }}+</div>
                     <div class="text-xs text-gray-500 font-medium uppercase tracking-wide">Unosa gnojidbe</div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- PARTNER PROMO --}}
+    <section class="py-14 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                <svg class="h-9 w-auto flex-shrink-0" viewBox="0 0 340 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="stemG" x1="0" y1="0" x2="0.4" y2="1">
+                            <stop offset="0%" stop-color="#2ba99b"/>
+                            <stop offset="100%" stop-color="#3dcfb8"/>
+                        </linearGradient>
+                        <linearGradient id="bowlG" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#42d4a8"/>
+                            <stop offset="100%" stop-color="#96f070"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="7" y="19" width="48" height="88" rx="14" fill="#196b5e" opacity="0.35"/>
+                    <rect x="3" y="15" width="48" height="88" rx="14" fill="url(#stemG)"/>
+                    <rect x="19" y="7" width="72" height="58" rx="14" fill="#196b5e" opacity="0.25"/>
+                    <rect x="15" y="3" width="72" height="58" rx="14" fill="url(#bowlG)"/>
+                    <text x="108" y="68" font-family="'Nunito','Poppins','Segoe UI',system-ui,sans-serif" font-weight="800" font-size="52" fill="#162433" letter-spacing="-1">Placko</text>
+                    <text x="223" y="90" font-family="'Nunito','Poppins','Segoe UI',system-ui,sans-serif" font-weight="500" font-size="22" fill="#2ba99b" letter-spacing="0.5">.app</text>
+                </svg>
+                <div class="flex-1">
+                    <p class="text-gray-900 font-semibold mb-1">Vodite OPG ili obrt? Fakturirajte jednostavno.</p>
+                    <p class="text-gray-500 text-sm leading-relaxed">Plačko.app je aplikacija za izdavanje računa, fiskalizaciju i eRačun za paušalne obrtnike i male tvrtke u Hrvatskoj.</p>
+                </div>
+                <a href="https://plačko.app" target="_blank" rel="noopener" class="flex-shrink-0 bg-gray-900 hover:bg-gray-800 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm whitespace-nowrap">
+                    Isprobaj Plačko →
+                </a>
             </div>
         </div>
     </section>

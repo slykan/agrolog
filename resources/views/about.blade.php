@@ -6,7 +6,8 @@
     <title>O nama – AgroLog</title>
     <meta name="description" content="AgroLog je digitalni alat za vođenje evidencije gnojidbe i prskanja za hrvatske poljoprivrednike. Razvijen s razumijevanjem stvarnih potreba na terenu.">
     <link rel="canonical" href="{{ route('about') }}">
-    <link rel="icon" href="/favicon.ico">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('about') }}">
     <meta property="og:title" content="O nama – AgroLog">
