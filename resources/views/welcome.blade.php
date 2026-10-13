@@ -7,6 +7,7 @@
     <meta name="description" content="AgroLog je jednostavna web aplikacija za vođenje evidencije gnojidbe i prskanja po ARKOD parcelama. Digitalizirajte svoje agro zapise i ispišite ih u standardnom obliku.">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ route('home') }}">
+    <meta name="google-adsense-account" content="ca-pub-3054841074530422">
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     {{-- Open Graph --}}

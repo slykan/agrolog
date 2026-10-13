@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SadrzajController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,6 +24,11 @@ Route::get('/upute', function () {
     return view('docs');
 })->name('docs');
 
+Route::get('/alati', [SadrzajController::class, 'alati'])->name('alati');
+Route::get('/alati/{slug}', [SadrzajController::class, 'alat'])->name('alat');
+Route::get('/vodici', [SadrzajController::class, 'vodiciIndex'])->name('vodici');
+Route::get('/vodici/{slug}', [SadrzajController::class, 'vodic'])->name('vodic');
+
 Route::get('/sitemap.xml', function () {
     $urls = [
         ['loc' => route('home'),    'priority' => '1.0', 'changefreq' => 'weekly'],
@@ -31,6 +37,14 @@ Route::get('/sitemap.xml', function () {
         ['loc' => route('docs'),    'priority' => '0.8', 'changefreq' => 'monthly'],
         ['loc' => route('privacy'), 'priority' => '0.3', 'changefreq' => 'yearly'],
     ];
+    $urls[] = ['loc' => route('alati'), 'priority' => '0.9', 'changefreq' => 'monthly'];
+    foreach (array_keys(SadrzajController::ALATI) as $s) {
+        $urls[] = ['loc' => route('alat', $s), 'priority' => '0.9', 'changefreq' => 'monthly'];
+    }
+    $urls[] = ['loc' => route('vodici'), 'priority' => '0.8', 'changefreq' => 'weekly'];
+    foreach (SadrzajController::vodici() as $v) {
+        $urls[] = ['loc' => route('vodic', $v['slug']), 'priority' => '0.8', 'changefreq' => 'monthly'];
+    }
     return response()->view('sitemap', compact('urls'))
         ->header('Content-Type', 'application/xml');
 })->name('sitemap');

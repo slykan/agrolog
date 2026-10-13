@@ -7,6 +7,8 @@
 
         {{-- Desktop nav --}}
         <nav class="hidden md:flex items-center gap-3">
+            <a href="{{ route('alati') }}" class="text-sm font-medium transition {{ $active === 'alati' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Alati</a>
+            <a href="{{ route('vodici') }}" class="text-sm font-medium transition {{ $active === 'vodici' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Vodiči</a>
             <a href="{{ route('docs') }}" class="text-sm font-medium transition {{ $active === 'docs' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Upute</a>
             <a href="{{ route('about') }}" class="text-sm font-medium transition {{ $active === 'about' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">O nama</a>
             <a href="{{ route('contact') }}" class="text-sm font-medium transition {{ $active === 'contact' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Kontakt</a>
@@ -40,6 +42,8 @@
         x-transition:leave-end="opacity-0 -translate-y-2"
         class="md:hidden border-t border-gray-100 bg-white px-6 py-4 space-y-1"
     >
+        <a href="{{ route('alati') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'alati' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Alati</a>
+        <a href="{{ route('vodici') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'vodici' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Vodiči</a>
         <a href="{{ route('docs') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'docs' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Upute</a>
         <a href="{{ route('about') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'about' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">O nama</a>
         <a href="{{ route('contact') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'contact' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Kontakt</a>
