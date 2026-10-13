@@ -54,9 +54,10 @@
 
 <h2>Kako to rješava AgroLog</h2>
 <ul>
-    <li>Prskanja se upisuju po ARKOD parcelama, sa sredstvom, dozom, kulturom i datumom.</li>
-    <li>Zapisi se mogu filtrirati po parceli, kulturi i razdoblju.</li>
-    <li>Evidencija se ispisuje u standardnom obliku, pa je pri ruci i kod kontrole na terenu.</li>
+    <li>Prskanja se upisuju po ARKOD parcelama, s nazivom i <strong>registracijskim brojem</strong> sredstva, dozom, kulturom, površinom, datumom i vremenom.</li>
+    <li>Registracijski broj se predlaže sam kad ponovno koristiš isto sredstvo.</li>
+    <li>Cijela evidencija izvozi se jednim klikom u <strong>CSV</strong> — strojno čitljiv oblik koji se otvara u Excelu.</li>
+    <li>Za kontrolu na terenu evidencija se može i ispisati.</li>
 </ul>
 <p>Uz evidenciju korisni su i <a href="{{ route('alat', 'kalkulator-skropiva') }}">kalkulator škropiva</a> i <a href="{{ route('alat', 'kalkulator-karence') }}">kalkulator karence</a>.</p>
 
