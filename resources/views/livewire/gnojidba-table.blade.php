@@ -173,7 +173,7 @@
                         <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                             <select wire:model="editForm.kultura_id" class="form-input w-full">
                                 @foreach($this->kulture as $k)
-                                    <option value="{{ $k->id }}">{{ $k->parcela->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)</option>
+                                    <option value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} {{ $k->godina }} ({{ $k->posadjena_povrsina_ha }} ha){{ $k->zavrsena_at ? ' — završena' : '' }}</option>
                                 @endforeach
                             </select>
                         </td>

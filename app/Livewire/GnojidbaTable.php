@@ -50,13 +50,15 @@ class GnojidbaTable extends Component
 
     public function getFilteredKultureProperty()
     {
+        // Za nove zapise nude se samo aktivne kulture (završene ostaju samo u staroj evidenciji)
+        $aktivne = $this->kulture->whereNull('zavrsena_at');
         if (!$this->formKulturaSearch) {
-            return $this->kulture;
+            return $aktivne;
         }
-        $search = strtolower($this->formKulturaSearch);
-        return $this->kulture->filter(fn($k) =>
-            str_contains(strtolower($k->arkod_broj), $search) ||
-            str_contains(strtolower($k->naziv), $search)
+        $search = mb_strtolower($this->formKulturaSearch);
+        return $aktivne->filter(fn($k) =>
+            str_contains(mb_strtolower($k->arkod_broj), $search) ||
+            str_contains(mb_strtolower($k->naziv), $search)
         );
     }
 

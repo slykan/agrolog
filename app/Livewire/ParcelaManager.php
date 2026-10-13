@@ -18,6 +18,11 @@ class ParcelaManager extends Component
     public array $kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => ''];
     public ?int $editKulturaId = null;
 
+    /** Kultura koju nova kultura zamjenjuje (stara se označi završenom i ostaje u evidenciji). */
+    public ?int $zamjenaZaId = null;
+    public string $zavrsenaDatum = '';
+    public string $poruka = '';
+
     public function mount(): void
     {
         $this->kulturaForm['godina'] = date('Y');
@@ -28,7 +33,8 @@ class ParcelaManager extends Component
     {
         // Sortiraj po datumu unosa, najnovija prva
         return Parcela::where('user_id', auth()->id())
-            ->with(['kulture' => fn($q) => $q->orderByDesc('godina')->orderBy('naziv')])
+            ->with(['kulture' => fn($q) => $q->withCount(['gnojidbe', 'prskanja'])
+                ->orderByRaw('zavrsena_at IS NOT NULL')->orderByDesc('godina')->orderByDesc('zavrsena_at')->orderBy('naziv')])
             ->orderByDesc('created_at')
             ->get();
     }
@@ -95,7 +101,18 @@ class ParcelaManager extends Component
 
     public function deleteParcela(int $id): void
     {
-        Parcela::where('id', $id)->where('user_id', auth()->id())->delete();
+        $parcela = Parcela::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
+        // Brisanje parcele kaskadno briše kulture i njihovu evidenciju — ne dopuštamo ako zapisa ima
+        $kultureIds = Kultura::where('parcela_id', $parcela->id)->pluck('id');
+        $imaZapise = \App\Models\Gnojidba::whereIn('kultura_id', $kultureIds)->exists()
+            || \App\Models\Prskanje::whereIn('kultura_id', $kultureIds)->exists();
+        if ($imaZapise) {
+            $this->poruka = "Parcela {$parcela->arkod_broj} ima zapise gnojidbe/prskanja i ne može se obrisati — evidenciju je obvezno čuvati.";
+            return;
+        }
+
+        $parcela->delete();
     }
 
     public function openKulturaForm(int $parcelaId): void
@@ -103,7 +120,39 @@ class ParcelaManager extends Component
         $this->kulturaParcelaId = $parcelaId;
         $this->showKulturaForm = true;
         $this->editKulturaId = null;
+        $this->zamjenaZaId = null;
         $this->kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => date('Y')];
+    }
+
+    /** Nova kultura na istoj parceli umjesto postojeće (npr. ječam → kukuruz). Stara ostaje sa svim zapisima. */
+    public function zamijeniKulturu(int $id): void
+    {
+        $k = Kultura::where('user_id', auth()->id())->findOrFail($id);
+        $this->kulturaParcelaId = $k->parcela_id;
+        $this->zamjenaZaId = $k->id;
+        $this->zavrsenaDatum = date('Y-m-d');
+        $this->editKulturaId = null;
+        $this->showKulturaForm = true;
+        $this->kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => $k->posadjena_povrsina_ha, 'godina' => date('Y')];
+        $this->poruka = '';
+        $this->clearValidation();
+    }
+
+    public function zavrsiKulturu(int $id): void
+    {
+        Kultura::where('id', $id)->where('user_id', auth()->id())->update(['zavrsena_at' => date('Y-m-d')]);
+    }
+
+    public function vratiKulturu(int $id): void
+    {
+        Kultura::where('id', $id)->where('user_id', auth()->id())->update(['zavrsena_at' => null]);
+    }
+
+    public function closeKulturaForm(): void
+    {
+        $this->showKulturaForm = false;
+        $this->zamjenaZaId = null;
+        $this->clearValidation();
     }
 
     public function editKultura(int $id): void
@@ -135,12 +184,27 @@ class ParcelaManager extends Component
             'kulturaForm.godina'                => 'required|integer|min:2000|max:2100',
         ]);
 
-        $parcela = Parcela::findOrFail($this->kulturaParcelaId);
+        $parcela = Parcela::where('user_id', auth()->id())->findOrFail($this->kulturaParcelaId);
 
-        // Zbroj površina ostalih kultura na ovoj parceli (iste godine)
+        // Naziv kulture koja već ima zapise ne mijenja se — to bi prepisalo povijest gnojidbe i prskanja
+        if ($this->editKulturaId) {
+            $stara = Kultura::where('user_id', auth()->id())->findOrFail($this->editKulturaId);
+            if (mb_strtolower(trim($stara->naziv)) !== mb_strtolower(trim($this->kulturaForm['naziv'])) && $stara->imaZapise()) {
+                $this->addError('kulturaForm.naziv',
+                    "Kultura „{$stara->naziv}\" već ima zapise gnojidbe/prskanja. Za novu kulturu na parceli koristi „Zamijeni kulturu\" — stari zapisi ostaju netaknuti.");
+                return;
+            }
+        }
+        if ($this->zamjenaZaId) {
+            $this->validate(['zavrsenaDatum' => 'required|date'], [], ['zavrsenaDatum' => 'datum završetka']);
+        }
+
+        // Zbroj površina ostalih aktivnih kultura na ovoj parceli (iste godine) — završene se ne broje
         $zauzetoHa = Kultura::where('parcela_id', $this->kulturaParcelaId)
             ->where('godina', $this->kulturaForm['godina'])
+            ->whereNull('zavrsena_at')
             ->when($this->editKulturaId, fn($q) => $q->where('id', '!=', $this->editKulturaId))
+            ->when($this->zamjenaZaId, fn($q) => $q->where('id', '!=', $this->zamjenaZaId))
             ->sum('posadjena_povrsina_ha');
 
         $novaHa = (float) $this->kulturaForm['posadjena_povrsina_ha'];
@@ -160,10 +224,17 @@ class ParcelaManager extends Component
         if ($this->editKulturaId) {
             Kultura::where('id', $this->editKulturaId)->where('user_id', auth()->id())->update($data);
         } else {
+            if ($this->zamjenaZaId) {
+                Kultura::where('id', $this->zamjenaZaId)->where('user_id', auth()->id())
+                    ->update(['zavrsena_at' => $this->zavrsenaDatum]);
+                $nova = false; // zamjena je jedna kultura — forma se zatvara
+            }
             Kultura::create($data);
         }
 
         $this->editKulturaId = null;
+        $this->zamjenaZaId = null;
+        $this->poruka = '';
         if ($nova) {
             // Ostavlja formu otvorenom za unos sledeće kulture
             $this->kulturaForm = [
@@ -178,7 +249,15 @@ class ParcelaManager extends Component
 
     public function deleteKultura(int $id): void
     {
-        Kultura::where('id', $id)->where('user_id', auth()->id())->delete();
+        $k = Kultura::where('id', $id)->where('user_id', auth()->id())->firstOrFail();
+
+        // Brisanje bi kaskadno obrisalo i evidenciju gnojidbe/prskanja, koju je obvezno čuvati
+        if ($k->imaZapise()) {
+            $this->poruka = "Kultura „{$k->naziv}\" ima zapise gnojidbe/prskanja i ne može se obrisati. Označi je završenom ili je zamijeni novom kulturom.";
+            return;
+        }
+
+        $k->delete();
     }
 
     public function render() { return view('livewire.parcela-manager'); }
