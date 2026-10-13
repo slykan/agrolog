@@ -14,6 +14,7 @@ class PrskanjeTable extends Component
         'datum_tretiranja'          => '',
         'tretirana_povrsina_ha'     => '',
         'trgovacki_naziv_sredstva'  => '',
+        'registracijski_broj'       => '',
         'kolicina_sredstva_l_ha'    => '',
         'vrijeme_od'                => '',
         'vrijeme_do'                => '',
@@ -31,6 +32,7 @@ class PrskanjeTable extends Component
         'form.datum_tretiranja' => 'datum tretiranja',
         'form.tretirana_povrsina_ha' => 'tretirana povrsina',
         'form.trgovacki_naziv_sredstva' => 'trgovacki naziv sredstva',
+        'form.registracijski_broj' => 'registracijski broj',
         'form.kolicina_sredstva_l_ha' => 'kolicina sredstva L/ha',
         'form.vrijeme_od' => 'vrijeme od',
         'form.vrijeme_do' => 'vrijeme do',
@@ -39,6 +41,7 @@ class PrskanjeTable extends Component
         'editForm.datum_tretiranja' => 'datum tretiranja',
         'editForm.tretirana_povrsina_ha' => 'tretirana povrsina',
         'editForm.trgovacki_naziv_sredstva' => 'trgovacki naziv sredstva',
+        'editForm.registracijski_broj' => 'registracijski broj',
         'editForm.kolicina_sredstva_l_ha' => 'kolicina sredstva L/ha',
         'editForm.vrijeme_od' => 'vrijeme od',
         'editForm.vrijeme_do' => 'vrijeme do',
@@ -138,6 +141,34 @@ class PrskanjeTable extends Component
             ->filter();
     }
 
+    /** Registracijski broj iz zadnjeg prskanja istim sredstvom (da se ne upisuje svaki put). */
+    private function zadnjiRegistracijskiBroj(?string $naziv): ?string
+    {
+        if (blank($naziv)) {
+            return null;
+        }
+
+        return Prskanje::where('user_id', auth()->id())
+            ->where('trgovacki_naziv_sredstva', trim($naziv))
+            ->whereNotNull('registracijski_broj')
+            ->latest('id')
+            ->value('registracijski_broj');
+    }
+
+    public function updatedFormTrgovackiNazivSredstva($naziv): void
+    {
+        if (blank($this->form['registracijski_broj'] ?? null)) {
+            $this->form['registracijski_broj'] = $this->zadnjiRegistracijskiBroj($naziv) ?? '';
+        }
+    }
+
+    public function updatedEditFormTrgovackiNazivSredstva($naziv): void
+    {
+        if (blank($this->editForm['registracijski_broj'] ?? null)) {
+            $this->editForm['registracijski_broj'] = $this->zadnjiRegistracijskiBroj($naziv) ?? '';
+        }
+    }
+
     public function addRow(): void
     {
         $this->showForm = true;
@@ -148,6 +179,7 @@ class PrskanjeTable extends Component
             'datum_tretiranja'         => date('Y-m-d'),
             'tretirana_povrsina_ha'    => '',
             'trgovacki_naziv_sredstva' => '',
+            'registracijski_broj'       => '',
             'kolicina_sredstva_l_ha'   => '',
             'vrijeme_od'               => '',
             'vrijeme_do'               => '',
@@ -163,6 +195,7 @@ class PrskanjeTable extends Component
         $this->form = [
             'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),
             'tretirana_povrsina_ha' => '', 'trgovacki_naziv_sredstva' => '',
+            'registracijski_broj'       => '',
             'kolicina_sredstva_l_ha' => '', 'vrijeme_od' => '',
             'vrijeme_do' => '', 'kolicina_vode_l_ha' => '',
         ];
@@ -205,6 +238,7 @@ class PrskanjeTable extends Component
             'form.datum_tretiranja'         => 'required|date',
             'form.tretirana_povrsina_ha'    => 'nullable|numeric|min:0|max:999999.99',
             'form.trgovacki_naziv_sredstva' => 'nullable|string|max:200',
+            'form.registracijski_broj'      => 'nullable|string|max:60',
             'form.kolicina_sredstva_l_ha'   => 'required|numeric|min:0|max:99999.999',
             'form.vrijeme_od'               => 'nullable|date_format:H:i',
             'form.vrijeme_do'               => 'nullable|date_format:H:i',
@@ -216,6 +250,7 @@ class PrskanjeTable extends Component
         $data['kolicina_vode_l_ha'] = $data['kolicina_vode_l_ha'] !== '' ? $data['kolicina_vode_l_ha'] : null;
         $data['vrijeme_od'] = $data['vrijeme_od'] !== '' ? $data['vrijeme_od'] : null;
         $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
+        $data['registracijski_broj'] = blank($data['registracijski_broj'] ?? null) ? null : trim($data['registracijski_broj']);
         Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
 
         $this->showForm = false;
@@ -224,6 +259,7 @@ class PrskanjeTable extends Component
         $this->form = [
             'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),
             'tretirana_povrsina_ha' => '', 'trgovacki_naziv_sredstva' => '',
+            'registracijski_broj'       => '',
             'kolicina_sredstva_l_ha' => '', 'vrijeme_od' => '',
             'vrijeme_do' => '', 'kolicina_vode_l_ha' => '',
         ];
@@ -235,6 +271,7 @@ class PrskanjeTable extends Component
             'form.datum_tretiranja'         => 'required|date',
             'form.tretirana_povrsina_ha'    => 'nullable|numeric|min:0|max:999999.99',
             'form.trgovacki_naziv_sredstva' => 'nullable|string|max:200',
+            'form.registracijski_broj'      => 'nullable|string|max:60',
             'form.kolicina_sredstva_l_ha'   => 'nullable|numeric|min:0|max:99999.999',
             'form.vrijeme_od'               => 'nullable|date_format:H:i',
             'form.vrijeme_do'               => 'nullable|date_format:H:i',
@@ -248,7 +285,7 @@ class PrskanjeTable extends Component
             return;
         }
 
-        $nullableFields = ['tretirana_povrsina_ha', 'trgovacki_naziv_sredstva', 'kolicina_sredstva_l_ha', 'kolicina_vode_l_ha', 'vrijeme_od', 'vrijeme_do'];
+        $nullableFields = ['tretirana_povrsina_ha', 'trgovacki_naziv_sredstva', 'registracijski_broj', 'kolicina_sredstva_l_ha', 'kolicina_vode_l_ha', 'vrijeme_od', 'vrijeme_do'];
         $data = $this->form;
         foreach ($nullableFields as $field) {
             $data[$field] = blank($data[$field]) ? null : $data[$field];
@@ -269,6 +306,7 @@ class PrskanjeTable extends Component
         $this->form = [
             'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),
             'tretirana_povrsina_ha' => '', 'trgovacki_naziv_sredstva' => '',
+            'registracijski_broj'       => '',
             'kolicina_sredstva_l_ha' => '', 'vrijeme_od' => '',
             'vrijeme_do' => '', 'kolicina_vode_l_ha' => '',
         ];
@@ -283,6 +321,7 @@ class PrskanjeTable extends Component
             'datum_tretiranja'         => $row->datum_tretiranja->format('Y-m-d'),
             'tretirana_povrsina_ha'    => $row->tretirana_povrsina_ha,
             'trgovacki_naziv_sredstva' => $row->trgovacki_naziv_sredstva,
+            'registracijski_broj'      => $row->registracijski_broj,
             'kolicina_sredstva_l_ha'   => $row->kolicina_sredstva_l_ha,
             'vrijeme_od'               => $row->vrijeme_od ? substr($row->vrijeme_od, 0, 5) : '',
             'vrijeme_do'               => $row->vrijeme_do ? substr($row->vrijeme_do, 0, 5) : '',
@@ -297,6 +336,7 @@ class PrskanjeTable extends Component
             'editForm.datum_tretiranja'         => 'required|date',
             'editForm.tretirana_povrsina_ha'    => 'nullable|numeric|min:0|max:999999.99',
             'editForm.trgovacki_naziv_sredstva' => 'nullable|string|max:200',
+            'editForm.registracijski_broj'      => 'nullable|string|max:60',
             'editForm.kolicina_sredstva_l_ha'   => 'required|numeric|min:0|max:99999.999',
             'editForm.vrijeme_od'               => 'nullable|date_format:H:i',
             'editForm.vrijeme_do'               => 'nullable|date_format:H:i',
@@ -308,6 +348,7 @@ class PrskanjeTable extends Component
         $data['kolicina_vode_l_ha'] = $data['kolicina_vode_l_ha'] !== '' ? $data['kolicina_vode_l_ha'] : null;
         $data['vrijeme_od'] = $data['vrijeme_od'] !== '' ? $data['vrijeme_od'] : null;
         $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
+        $data['registracijski_broj'] = blank($data['registracijski_broj'] ?? null) ? null : trim($data['registracijski_broj']);
         Prskanje::where('id', $this->editingId)
             ->where('user_id', auth()->id())
             ->update($data);
@@ -331,6 +372,7 @@ class PrskanjeTable extends Component
             'datum_tretiranja'          => now()->toDateString(),
             'tretirana_povrsina_ha'     => $row->tretirana_povrsina_ha,
             'trgovacki_naziv_sredstva'  => $row->trgovacki_naziv_sredstva,
+            'registracijski_broj'       => $row->registracijski_broj,
             'kolicina_sredstva_l_ha'    => $row->kolicina_sredstva_l_ha,
             'vrijeme_od'                => $row->vrijeme_od,
             'vrijeme_do'                => $row->vrijeme_do,

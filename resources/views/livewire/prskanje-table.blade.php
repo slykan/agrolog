@@ -8,6 +8,7 @@
         <div class="flex gap-2">
             <button wire:click="addRow" class="btn-primary">+ Dodaj</button>
             <button onclick="window.print()" class="btn-secondary">&#128424; Print / PDF</button>
+            <a href="{{ route('prskanje.csv') }}" class="btn-secondary" title="Evidencija u strojno čitljivom obliku (CSV za Excel)">&#11015; Izvoz CSV</a>
         </div>
     </div>
 
@@ -75,7 +76,7 @@
                     @endif
                     @if(in_array('sredstvo', $visibleColumns))
                     <th class="border border-gray-300 px-2 py-2 text-left">
-                        Trgovački naziv sredstva
+                        Trgovački naziv sredstva / reg. broj
                         <input type="text" wire:model.live="filters.sredstvo" class="filter-input no-print mt-1 block w-full" placeholder="filter...">
                     </th>
                     @endif
@@ -152,13 +153,15 @@
                     @endif
                     @if(in_array('sredstvo', $visibleColumns))
                     <td class="p-1 border border-gray-200">
-                        <input type="text" wire:model="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="trgovacki-nazivi">
+                        <input type="text" wire:model.blur="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="trgovacki-nazivi">
+                        <input type="text" wire:model="form.registracijski_broj" placeholder="registracijski broj (s etikete)" class="form-input w-full mt-1">
                         <datalist id="trgovacki-nazivi">
                             @foreach($this->trgovackiNazivi as $naziv)
                                 <option value="{{ $naziv }}">
                             @endforeach
                         </datalist>
                         @error('form.trgovacki_naziv_sredstva')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
+                        @error('form.registracijski_broj')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                     </td>
                     @endif
                     @if(in_array('kolicina', $visibleColumns))
@@ -214,7 +217,8 @@
                         @endif
                         @if(in_array('sredstvo', $visibleColumns))
                         <td class="p-1 border border-gray-200">
-                            <input type="text" wire:model="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="trgovacki-nazivi">
+                            <input type="text" wire:model.blur="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="trgovacki-nazivi">
+                            <input type="text" wire:model="editForm.registracijski_broj" placeholder="registracijski broj" class="form-input w-full mt-1">
                         </td>
                         @endif
                         @if(in_array('kolicina', $visibleColumns))
@@ -243,7 +247,7 @@
                         @if(in_array('kultura', $visibleColumns))<td class="px-2 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
                         @if(in_array('vel_povrsina', $visibleColumns))<td class="px-2 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
                         @if(in_array('tret_povrsina', $visibleColumns))<td class="px-2 py-2 border border-gray-200 text-right">{{ number_format($row->tretirana_povrsina_ha, 2) }}</td>@endif
-                        @if(in_array('sredstvo', $visibleColumns))<td class="px-2 py-2 border border-gray-200">{{ $row->trgovacki_naziv_sredstva }}</td>@endif
+                        @if(in_array('sredstvo', $visibleColumns))<td class="px-2 py-2 border border-gray-200">{{ $row->trgovacki_naziv_sredstva }}@if($row->registracijski_broj)<div class="text-xs text-gray-500">Reg. br. {{ $row->registracijski_broj }}</div>@endif</td>@endif
                         @if(in_array('kolicina', $visibleColumns))<td class="px-2 py-2 border border-gray-200 text-right">{{ number_format($row->kolicina_sredstva_l_ha, 2) }}</td>@endif
                         @if(in_array('vrijeme', $visibleColumns))<td class="px-2 py-2 border border-gray-200 text-center">{{ $row->vrijeme_od ? substr($row->vrijeme_od,0,5).'-'.substr($row->vrijeme_do,0,5) : '' }}</td>@endif
                         @if(in_array('voda', $visibleColumns))<td class="px-2 py-2 border border-gray-200 text-right">{{ $row->kolicina_vode_l_ha ? number_format($row->kolicina_vode_l_ha, 2) : '' }}</td>@endif

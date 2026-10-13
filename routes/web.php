@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EvidencijaIzvozController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SadrzajController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/parcele', fn() => view('parcele'))->name('parcele');
     Route::get('/gnojidba', fn() => view('gnojidba'))->name('gnojidba');
     Route::get('/prskanje', fn() => view('prskanje'))->name('prskanje');
+    Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
