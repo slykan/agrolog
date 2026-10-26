@@ -38,6 +38,53 @@
             Kod NPK gnojiva računaj prema hranivu koje ti je najvažnije (najčešće P ili K), a ostala hraniva provjeri:
             iz iste količine gnojiva dobit ćeš i N u omjeru s vreće.
         </div>
+        <h2>Primjeri izračuna</h2>
+        <table class="tbl">
+            <tr><th>Cilj</th><th>Gnojivo</th><th class="num">kg/ha</th><th class="num">vreća 50 kg za 5 ha</th></tr>
+            <tr><td>80 kg N/ha</td><td>KAN 27 % N</td><td class="num">296</td><td class="num">30</td></tr>
+            <tr><td>80 kg N/ha</td><td>UREA 46 % N</td><td class="num">174</td><td class="num">18</td></tr>
+            <tr><td>60 kg P₂O₅/ha</td><td>NPK 7-20-30</td><td class="num">300</td><td class="num">30</td></tr>
+            <tr><td>45 kg N, P₂O₅ i K₂O/ha</td><td>NPK 15-15-15</td><td class="num">300</td><td class="num">30</td></tr>
+        </table>
+        <p>
+            U trećem primjeru 300 kg NPK 7-20-30 uz 60 kg P₂O₅ donosi i 21 kg N (300 × 7 %) i 90 kg K₂O (300 × 30 %).
+            Ako kultura treba više dušika, razliku dodaješ KAN-om ili UREOM u prihrani: npr. do 120 kg N treba još
+            99 kg N, odnosno oko 367 kg KAN-a po hektaru, najbolje u dva obroka.
+        </p>
+
+        <h2>Kako pročitati brojke na vreći</h2>
+        <p>
+            Tri broja na vreći NPK gnojiva (npr. 7-20-30) su postoci <strong>dušika (N)</strong>, <strong>fosfora izraženog kao
+            P₂O₅</strong> i <strong>kalija izraženog kao K₂O</strong>. Preporuke gnojidbe i nalazi analize tla u Hrvatskoj
+            također se iskazuju u P₂O₅ i K₂O, pa ih možeš izravno uspoređivati. Vreća od 50 kg NPK 7-20-30 sadrži
+            3,5 kg N, 10 kg P₂O₅ i 15 kg K₂O.
+        </p>
+
+        <h2>Česta pitanja</h2>
+        <h3>KAN ili UREA?</h3>
+        <p>
+            UREA ima više dušika (46 %), pa je po kilogramu dušika često jeftinija i trebaš manje vreća. Dušik iz uree
+            mora se najprije pretvoriti u tlu, a na površini dio može ishlapjeti kao amonijak, osobito na toplom i
+            vlažnom vremenu ako se ne unese u tlo. KAN djeluje brže i manje je osjetljiv na gubitke, pa se češće koristi
+            u prihrani. Usporedi cijenu po kilogramu <em>dušika</em>, ne po vreći.
+        </p>
+        <h3>Koliko hraniva treba moja kultura?</h3>
+        <p>
+            Ovisi o kulturi, očekivanom prinosu, predusjevu i opskrbljenosti tla. Najpouzdanija polazna točka je
+            <a href="{{ route('vodic', 'analiza-tla-uzimanje-uzorka') }}">analiza tla</a> s preporukom gnojidbe. Na ranjivim
+            područjima propisane su i najveće dopuštene količine dušika po kulturi — vidi vodič
+            <a href="{{ route('vodic', 'nitrati-ranjiva-podrucja-zabrana-gnojidbe') }}">nitrati i ranjiva područja</a>.
+        </p>
+        <h3>Kako uračunati stajski gnoj?</h3>
+        <p>
+            Procijeni dušik iz gnoja (npr. goveđi stajski gnoj ima oko 0,5 % N, pa 20 t/ha donosi oko 100 kg N) i oduzmi
+            ga od ukupne potrebe; za ostatak upiši kilograme hraniva u kalkulator. Dio dušika iz gnoja biljka iskoristi
+            tek sljedećih godina.
+        </p>
+        <p>
+            Svaku gnojidbu upiši u evidenciju — vidi <a href="{{ route('vodic', 'evidencija-gnojidbe-sto-upisati') }}">evidencija gnojidbe: što upisati</a>.
+        </p>
+
         <div class="box-warn">
             Količinu hraniva treba odrediti prema analizi tla, kulturi i očekivanom prinosu. U <strong>ranjivim područjima</strong>
             vrijede ograničenja Akcijskog programa zaštite voda od nitrata, uključujući vođenje evidencije gnojidbe.

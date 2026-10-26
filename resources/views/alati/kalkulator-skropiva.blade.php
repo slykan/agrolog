@@ -29,6 +29,42 @@
             <li><strong>Ukupno sredstva</strong> = doza × površina; <strong>ukupno vode</strong> = utrošak vode × površina.</li>
         </ul>
         <p>Primjer: doza 1,5 l/ha, 300 l vode/ha, spremnik 600 l → jedno punjenje pokriva 2 ha i u njega ide 3 l sredstva.</p>
+
+        <h2>Još primjera</h2>
+        <table class="tbl">
+            <tr><th>Situacija</th><th>Doza</th><th>Voda</th><th>Spremnik</th><th>Rezultat</th></tr>
+            <tr><td>Herbicid u kukuruzu, 7 ha</td><td>1,2 l/ha</td><td>250 l/ha</td><td>1.000 l</td><td>4,8 l po punjenju; 1 puno + zadnje za 3 ha (750 l vode, 3,6 l)</td></tr>
+            <tr><td>Fungicid u pšenici, 12 ha</td><td>0,8 l/ha</td><td>200 l/ha</td><td>2.500 l</td><td>10 l po punjenju za 12,5 ha — dovoljno jedno punjenje od 2.400 l s 9,6 l</td></tr>
+            <tr><td>Vinograd, 1,5 ha</td><td>2 kg/ha</td><td>400 l/ha</td><td>400 l</td><td>2 kg po punjenju; ukupno 3 kg i 600 l vode</td></tr>
+        </table>
+
+        <h2>Zašto je točan utrošak vode toliko važan</h2>
+        <p>
+            Kalkulator pretpostavlja da prskalica stvarno izbacuje upisanu količinu vode po hektaru. Ako je stvarni
+            utrošak 330 umjesto 300 l/ha (npr. zbog istrošenih sapnica), spremnik se isprazni prije nego što pokriješ
+            planiranu površinu, a doza po hektaru je 10 % veća od planirane. Zato prije sezone napravi
+            <a href="{{ route('vodic', 'kalibracija-prskalice-korak-po-korak') }}">kalibraciju prskalice</a> i upiši
+            izmjereni utrošak, a ne onaj iz prospekta.
+        </p>
+
+        <h2>Česta pitanja</h2>
+        <h3>Doza je zadana u postotku (npr. 0,3 %). Kako to upisati?</h3>
+        <p>
+            Koncentracija znači količinu sredstva na 100 l vode: 0,3 % = 300 ml na 100 l. Za spremnik od 600 l to je
+            1,8 l sredstva. U kalkulator možeš upisati i dozu po hektaru: 0,3 % × utrošak vode (npr. 1.000 l/ha) = 3 l/ha.
+            Provjeri da dobivena količina po hektaru ne prelazi najveću dopuštenu dozu s etikete.
+        </p>
+        <h3>Smijem li smanjiti količinu vode da manje puta punim?</h3>
+        <p>
+            Samo unutar raspona koji etiketa dopušta. Premalo vode znači lošiju pokrivenost biljke, a kod nekih sredstava
+            i slabije djelovanje. Doza sredstva po hektaru ostaje ista — mijenja se samo koncentracija u spremniku.
+        </p>
+        <h3>Što s ostatkom u spremniku?</h3>
+        <p>
+            Najbolje ga je izbjeći točnim izračunom zadnjeg punjenja. Ako ostane, razrijedi ga vodom i poprskaj po već
+            tretiranoj površini, poštujući najveću dozu. Ne izlijevaj ga u kanal ili kanalizaciju — vidi
+            <a href="{{ route('vodic', 'skladistenje-pesticida-i-ambalaza') }}">skladištenje, ostaci škropiva i ambalaža</a>.
+        </p>
         <div class="box-warn">
             Doza i utrošak vode uvijek se uzimaju <strong>s etikete sredstva</strong> za tu kulturu i štetnika. Kalkulator samo
             preračunava — ne zamjenjuje upute proizvođača. Utrošak vode ovisi o kalibraciji prskalice (brzina, tlak, sapnice).

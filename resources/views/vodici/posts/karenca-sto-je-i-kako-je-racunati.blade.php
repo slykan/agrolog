@@ -27,6 +27,28 @@
     a berba je dopuštena tek kad isteknu <strong>sve</strong>. U praksi je mjerodavna ona koja ističe najkasnije.
 </p>
 
+<h3>Primjer iz prakse</h3>
+<p>
+    Vinogradar tretira 1. kolovoza fungicidom s karencom 28 dana, a 10. kolovoza insekticidom s karencom 7 dana.
+    Iako je zadnje tretiranje bilo 10. kolovoza (+7 = 17. kolovoza), berba je dopuštena tek <strong>29. kolovoza</strong>,
+    jer tada ističe karenca fungicida. Zato se ne gleda samo zadnje prskanje, nego svako sredstvo posebno.
+</p>
+
+<h2>Kulture s više berbi</h2>
+<p>
+    Kod rajčice, paprike, krastavaca ili jagoda berba traje tjednima, a zaštita se nastavlja. Tada je posebno važno
+    birati sredstva s <strong>kratkom karencom</strong> i tretiranje planirati odmah nakon berbe, tako da do iduće berbe
+    karenca istekne. Plodovi koji su dozreli prije isteka karence ne smiju se brati za prodaju ni za vlastitu hranu.
+</p>
+
+<h2>Zašto karenca postoji: ostaci pesticida</h2>
+<p>
+    Za svaku djelatnu tvar i kulturu u EU je propisana <strong>maksimalna razina ostataka</strong> (MRL) koja smije biti u
+    hrani. Karenca je izračunata tako da, uz pravilnu dozu i način primjene, ostaci do berbe padnu ispod te granice.
+    Ako se prekorači doza, poveća broj tretiranja ili bere ranije, ostaci mogu biti iznad dopuštenih — a to se
+    otkriva laboratorijskom analizom kod otkupljivača ili inspekcije i može značiti povlačenje robe.
+</p>
+
 <h2>Karenca i radna karenca nisu isto</h2>
 <p>
     Osim karence, na etiketi se može naći i vrijeme ponovnog ulaska — koliko dugo nakon tretiranja ljudi ne bi

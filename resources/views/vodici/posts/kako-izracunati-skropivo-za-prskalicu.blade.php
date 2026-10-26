@@ -33,6 +33,30 @@
     najveću dopuštenu dozu s etikete.
 </p>
 
+<h2>Mala površina i leđna prskalica</h2>
+<p>
+    Za vrt ili mali nasad pretvori dozu po hektaru u dozu po kvadratnom metru: 1 ha = 10.000 m², pa 1,5 l/ha znači
+    0,15 ml/m², odnosno <strong>15 ml na 100 m²</strong>. Utrošak vode odredi tako da poprskaš poznatu površinu (npr. 50 m²)
+    čistom vodom i izmjeriš koliko je potrošeno. Ako na 100 m² potrošiš 4 l vode, u leđnu prskalicu od 16 l stane
+    voda za 400 m², pa u nju ide 4 × 15 = <strong>60 ml sredstva</strong>.
+</p>
+<p>
+    Površine iz starih isprava u jutrima i hvatima preračunaj u <a href="{{ route('alat', 'pretvornik-povrsina') }}">pretvorniku površina</a>.
+</p>
+
+<h2>Redoslijed miješanja u spremniku</h2>
+<p>
+    Kad se u istom spremniku miješa više sredstava, redoslijed je važan da se ne stvore grudice ili talog. Opće
+    pravilo, ako etiketa ne kaže drukčije:
+</p>
+<ol>
+    <li>spremnik napuni vodom do polovice i uključi miješanje,</li>
+    <li>vodotopive vrećice, zatim granule i prašiva (WG, WP),</li>
+    <li>suspenzije (SC), zatim emulzije i otopine (EC, SL),</li>
+    <li>okvašivači i ulja na kraju, pa dolij vodu do kraja.</li>
+</ol>
+<p>Svako sredstvo dodaj tek kad se prethodno razmiješalo, i provjeri na etiketi je li mješavina dopuštena.</p>
+
 <h2>Česte greške</h2>
 <ul>
     <li><strong>Doza „po spremniku" iz navike</strong> — kad se promijeni sapnica ili brzina, mijenja se i površina po spremniku.</li>

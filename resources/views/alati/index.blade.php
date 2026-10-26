@@ -2,7 +2,7 @@
     'title' => 'Besplatni alati za poljoprivrednike',
     'description' => 'Kalkulator škropiva, kalkulator gnojiva (KAN, UREA, NPK), kalkulator karence i pretvornik površina (ha, jutro, čhv) — besplatno, bez prijave.',
     'active' => 'alati',
-    'ads' => true,
+    'ads' => false, // list page — ads only next to the tools and guides themselves
 ])
 
 @section('content')

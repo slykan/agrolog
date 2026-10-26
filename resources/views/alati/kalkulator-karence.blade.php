@@ -25,6 +25,46 @@
             datum berbe je 15. lipnja. Ako si istu kulturu tretirao s više sredstava, mjerodavna je <strong>najduža</strong>
             karenca od zadnjih primjena.
         </p>
+        <h2>Primjeri</h2>
+        <table class="tbl">
+            <tr><th>Situacija</th><th>Tretiranja</th><th>Najranija berba</th></tr>
+            <tr><td>Jedno sredstvo</td><td>fungicid 3. srpnja, karenca 21 dan</td><td>24. srpnja</td></tr>
+            <tr><td>Dva sredstva isti dan</td><td>5. kolovoza: insekticid 7 dana i fungicid 14 dana</td><td>19. kolovoza (vrijedi duža)</td></tr>
+            <tr><td>Kasnije tretiranje s kraćom karencom</td><td>1. lipnja: 28 dana; 10. lipnja: 7 dana</td><td>29. lipnja (prvo ističe kasnije)</td></tr>
+        </table>
+        <p>
+            Treći primjer je čest izvor pogreške: nije uvijek mjerodavno <em>zadnje</em> tretiranje. Za svako sredstvo
+            izračunaj datum posebno i uzmi <strong>najkasniji</strong>. Kalkulator zato pokreni za svako sredstvo zasebno.
+        </p>
+
+        <h2>Česta pitanja</h2>
+        <h3>Računa li se dan tretiranja?</h3>
+        <p>
+            Karenca se broji u danima od dana tretiranja: uz tretiranje 1. lipnja i karencu od 7 dana, berba je dopuštena
+            8. lipnja. Kalkulator računa upravo tako. Ako si na granici, dan više nikad nije pogreška.
+        </p>
+        <h3>Što znači „karenca osigurana vremenom primjene"?</h3>
+        <p>
+            Kod nekih sredstava etiketa umjesto broja dana navodi fazu razvoja do koje se sredstvo smije primijeniti
+            (npr. do cvatnje). Ako se ta faza poštuje, između primjene i berbe sigurno prođe dovoljno vremena. Tu
+            kalkulator ne pomaže — mjerodavna je faza s etikete.
+        </p>
+        <h3>Vrijedi li karenca i za ispašu i krmu?</h3>
+        <p>
+            Da, ako je na etiketi navedena — tada se računa do ispaše ili košnje za krmu, jednako kao do berbe.
+        </p>
+        <h3>Smijem li ući u nasad prije isteka karence?</h3>
+        <p>
+            Karenca štiti potrošača i odnosi se na berbu. Za ulazak ljudi u tretirani nasad etiketa može propisati
+            posebno vrijeme ponovnog ulaska ili zaštitnu opremu — to je zaštita radnika i treba ga posebno provjeriti.
+        </p>
+        <h3>Kako dokazati da je karenca poštovana?</h3>
+        <p>
+            Evidencijom o uporabi sredstava: datum, sredstvo, kultura i doza za svako tretiranje, uz datum berbe.
+            Otkupljivači to sve češće traže. Vidi vodič
+            <a href="{{ route('vodic', 'elektronicka-evidencija-sredstava-za-zastitu-bilja') }}">elektronička evidencija sredstava za zaštitu bilja</a>.
+        </p>
+
         <div class="box-warn">
             Karenca je propisana za svaku kulturu posebno i navedena na etiketi sredstva. Kalkulator samo zbraja dane —
             kod dvojbe provjeri etiketu ili savjetodavnu službu.

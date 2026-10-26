@@ -2,7 +2,7 @@
     'title' => 'Vodiči za poljoprivrednike',
     'description' => 'Vodiči: elektronička evidencija sredstava za zaštitu bilja, izračun škropiva, karenca i gnojidba dušikom (KAN, UREA, NPK).',
     'active' => 'vodici',
-    'ads' => true,
+    'ads' => false, // list page — ads only next to the tools and guides themselves
 ])
 
 @section('content')
