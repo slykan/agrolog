@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\DobrodoslicaMail;
 use App\Mail\NoviKorisnikMail;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -72,6 +73,13 @@ class RegisteredUserController extends Controller
             Mail::to('slynetwork@gmail.com')->send(new NoviKorisnikMail($user));
         } catch (\Exception $e) {
             // Ne blokiramo registraciju ako mail ne prođe
+        }
+
+        // Dobrodošlica korisniku
+        try {
+            Mail::to($user->email)->send(new DobrodoslicaMail($user));
+        } catch (\Exception $e) {
+            report($e);
         }
 
         return redirect(route('dashboard', absolute: false));

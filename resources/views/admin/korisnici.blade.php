@@ -67,7 +67,6 @@
                                         <div class="text-xs text-gray-500">
                                             {{ $k->email }}
                                             @if ($k->google_id) <span class="ml-1 px-1.5 rounded bg-blue-50 text-blue-700">Google</span> @endif
-                                            @if (! $k->email_verified_at && ! $k->google_id) <span class="ml-1 px-1.5 rounded bg-amber-50 text-amber-700">nepotvrđen</span> @endif
                                         </div>
                                     </td>
                                     <td class="py-2.5 pr-4 text-gray-600">

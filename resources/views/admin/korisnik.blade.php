@@ -22,7 +22,6 @@
                         @foreach ([
                             'E-mail' => $user->email,
                             'Prijava' => $user->google_id ? 'Google' : 'e-mail i lozinka',
-                            'E-mail potvrđen' => $user->email_verified_at ? $vrijeme($user->email_verified_at) : 'ne',
                             'Gospodarstvo' => $user->naziv_gospodarstva ?: '—',
                             'MIPG' => $user->mipg ?: '—',
                             'OIB' => $user->oib ?: '—',
