@@ -189,6 +189,7 @@
                         </div>
                         <p class="mt-1 text-[11px] leading-snug text-gray-400">N-P-K = % dušika, fosfora i kalija. Upiše se sam kad odaberete gnojivo s popisa; za drugo gnojivo prepišite tri broja s vreće (npr. 15-15-15) ili ostavite prazno.</p>
                         @error('form.tip_gnojiva')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        @if($sk = \App\Support\Skladiste::napomena(auth()->user(), 'gnojivo', $form['tip_gnojiva'] ?? null, $form['kolicina_kg_ha'] ?? null, $this->selectedKultura?->posadjena_povrsina_ha))<p class="text-xs mt-1 {{ $sk['minus'] ? 'text-red-600' : 'text-green-700' }}">{{ $sk['tekst'] }}</p>@endif
                     </td>
                     @endif
                     @if(in_array('kolicina', $visibleColumns))

@@ -51,6 +51,7 @@
                     <a href="#gnojidba" class="block text-gray-600 hover:text-green-700 py-1 transition">5. Evidencija gnojidbe</a>
                     <a href="#viseredni-unos" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Višeredni unos</a>
                     <a href="#kopiranje" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kopiranje zapisa</a>
+                    <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
                     <a href="#profil" class="block text-gray-600 hover:text-green-700 py-1 transition">8. Profil i obavijesti</a>
@@ -242,6 +243,38 @@
                     </div>
                 </section>
 
+                {{-- SKLADIŠTE (neobavezno) --}}
+                <section id="skladiste">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Skladište sredstava i gnojiva (neobavezno)</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Skladište pokazuje koliko vam je ostalo svakog sredstva i gnojiva. Vi upisujete samo nabavu, a potrošnju AgroLog računa iz evidencije.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg">Uključivanje</h3>
+                        <p><strong class="text-gray-800">Profil → Skladište → Koristim skladište.</strong> U izborniku se pojavi stavka <em>Skladište</em>. Kad ga isključite, više se nigdje ne prikazuje, a podaci ostaju spremljeni.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Nabava (ulaz)</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Kliknite <strong class="text-gray-800">+ Nabava sredstva</strong> ili <strong class="text-gray-800">+ Nabava gnojiva</strong></li>
+                            <li>Odaberite naziv s popisa: sredstva iz registra FIS-a, gnojiva s popisa ili ona koja ste već koristili</li>
+                            <li>Upišite datum i ukupnu količinu (npr. 4 kanistra po 5 L = 20 L, ili 2 t gnojiva). Cijenu i dobavljača možete preskočiti</li>
+                        </ol>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Potrošnja (izlaz) ide sama</h3>
+                        <p>Za svaki zapis prskanja ili gnojidbe s istim nazivom AgroLog oduzme <strong>dozu po hektaru × površinu</strong>: kod prskanja tretiranu površinu, a kod gnojidbe površinu kulture. Ako zapis izmijenite ili obrišete, stanje se samo ispravi. Računaju se samo zapisi od datuma prve nabave, pa starija evidencija ne utječe na stanje.</p>
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+                            <strong>Pazite na dvije stvari:</strong> (1) naziv u evidenciji mora biti isti kao na skladištu (velika i mala slova nisu bitna), a najlakše je odabrati ga s popisa. (2) Jedinica mora odgovarati dozi: ako dozu sredstva upisujete u L/ha, nabavu upišite u litrama, a za praškasta sredstva u kg.
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Upozorenja i inventura</h3>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Pri unosu prskanja ili gnojidbe ispod naziva piše koliko je na skladištu i koliko ostaje nakon tog zapisa.</li>
+                            <li>Artikl s manje od 15 % nabavljene količine označen je <strong>pri kraju</strong>, a artikl u minusu crveno. Popis je i na početnoj stranici.</li>
+                            <li>Unos u evidenciju se nikad ne blokira. Minus samo znači da nabava još nije upisana.</li>
+                            <li><strong>Inventura:</strong> u detaljima artikla upišite stvarnu količinu i AgroLog doda ispravak za razliku.</li>
+                        </ul>
+                        <p>Ako uz nabavu upišete cijenu, vidi se prosječna cijena po L ili kg i vrijednost zalihe.</p>
+                    </div>
+                </section>
+
                 {{-- 6. ISPIS I IZVOZ --}}
                 <section id="izvoz">
                     {!! $naslov(6, 'Ispis i izvoz — PDF, Excel za Ministarstvo, CSV') !!}
@@ -285,6 +318,7 @@
                         <ul class="list-disc pl-6 space-y-1">
                             <li>Naziv gospodarstva, MIPG broj, OIB</li>
                             <li>Ime i prezime, e-mail adresa, lozinka</li>
+                            <li>Skladište: uključeno ili isključeno (vidi <a href="#skladiste" class="text-green-700 hover:underline">Skladište</a>)</li>
                         </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Obavijesti mailom</h3>
                         <p>Povremeno šaljemo kratku obavijest o važnim novostima u AgroLogu i promjenama propisa o evidencijama. Ne želite ih primati? U dnu svakog takvog maila je poveznica <strong>Odjavite se jednim klikom</strong>. Odjava ne utječe na vaš račun ni na evidencije. Sve novosti su i na stranici <a href="{{ route('novosti') }}" class="text-green-700 hover:underline font-medium">Novosti</a>.</p>

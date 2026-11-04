@@ -28,6 +28,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_seen_at' => 'datetime',
             'obavijesti_odjava_at' => 'datetime',
+            'koristi_skladiste' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -42,4 +43,5 @@ class User extends Authenticatable
     public function kulture() { return $this->hasMany(Kultura::class); }
     public function gnojidbe() { return $this->hasMany(Gnojidba::class); }
     public function prskanja() { return $this->hasMany(Prskanje::class); }
+    public function skladisteUlazi() { return $this->hasMany(SkladisteUlaz::class); }
 }

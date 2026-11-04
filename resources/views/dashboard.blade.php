@@ -179,6 +179,31 @@
                 </a>
             @endif
 
+            {{-- Skladište: što je pri kraju ili u minusu (samo ako korisnik koristi skladište) --}}
+            @if(auth()->user()->koristi_skladiste)
+                @php
+                    $zaliha = \App\Support\Skladiste::stanje(auth()->user());
+                    $upozorenja = $zaliha->whereIn('status', ['minus', 'malo'])->sortBy(fn ($a) => $a['status'] === 'minus' ? 0 : 1);
+                @endphp
+                @if($upozorenja->isNotEmpty())
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <h3 class="font-semibold text-amber-900">Skladište: pri kraju ili u minusu</h3>
+                            <a href="{{ route('skladiste') }}" class="text-sm text-amber-800 underline underline-offset-2 whitespace-nowrap">Otvori skladište →</a>
+                        </div>
+                        <ul class="text-sm space-y-1">
+                            @foreach($upozorenja->take(6) as $a)
+                                <li class="flex justify-between gap-3">
+                                    <span class="text-gray-800">{{ $a['naziv'] }}</span>
+                                    <span class="font-semibold whitespace-nowrap {{ $a['status'] === 'minus' ? 'text-red-700' : 'text-amber-800' }}">{{ \App\Support\Skladiste::broj($a['stanje'], 3) }} {{ $a['jedinica'] }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                        @if($upozorenja->count() > 6)<p class="text-xs text-amber-800 mt-2">i još {{ $upozorenja->count() - 6 }}…</p>@endif
+                    </div>
+                @endif
+            @endif
+
             {{-- Pozdrav --}}
             <div class="bg-white shadow-sm rounded-xl p-8">
                 <h3 class="text-lg font-semibold text-green-700 mb-2">AgroLog &mdash; evidencija poljoprivrednih radova</h3>

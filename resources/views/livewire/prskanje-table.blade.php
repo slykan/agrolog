@@ -161,12 +161,13 @@
                         <input type="text" wire:key="reg-{{ $form['registracijski_broj'] ?? '' }}" wire:model="form.registracijski_broj" placeholder="registracijski broj (s etikete)" class="form-input w-full mt-1">
                         @error('form.trgovacki_naziv_sredstva')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                         @if($sredstvoNapomena)<p class="text-amber-700 text-xs mt-1">{{ $sredstvoNapomena }}</p>@endif
+                        @if($sk = \App\Support\Skladiste::napomena(auth()->user(), 'szb', $form['trgovacki_naziv_sredstva'] ?? null, $form['kolicina_sredstva_l_ha'] ?? null, $form['kultura_id'] ? ($form['tretirana_povrsina_ha'] ?? null) : null))<p class="text-xs mt-1 {{ $sk['minus'] ? 'text-red-600' : 'text-green-700' }}">{{ $sk['tekst'] }}</p>@endif
                         @error('form.registracijski_broj')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                     </td>
                     @endif
                     @if(in_array('kolicina', $visibleColumns))
                     <td data-label="Količina L/ha" class="p-1 border border-gray-200">
-                        <input type="number" wire:model="form.kolicina_sredstva_l_ha" step="0.001" placeholder="2.5" class="form-input w-full">
+                        <input type="number" wire:model.live.blur="form.kolicina_sredstva_l_ha" step="0.001" placeholder="2.5" class="form-input w-full">
                         @error('form.kolicina_sredstva_l_ha')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                     </td>
                     @endif

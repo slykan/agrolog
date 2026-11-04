@@ -24,6 +24,11 @@
                     <x-nav-link :href="route('prskanje')" :active="request()->routeIs('prskanje')">
                         Prskanje
                     </x-nav-link>
+                    @if(Auth::user()->koristi_skladiste)
+                    <x-nav-link :href="route('skladiste')" :active="request()->routeIs('skladiste')">
+                        Skladište
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -89,6 +94,9 @@
             <x-responsive-nav-link :href="route('parcele')" :active="request()->routeIs('parcele')">Parcele &amp; Kulture</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('gnojidba')" :active="request()->routeIs('gnojidba')">Gnojidba</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('prskanje')" :active="request()->routeIs('prskanje')">Prskanje</x-responsive-nav-link>
+            @if(Auth::user()->koristi_skladiste)
+            <x-responsive-nav-link :href="route('skladiste')" :active="request()->routeIs('skladiste')">Skladište</x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
