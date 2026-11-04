@@ -55,13 +55,79 @@
                     <h3 class="text-sm font-semibold text-gray-700">Karta mojih parcela</h3>
                     <span class="text-xs text-gray-400" x-text="status"></span>
                 </div>
+                {{-- Prognoza za 5 dana za središte karte (Open-Meteo); prati pomicanje karte --}}
+                <div class="mb-4" x-show="prognoza.length" x-cloak>
+                    <div class="flex items-baseline justify-between mb-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Prognoza za područje na karti</span>
+                        <span class="text-[11px] text-gray-400">Prskanje povoljno: vjetar &lt; 15 km/h, kiša &lt; 40 %</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                        <template x-for="d in prognoza" :key="d.datum">
+                            <div class="rounded-lg border border-gray-200 px-3 py-2 text-sm">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-gray-700" x-text="d.dan"></span>
+                                    <span class="text-xl" :title="d.opis" x-text="d.ikona"></span>
+                                </div>
+                                <div class="text-gray-800"><b x-text="d.max + '°'"></b> <span class="text-gray-400" x-text="d.min + '°'"></span></div>
+                                <div class="text-xs text-gray-500"><span x-text="d.kisa + ' mm'"></span> · <span x-text="d.vjerojatnost + ' %'"></span></div>
+                                <div class="text-xs text-gray-500" x-text="'vjetar ' + d.vjetar + ' km/h'"></div>
+                                <div class="mt-1 text-[11px] font-semibold rounded px-1.5 py-0.5 inline-block"
+                                     :class="d.prskanje ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'"
+                                     x-text="d.prskanje ? 'za prskanje ✓' : 'nije za prskanje'"></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
                 <div x-ref="karta" class="h-[28rem] rounded-lg ring-1 ring-gray-200 bg-gray-100"></div>
-                <p class="mt-2 text-xs text-gray-400">Kotačićem miša ili gumbima +/− zumirate, povlačenjem pomičete kartu. Klik na parcelu prikazuje kulture.</p>
+                <p class="mt-2 text-xs text-gray-400">Kotačićem miša ili gumbima +/− zumirate, povlačenjem pomičete kartu. Klik na parcelu prikazuje kulture. Prognoza: <a href="https://open-meteo.com/" target="_blank" rel="noopener" class="underline">Open-Meteo</a>.</p>
             </div>
             <script>
                 function dashKarta(parcele) {
                     return {
                         status: '',
+                        prognoza: [],
+                        zadnjeSrediste: null,
+
+                        // WMO šifra vremena → ikona i opis
+                        vrijeme(kod) {
+                            if (kod === 0) return ['☀️', 'vedro'];
+                            if (kod <= 2) return ['🌤️', 'pretežno sunčano'];
+                            if (kod === 3) return ['☁️', 'oblačno'];
+                            if (kod <= 48) return ['🌫️', 'magla'];
+                            if (kod <= 57) return ['🌦️', 'rosulja'];
+                            if (kod <= 67) return ['🌧️', 'kiša'];
+                            if (kod <= 77) return ['🌨️', 'snijeg'];
+                            if (kod <= 82) return ['🌧️', 'pljuskovi'];
+                            if (kod <= 86) return ['🌨️', 'snježni pljuskovi'];
+                            return ['⛈️', 'grmljavina'];
+                        },
+
+                        ucitajPrognozu(srediste) {
+                            // ne ponavljaj za pomak manji od ~5 km
+                            if (this.zadnjeSrediste && this.zadnjeSrediste.distanceTo(srediste) < 5000) return;
+                            this.zadnjeSrediste = srediste;
+                            const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + srediste.lat.toFixed(3) + '&longitude=' + srediste.lng.toFixed(3)
+                                + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,wind_speed_10m_max'
+                                + '&timezone=Europe%2FZagreb&forecast_days=5';
+                            const dani = ['ned', 'pon', 'uto', 'sri', 'čet', 'pet', 'sub'];
+                            fetch(url).then(r => r.ok ? r.json() : null).then(j => {
+                                if (!j || !j.daily) return;
+                                const d = j.daily;
+                                this.prognoza = d.time.map((datum, i) => {
+                                    const [ikona, opis] = this.vrijeme(d.weather_code[i]);
+                                    const vjetar = Math.round(d.wind_speed_10m_max[i]);
+                                    const vjerojatnost = d.precipitation_probability_max[i] ?? 0;
+                                    return {
+                                        datum, ikona, opis, vjetar, vjerojatnost,
+                                        dan: i === 0 ? 'danas' : dani[new Date(datum + 'T12:00:00').getDay()] + ' ' + datum.slice(8, 10) + '.' + datum.slice(5, 7) + '.',
+                                        max: Math.round(d.temperature_2m_max[i]), min: Math.round(d.temperature_2m_min[i]),
+                                        kisa: (d.precipitation_sum[i] ?? 0).toFixed(1).replace('.', ','),
+                                        prskanje: vjetar < 15 && vjerojatnost < 40,
+                                    };
+                                });
+                            }).catch(() => {});
+                        },
+
                         pokreni(el) {
                             const map = agroKarta.karta(el, { scrollWheelZoom: 'center' });
                             map.setView([45.1, 16.4], 7);   // Hrvatska dok se parcele ne učitaju
@@ -74,6 +140,8 @@
                                     .addTo(sloj);
                             };
                             const prilagodi = () => { if (sloj.getLayers().length) map.fitBounds(sloj.getBounds(), { padding: [30, 30], maxZoom: 16 }); };
+                            let odgoda;
+                            map.on('moveend', () => { clearTimeout(odgoda); odgoda = setTimeout(() => { if (sloj.getLayers().length) this.ucitajPrognozu(map.getCenter()); }, 600); });
 
                             parcele.forEach(crtaj);
                             prilagodi();
