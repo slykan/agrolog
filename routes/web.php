@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EvidencijaIzvozController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SadrzajController;
@@ -59,6 +60,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/gnojidba', fn() => view('gnojidba'))->name('gnojidba');
     Route::get('/prskanje', fn() => view('prskanje'))->name('prskanje');
     Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
+
+    Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/korisnici', [AdminController::class, 'korisnici'])->name('korisnici');
+        Route::get('/korisnici/{user}', [AdminController::class, 'korisnik'])->name('korisnik');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -67,6 +67,12 @@ return [
 
     'timezone' => 'UTC',
 
+    // tko vidi Admin pregled korisnika (zarezom odvojeni e-mailovi)
+    'admin_emails' => array_values(array_filter(array_map(
+        fn ($e) => strtolower(trim($e)),
+        explode(',', env('ADMIN_EMAILS', 'slynetwork@gmail.com')),
+    ))),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

@@ -47,6 +47,12 @@
                             Profil
                         </x-dropdown-link>
 
+                        @can('admin')
+                            <x-dropdown-link :href="route('admin.korisnici')">
+                                Admin
+                            </x-dropdown-link>
+                        @endcan
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -93,6 +99,12 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     Profil
                 </x-responsive-nav-link>
+
+                @can('admin')
+                    <x-responsive-nav-link :href="route('admin.korisnici')" :active="request()->routeIs('admin.*')">
+                        Admin
+                    </x-responsive-nav-link>
+                @endcan
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

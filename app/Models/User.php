@@ -26,8 +26,15 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'last_seen_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /** Admin pregled korisnika (/admin/korisnici) — e-mailovi iz ADMIN_EMAILS. */
+    public function isAdmin(): bool
+    {
+        return in_array(strtolower($this->email), config('app.admin_emails'), true);
     }
 
     public function parcele() { return $this->hasMany(Parcela::class); }
