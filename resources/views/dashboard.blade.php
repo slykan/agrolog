@@ -8,7 +8,31 @@
     <div class="py-10">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
-            {{-- Karta mojih parcela — na vrhu dashboarda --}}
+            {{-- Što je novo: najnovija novost, može se zatvoriti (pamti se u pregledniku po novosti) --}}
+            @php
+                $novost = \App\Http\Controllers\SadrzajController::novosti()[0] ?? null;
+            @endphp
+            @if($novost)
+                <div x-data="{
+                        kljuc: 'agrolog-novost-{{ $novost['slug'] }}',
+                        vidljivo: false,
+                        init() { try { this.vidljivo = localStorage.getItem(this.kljuc) !== 'zatvoreno' } catch (e) { this.vidljivo = true } },
+                        zatvori() { this.vidljivo = false; try { localStorage.setItem(this.kljuc, 'zatvoreno') } catch (e) {} },
+                     }"
+                     x-show="vidljivo" x-cloak
+                     class="relative bg-green-600 text-white rounded-xl p-6 pr-12 shadow-sm">
+                    <button type="button" @click="zatvori()"
+                            class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition"
+                            aria-label="Zatvori">&#10005;</button>
+                    <p class="text-xs font-extrabold uppercase tracking-widest text-green-100 mb-1">Što je novo!</p>
+                    <h3 class="text-lg font-bold mb-1">{{ $novost['title'] }}</h3>
+                    <p class="text-sm text-green-50 leading-relaxed mb-4">{{ $novost['opis'] ?? $novost['excerpt'] }}</p>
+                    <a href="{{ route('novost', $novost['slug']) }}" class="inline-flex items-center gap-1.5 bg-white text-green-700 hover:bg-green-50 font-semibold text-sm px-4 py-2 rounded-lg transition">Više <span aria-hidden="true">→</span></a>
+                    <a href="{{ route('novosti') }}" class="ml-3 text-sm text-green-50 hover:text-white underline underline-offset-2">Sve novosti</a>
+                </div>
+            @endif
+
+            {{-- Karta mojih parcela — odmah ispod novosti --}}
             @php
                 $parcele = auth()->user()->parcele()->with(['kulture' => fn($q) => $q->orderByDesc('godina')->orderBy('naziv')])->orderBy('arkod_broj')->get();
             @endphp
@@ -74,30 +98,6 @@
                     <span class="text-3xl" aria-hidden="true">&#128506;</span>
                     <span class="text-sm text-gray-600"><b class="block text-gray-900">Vaše parcele na karti</b>Dodajte prvu ARKOD parcelu i AgroLog će je pokazati na satelitskoj karti sa službenom površinom.</span>
                 </a>
-            @endif
-
-            {{-- Što je novo: najnovija novost, može se zatvoriti (pamti se u pregledniku po novosti) --}}
-            @php
-                $novost = \App\Http\Controllers\SadrzajController::novosti()[0] ?? null;
-            @endphp
-            @if($novost)
-                <div x-data="{
-                        kljuc: 'agrolog-novost-{{ $novost['slug'] }}',
-                        vidljivo: false,
-                        init() { try { this.vidljivo = localStorage.getItem(this.kljuc) !== 'zatvoreno' } catch (e) { this.vidljivo = true } },
-                        zatvori() { this.vidljivo = false; try { localStorage.setItem(this.kljuc, 'zatvoreno') } catch (e) {} },
-                     }"
-                     x-show="vidljivo" x-cloak
-                     class="relative bg-green-600 text-white rounded-xl p-6 pr-12 shadow-sm">
-                    <button type="button" @click="zatvori()"
-                            class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition"
-                            aria-label="Zatvori">&#10005;</button>
-                    <p class="text-xs font-extrabold uppercase tracking-widest text-green-100 mb-1">Što je novo!</p>
-                    <h3 class="text-lg font-bold mb-1">{{ $novost['title'] }}</h3>
-                    <p class="text-sm text-green-50 leading-relaxed mb-4">{{ $novost['opis'] ?? $novost['excerpt'] }}</p>
-                    <a href="{{ route('novost', $novost['slug']) }}" class="inline-flex items-center gap-1.5 bg-white text-green-700 hover:bg-green-50 font-semibold text-sm px-4 py-2 rounded-lg transition">Više <span aria-hidden="true">→</span></a>
-                    <a href="{{ route('novosti') }}" class="ml-3 text-sm text-green-50 hover:text-white underline underline-offset-2">Sve novosti</a>
-                </div>
             @endif
 
             {{-- Pozdrav --}}
