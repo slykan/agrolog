@@ -121,7 +121,12 @@ class Evidencija2027Test extends TestCase
         $this->get('/novosti')->assertOk()->assertSee('AgroLog je spreman za 2027.');
         $this->get('/novosti/evidencija-szb-format-ministarstva-2027')->assertOk()->assertSee('Excel (Ministarstvo)');
         $this->get('/novosti/ne-postoji')->assertNotFound();
-        $this->get('/')->assertOk()->assertSee(route('novost', 'evidencija-szb-format-ministarstva-2027'));
+        // naslovnica ističe najnoviju novost; sve novosti se otvaraju
+        $prva = \App\Http\Controllers\SadrzajController::novosti()[0]['slug'];
+        $this->get('/')->assertOk()->assertSee(route('novost', $prva));
+        foreach (\App\Http\Controllers\SadrzajController::novosti() as $n) {
+            $this->get('/novosti/' . $n['slug'])->assertOk()->assertSee($n['title']);
+        }
         $this->get('/sitemap.xml')->assertOk()->assertSee('/novosti/evidencija-szb-format-ministarstva-2027');
     }
 
