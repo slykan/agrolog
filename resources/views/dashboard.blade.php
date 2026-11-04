@@ -59,7 +59,7 @@
                 <div class="mb-4" x-show="prognoza.length" x-cloak>
                     <div class="flex items-baseline justify-between mb-2">
                         <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Prognoza za područje na karti</span>
-                        <span class="text-[11px] text-gray-400">Prskanje povoljno: vjetar &lt; 15 km/h, kiša &lt; 40 %</span>
+                        <span class="text-[11px] text-gray-400">Prskanje povoljno: vjetar &lt; 15 km/h, kiša &lt; 40 %, bez mraza, 5–30 °C</span>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
                         <template x-for="d in prognoza" :key="d.datum">
@@ -73,7 +73,7 @@
                                 <div class="text-xs text-gray-500" x-text="'vjetar ' + d.vjetar + ' km/h'"></div>
                                 <div class="mt-1 text-[11px] font-semibold rounded px-1.5 py-0.5 inline-block"
                                      :class="d.prskanje ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'"
-                                     x-text="d.prskanje ? 'za prskanje ✓' : 'nije za prskanje'"></div>
+                                     x-text="d.prskanje ? 'za prskanje ✓' : 'nije za prskanje: ' + d.razlog"></div>
                             </div>
                         </template>
                     </div>
@@ -102,6 +102,17 @@
                             return ['⛈️', 'grmljavina'];
                         },
 
+                        // dan za prskanje: bez jačeg vjetra i kiše, bez mraza, ni prehladno ni prevruće (djelovanje sredstava, isparavanje)
+                        ocjenaPrskanja(vjetar, kisa, min, max) {
+                            const razlozi = [];
+                            if (vjetar >= 15) razlozi.push('vjetar');
+                            if (kisa >= 40) razlozi.push('kiša');
+                            if (min < 0) razlozi.push('mraz');
+                            else if (max < 5) razlozi.push('hladno');
+                            if (max > 30) razlozi.push('vruće');
+                            return { prskanje: razlozi.length === 0, razlog: razlozi.join(', ') };
+                        },
+
                         ucitajPrognozu(srediste) {
                             // ne ponavljaj za pomak manji od ~5 km
                             if (this.zadnjeSrediste && this.zadnjeSrediste.distanceTo(srediste) < 5000) return;
@@ -122,7 +133,7 @@
                                         dan: i === 0 ? 'danas' : dani[new Date(datum + 'T12:00:00').getDay()] + ' ' + datum.slice(8, 10) + '.' + datum.slice(5, 7) + '.',
                                         max: Math.round(d.temperature_2m_max[i]), min: Math.round(d.temperature_2m_min[i]),
                                         kisa: (d.precipitation_sum[i] ?? 0).toFixed(1).replace('.', ','),
-                                        prskanje: vjetar < 15 && vjerojatnost < 40,
+                                        ...this.ocjenaPrskanja(vjetar, vjerojatnost, d.temperature_2m_min[i], d.temperature_2m_max[i]),
                                     };
                                 });
                             }).catch(() => {});
