@@ -40,6 +40,39 @@
     }
 }
 
+/* Mobitel: tablice evidencije kao kartice — svaki redak (zapis, forma za unos, uređivanje) je kartica,
+   a ćelija nosi svoj natpis iz data-label. Na računalu i u ispisu tablica ostaje kakva jest. */
+@media screen and (max-width: 767px) {
+    .mob-kartice, .mob-kartice tbody { display: block; width: 100%; }
+    .mob-kartice thead { display: none; }
+    .mob-kartice tr {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px;
+        border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #fff;
+    }
+    .mob-kartice tr.bg-yellow-50 { background: #fefce8; border-color: #fde68a; }
+    .mob-kartice tr.bg-blue-50 { background: #eff6ff; border-color: #bfdbfe; }
+    .mob-kartice td { display: block; border: 0 !important; padding: 0 !important; min-width: 0 !important; text-align: left !important; white-space: normal; }
+    .mob-kartice td[data-label]::before {
+        content: attr(data-label); display: block; margin-bottom: 2px;
+        font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #9ca3af;
+    }
+    .mob-kartice td.mob-puna { grid-column: 1 / -1; }
+    .mob-kartice td:has(input[type=time]) { grid-column: 1 / -1; }   /* vrijeme od–do: dva polja */
+    .mob-kartice td.mob-skrij { display: none; }
+    .mob-kartice td.mob-akcije { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; padding-top: 6px !important; border-top: 1px solid #f3f4f6 !important; }
+    .mob-kartice .form-input { width: 100%; font-size: 16px; }   /* 16px: iOS ne zumira pri unosu */
+    .mob-kartice .form-input.w-14 { width: auto; flex: 1 1 0; min-width: 0; }   /* N, P, K u jednom redu */
+    .mob-kartice .btn-xs-green, .mob-kartice .btn-xs-gray { padding: 8px 14px; font-size: 14px; }
+    .mob-kartice .btn-icon-green, .mob-kartice .btn-icon-red { width: 36px; height: 36px; }
+    /* kulture na parceli: četiri kratka podatka u jednom redu */
+    .mob-kulture { padding: 8px 8px 0; }
+    .mob-kulture tr { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 8px; }
+    .mob-stupci label { display: none; }
+    .mob-stupci > span { display: none; }
+    .mob-stupci > div { margin-left: 0; width: 100%; }
+    .mob-stupci > div input { width: 100%; font-size: 16px; padding: 8px 10px; }
+}
+
 /* Print stilovi — evidencije na A4 položeno (landscape), cijela širina tablice na jednom listu */
 @page { size: A4 landscape; margin: 8mm; }
 @media print {

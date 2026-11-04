@@ -1,6 +1,6 @@
 <div>
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold text-gray-800">Moje ARCOD parcele i kulture</h2>
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Moje ARKOD parcele i kulture</h2>
         <button wire:click="$set('showParcelaForm', true)" class="btn-primary">+ Nova parcela</button>
     </div>
 
@@ -104,8 +104,8 @@
         @forelse($this->parcele as $parcela)
         <div class="border border-gray-200 rounded-lg overflow-hidden">
             {{-- Parcela header --}}
-            <div class="flex items-center justify-between bg-green-50 px-4 py-2">
-                <div class="flex items-center gap-4">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between bg-green-50 px-4 py-2">
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
                     <span class="flex items-center gap-1.5">
                         <button type="button" wire:click="prikaziKartu({{ $parcela->id }})" wire:loading.attr="disabled"
                                 class="w-7 h-7 rounded-md flex items-center justify-center text-green-700 hover:bg-green-100 transition" title="Prikaži parcelu na karti">
@@ -122,7 +122,7 @@
                     @endif
                     <span class="text-xs text-gray-400">{{ $parcela->kulture->whereNull('zavrsena_at')->count() }} aktivnih kultura</span>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2">
                     <button wire:click="openKulturaForm({{ $parcela->id }})" class="btn-xs-blue">+ Kultura</button>
                     <button wire:click="editParcela({{ $parcela->id }})" class="btn-xs-gray">Uredi</button>
                     <button wire:click="deleteParcela({{ $parcela->id }})" wire:confirm="Obrisati parcelu i sve kulture?" class="btn-xs-red">&#10005;</button>
@@ -154,7 +154,7 @@
 
             {{-- Kulture na parceli --}}
             @if($parcela->kulture->isNotEmpty())
-            <table class="w-full text-sm">
+            <table class="w-full text-sm mob-kartice mob-kulture">
                 <thead>
                     <tr class="bg-gray-50 text-xs text-gray-500 uppercase">
                         <th class="px-4 py-1 text-left">Kultura</th>
@@ -169,7 +169,7 @@
                     @foreach($parcela->kulture as $kultura)
                     @if($editKulturaId === $kultura->id)
                     <tr class="border-t border-blue-200 bg-blue-50">
-                        <td colspan="6" class="px-4 py-3">
+                        <td colspan="6" class="mob-puna px-4 py-3">
                             <div class="flex flex-wrap gap-3 items-end">
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Kultura</label>
@@ -206,7 +206,7 @@
                     @else
                     @php($imaZapise = ($kultura->gnojidbe_count + $kultura->prskanja_count) > 0)
                     <tr class="border-t border-gray-100 hover:bg-gray-50 {{ $kultura->zavrsena_at ? 'text-gray-400 bg-gray-50/60' : '' }}">
-                        <td class="px-4 py-2 font-medium uppercase">
+                        <td class="mob-puna px-4 py-2 font-medium uppercase">
                             {{ $kultura->naziv }}
                             @if($kultura->eppo_kod)
                                 <span class="ml-1 text-[10px] font-normal normal-case text-gray-400" title="{{ $kultura->eppo_naziv }}">EPPO {{ $kultura->eppo_kod }}</span>
@@ -217,11 +217,11 @@
                                 <span class="ml-2 normal-case text-xs font-normal bg-gray-200 text-gray-600 rounded px-2 py-0.5">završena {{ $kultura->zavrsena_at->format('d.m.Y.') }}</span>
                             @endif
                         </td>
-                        <td class="px-4 py-2 text-right">{{ number_format($kultura->posadjena_povrsina_ha, 2) }}</td>
-                        <td class="px-4 py-2 text-center">{{ $kultura->godina }}</td>
-                        <td class="px-4 py-2 text-center text-gray-500">{{ $kultura->gnojidbe_count }}</td>
-                        <td class="px-4 py-2 text-center text-gray-500">{{ $kultura->prskanja_count }}</td>
-                        <td class="px-4 py-2 text-center whitespace-nowrap">
+                        <td data-label="Hektara" class="px-4 py-2 text-right">{{ number_format($kultura->posadjena_povrsina_ha, 2) }}</td>
+                        <td data-label="Godina" class="px-4 py-2 text-center">{{ $kultura->godina }}</td>
+                        <td data-label="Gnojidbi" class="px-4 py-2 text-center text-gray-500">{{ $kultura->gnojidbe_count }}</td>
+                        <td data-label="Tretmana" class="px-4 py-2 text-center text-gray-500">{{ $kultura->prskanja_count }}</td>
+                        <td class="mob-puna mob-akcije px-4 py-2 text-center whitespace-nowrap">
                             @if($kultura->zavrsena_at)
                                 <button wire:click="vratiKulturu({{ $kultura->id }})" class="btn-xs-gray" title="Ponovno aktiviraj (ako je označena greškom)">Vrati</button>
                             @else

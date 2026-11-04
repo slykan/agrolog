@@ -22,14 +22,14 @@
 
     {{-- Akcije (samo ekran) --}}
     <div class="flex flex-wrap items-center justify-end gap-2 mb-4 no-print">
-        <div class="flex gap-2 no-print">
+        <div class="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto no-print">
             <button wire:click="addRow" class="btn-primary">+ Dodaj</button>
             <button onclick="window.print()" class="btn-secondary">&#128424; Print / PDF</button>
         </div>
     </div>
 
     {{-- Odabir vidljivih stupaca + search --}}
-    <div class="no-print flex flex-wrap gap-3 mb-3 text-sm items-center bg-gray-50 p-2 rounded">
+    <div class="no-print mob-stupci flex flex-wrap gap-3 mb-3 text-sm items-center bg-gray-50 p-2 rounded">
         <span class="font-semibold text-gray-600 mr-1">Stupci:</span>
         @foreach(['arkod' => 'ARKOD', 'povrsina' => 'Površina', 'kultura' => 'Kultura', 'datum' => 'Datum', 'gnojivo' => 'Tip gnojiva', 'kolicina' => 'Kol. kg/ha', 'hraniva' => 'kg N/ha'] as $key => $label)
             <label class="flex items-center gap-1 cursor-pointer select-none">
@@ -81,7 +81,7 @@
     @endif
 
     <div class="overflow-x-auto">
-        <table class="w-full border-collapse text-sm agrolog-table">
+        <table class="w-full border-collapse text-sm agrolog-table mob-kartice">
             <thead>
                 <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wide">
                     <th class="border border-gray-300 px-2 py-2 text-center w-8">Rb.</th>
@@ -125,9 +125,9 @@
                 {{-- Forma za novi red --}}
                 @if($showForm)
                 <tr class="bg-yellow-50 no-print">
-                    <td class="p-1 border border-gray-200 text-center text-gray-400">*</td>
+                    <td class="mob-skrij p-1 border border-gray-200 text-center text-gray-400">*</td>
                     @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
-                    <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
+                    <td data-label="Parcela i kultura" class="mob-puna p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                         <div class="space-y-1">
                             <button type="button" wire:click="openKulturaPicker" class="form-input w-full bg-white flex items-center justify-between gap-2 text-left">
                                 <span>
@@ -170,16 +170,16 @@
                     </td>
                     @endif
                     @if(in_array('datum', $visibleColumns))
-                    <td class="p-1 border border-gray-200">
+                    <td data-label="Datum" class="p-1 border border-gray-200">
                         <input type="date" wire:model="form.datum" class="form-input w-full">
                         @error('form.datum')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </td>
                     @endif
                     @if(in_array('gnojivo', $visibleColumns))
-                    <td class="p-1 border border-gray-200">
+                    <td data-label="Gnojivo" class="mob-puna p-1 border border-gray-200">
                         <input type="text" wire:model.live.blur="form.tip_gnojiva" placeholder="npr. KAN 27% N" class="form-input w-full" list="tipovi-gnojiva" autocomplete="off">
-                        <div class="mt-1 flex items-center gap-1 text-xs text-gray-500">
-                            <span title="udio dušika, fosfora (P₂O₅) i kalija (K₂O) u %">N-P-K %</span>
+                        <div class="mt-1 flex flex-wrap items-center gap-1 text-xs text-gray-500">
+                            <span class="whitespace-nowrap" title="udio dušika, fosfora (P₂O₅) i kalija (K₂O) u %">N-P-K %</span>
                             <input type="number" step="0.1" wire:key="n-form-{{ $form['n_posto'] ?? '' }}" wire:model.live.blur="form.n_posto" placeholder="N" class="form-input w-14 px-1">
                             <input type="number" step="0.1" wire:key="p-form-{{ $form['p_posto'] ?? '' }}" wire:model="form.p_posto" placeholder="P" class="form-input w-14 px-1">
                             <input type="number" step="0.1" wire:key="k-form-{{ $form['k_posto'] ?? '' }}" wire:model="form.k_posto" placeholder="K" class="form-input w-14 px-1">
@@ -192,17 +192,17 @@
                     </td>
                     @endif
                     @if(in_array('kolicina', $visibleColumns))
-                    <td class="p-1 border border-gray-200">
+                    <td data-label="Količina kg/ha" class="p-1 border border-gray-200">
                         <input type="number" wire:model.live.blur="form.kolicina_kg_ha" step="0.01" placeholder="250" class="form-input w-full">
                         @error('form.kolicina_kg_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </td>
                     @endif
                     @if(in_array('hraniva', $visibleColumns))
-                    <td class="p-1 border border-gray-200 text-right text-gray-600 whitespace-nowrap">
+                    <td data-label="N-P-K / kg N/ha" class="p-1 border border-gray-200 text-right text-gray-600 whitespace-nowrap">
                         {{ ($x = \App\Support\Gnojiva::kgHraniva($form['kolicina_kg_ha'] ?? null, $form['n_posto'] ?? null)) !== null ? number_format($x, 1, ',', '.') . ' kg N' : '—' }}
                     </td>
                     @endif
-                    <td class="p-1 border border-gray-200 whitespace-nowrap">
+                    <td class="mob-puna mob-akcije p-1 border border-gray-200 whitespace-nowrap">
                         <button type="button" wire:click="saveNew" wire:loading.attr="disabled" class="btn-xs-green">Spremi</button>
                         @if($formKulturaSearch)
                         <button type="button" wire:click="saveMultiple" wire:loading.attr="disabled" class="btn-xs-green" title="Dodaj sve filtrirane kulture kao zasebne zapise">
@@ -219,9 +219,9 @@
                 <tr wire:key="gnojidba-{{ $row->id }}" class="border-b border-gray-200 hover:bg-gray-50 @if($editingId === $row->id) bg-blue-50 @endif">
                     @if($editingId === $row->id)
                         {{-- Edit mode --}}
-                        <td class="px-2 py-2 border border-gray-200 text-center text-gray-400">*</td>
+                        <td class="mob-skrij px-2 py-2 border border-gray-200 text-center text-gray-400">*</td>
                         @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
-                        <td class="p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
+                        <td data-label="Parcela i kultura" class="mob-puna p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                             <select wire:model="editForm.kultura_id" class="form-input w-full">
                                 @foreach($this->kulture as $k)
                                     <option value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} {{ $k->godina }} ({{ $k->posadjena_povrsina_ha }} ha){{ $k->zavrsena_at ? ' — završena' : '' }}</option>
@@ -230,15 +230,15 @@
                         </td>
                         @endif
                         @if(in_array('datum', $visibleColumns))
-                        <td class="p-1 border border-gray-200">
+                        <td data-label="Datum" class="p-1 border border-gray-200">
                             <input type="date" wire:model="editForm.datum" class="form-input w-full">
                         </td>
                         @endif
                         @if(in_array('gnojivo', $visibleColumns))
-                        <td class="p-1 border border-gray-200">
+                        <td data-label="Gnojivo" class="mob-puna p-1 border border-gray-200">
                             <input type="text" wire:model.live.blur="editForm.tip_gnojiva" class="form-input w-full" list="tipovi-gnojiva" autocomplete="off">
-                            <div class="mt-1 flex items-center gap-1 text-xs text-gray-500">
-                                <span title="udio dušika, fosfora (P₂O₅) i kalija (K₂O) u %">N-P-K %</span>
+                            <div class="mt-1 flex flex-wrap items-center gap-1 text-xs text-gray-500">
+                                <span class="whitespace-nowrap" title="udio dušika, fosfora (P₂O₅) i kalija (K₂O) u %">N-P-K %</span>
                                 <input type="number" step="0.1" wire:key="n-editForm-{{ $editForm['n_posto'] ?? '' }}" wire:model.live.blur="editForm.n_posto" placeholder="N" class="form-input w-14 px-1">
                                 <input type="number" step="0.1" wire:key="p-editForm-{{ $editForm['p_posto'] ?? '' }}" wire:model="editForm.p_posto" placeholder="P" class="form-input w-14 px-1">
                                 <input type="number" step="0.1" wire:key="k-editForm-{{ $editForm['k_posto'] ?? '' }}" wire:model="editForm.k_posto" placeholder="K" class="form-input w-14 px-1">
@@ -249,35 +249,35 @@
                         </td>
                         @endif
                         @if(in_array('kolicina', $visibleColumns))
-                        <td class="p-1 border border-gray-200">
+                        <td data-label="Količina kg/ha" class="p-1 border border-gray-200">
                             <input type="number" wire:model.live.blur="editForm.kolicina_kg_ha" step="0.01" class="form-input w-full">
                         </td>
                         @endif
                         @if(in_array('hraniva', $visibleColumns))
-                        <td class="p-1 border border-gray-200 text-right text-gray-600 whitespace-nowrap">
+                        <td data-label="N-P-K / kg N/ha" class="p-1 border border-gray-200 text-right text-gray-600 whitespace-nowrap">
                             {{ ($x = \App\Support\Gnojiva::kgHraniva($editForm['kolicina_kg_ha'] ?? null, $editForm['n_posto'] ?? null)) !== null ? number_format($x, 1, ',', '.') . ' kg N' : '—' }}
                         </td>
                         @endif
-                        <td class="p-1 border border-gray-200 no-print whitespace-nowrap">
+                        <td class="mob-puna mob-akcije p-1 border border-gray-200 no-print whitespace-nowrap">
                             <button wire:click="saveEdit" class="btn-xs-green">Spremi</button>
                             <button wire:click="cancelEdit" class="btn-xs-gray">Odustani</button>
                         </td>
                     @else
                         {{-- View mode --}}
-                        <td class="px-2 py-2 border border-gray-200 text-center">{{ $loop->iteration }}</td>
-                        @if(in_array('arkod', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
-                        @if(in_array('povrsina', $visibleColumns))<td class="px-3 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
-                        @if(in_array('kultura', $visibleColumns))<td class="px-3 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
-                        @if(in_array('datum', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->datum->format('d.m.Y') }}</td>@endif
-                        @if(in_array('gnojivo', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->tip_gnojiva }}</td>@endif
-                        @if(in_array('kolicina', $visibleColumns))<td class="px-3 py-2 border border-gray-200 text-right font-medium">{{ number_format($row->kolicina_kg_ha, 2) }}</td>@endif
+                        <td class="mob-skrij px-2 py-2 border border-gray-200 text-center">{{ $loop->iteration }}</td>
+                        @if(in_array('arkod', $visibleColumns))<td data-label="ARKOD" class="px-3 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
+                        @if(in_array('povrsina', $visibleColumns))<td data-label="Površina (ha)" class="px-3 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
+                        @if(in_array('kultura', $visibleColumns))<td data-label="Kultura" class="px-3 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
+                        @if(in_array('datum', $visibleColumns))<td data-label="Datum" class="px-3 py-2 border border-gray-200">{{ $row->datum->format('d.m.Y') }}</td>@endif
+                        @if(in_array('gnojivo', $visibleColumns))<td data-label="Gnojivo" class="mob-puna px-3 py-2 border border-gray-200">{{ $row->tip_gnojiva }}</td>@endif
+                        @if(in_array('kolicina', $visibleColumns))<td data-label="Količina kg/ha" class="px-3 py-2 border border-gray-200 text-right font-medium">{{ number_format($row->kolicina_kg_ha, 2) }}</td>@endif
                         @if(in_array('hraniva', $visibleColumns))
-                        <td class="px-3 py-2 border border-gray-200 text-right whitespace-nowrap">
+                        <td data-label="N-P-K / kg N/ha" class="px-3 py-2 border border-gray-200 text-right whitespace-nowrap">
                             {{ $row->kg_n_ha !== null ? number_format($row->kg_n_ha, 1, ',', '.') : '—' }}
                             @if($row->n_posto !== null)<div class="text-xs text-gray-500">{{ \App\Support\Gnojiva::postotak($row->n_posto) }}-{{ \App\Support\Gnojiva::postotak($row->p_posto) }}-{{ \App\Support\Gnojiva::postotak($row->k_posto) }}{{ $row->organsko ? ' · stajski' : '' }}</div>@endif
                         </td>
                         @endif
-                        <td class="px-2 py-2 border border-gray-200 no-print whitespace-nowrap text-center">
+                        <td class="mob-puna mob-akcije px-2 py-2 border border-gray-200 no-print whitespace-nowrap text-center">
                             <button wire:click="startEdit({{ $row->id }})" wire:confirm="Urediti ovaj zapis?" class="btn-icon-green" title="Uredi">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l6.586-6.586a2 2 0 112.828 2.828L11.828 13.828A2 2 0 0110 14H8v-2a2 2 0 01.586-1.414z"/>
@@ -298,7 +298,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" class="text-center py-10 text-gray-400 italic">
+                    <td colspan="8" class="mob-puna text-center py-10 text-gray-400 italic">
                         Nema unesenih gnojidbi. Kliknite <strong>+ Dodaj</strong> za unos.
                     </td>
                 </tr>
