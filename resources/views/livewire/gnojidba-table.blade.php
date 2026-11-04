@@ -31,7 +31,7 @@
     {{-- Odabir vidljivih stupaca + search --}}
     <div class="no-print flex flex-wrap gap-3 mb-3 text-sm items-center bg-gray-50 p-2 rounded">
         <span class="font-semibold text-gray-600 mr-1">Stupci:</span>
-        @foreach(['arkod' => 'ARKOD', 'povrsina' => 'Površina', 'kultura' => 'Kultura', 'datum' => 'Datum', 'gnojivo' => 'Tip gnojiva', 'kolicina' => 'Kol. kg/ha'] as $key => $label)
+        @foreach(['arkod' => 'ARKOD', 'povrsina' => 'Površina', 'kultura' => 'Kultura', 'datum' => 'Datum', 'gnojivo' => 'Tip gnojiva', 'kolicina' => 'Kol. kg/ha', 'hraniva' => 'kg N/ha'] as $key => $label)
             <label class="flex items-center gap-1 cursor-pointer select-none">
                 <input type="checkbox" wire:click="toggleColumn('{{ $key }}')" @checked(in_array($key, $visibleColumns)) class="rounded">
                 {{ $label }}
@@ -41,6 +41,44 @@
             <input type="text" wire:model.live="search" placeholder="Pretraži..." class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-400">
         </div>
     </div>
+
+    {{-- prijedlozi: gnojiva koja je korisnik već upisivao + uobičajena gnojiva sa sastavom --}}
+    <datalist id="tipovi-gnojiva">
+        @foreach($this->tipoviGnojiva as $tip)
+            <option value="{{ $tip }}">
+        @endforeach
+    </datalist>
+
+    {{-- Dušik u godini: po kulturi i prosjek gospodarstva iz stajskog gnoja (granica 170 kg N/ha) --}}
+    @php
+        $bilanca = $this->bilancaDusika;
+    @endphp
+    @if($bilanca['redovi']->isNotEmpty())
+        <div class="no-print mb-4 rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+                <span class="font-semibold text-gray-700">Dušik {{ $bilanca['godina'] }}. (kg N/ha)</span>
+                @if($bilanca['prosjek'] !== null)
+                    <span class="{{ $bilanca['prosjek'] > $bilanca['granica'] ? 'text-red-700 font-semibold' : 'text-gray-500' }}">
+                        Stajski gnoj, prosjek gospodarstva: {{ number_format($bilanca['prosjek'], 1, ',', '.') }} / {{ $bilanca['granica'] }} kg N/ha
+                    </span>
+                @endif
+            </div>
+            <div class="flex flex-wrap gap-2">
+                @foreach($bilanca['redovi'] as $r)
+                    @php
+                        $preko = (float) $r->n_stajski > $bilanca['granica'];
+                    @endphp
+                    <span class="rounded-md border px-2 py-1 {{ $preko ? 'border-red-300 bg-red-50 text-red-800' : 'border-gray-200 bg-white text-gray-700' }}"
+                          title="{{ $preko ? 'Iz stajskog gnoja preko ' . $bilanca['granica'] . ' kg N/ha' : '' }}">
+                        <b>{{ $r->arkod_broj }}</b> {{ $r->naziv }}:
+                        {{ number_format((float) $r->n_ukupno, 0, ',', '.') }}
+                        @if((float) $r->n_stajski > 0)<span class="text-xs">(stajski {{ number_format((float) $r->n_stajski, 0, ',', '.') }})</span>@endif
+                    </span>
+                @endforeach
+            </div>
+            <p class="mt-2 text-xs text-gray-400">Izračun iz količine i udjela dušika u gnojivu. Za stajski gnoj i gnojovku koriste se prosječni udjeli ako ne upišete svoje iz analize.</p>
+        </div>
+    @endif
 
     <div class="overflow-x-auto">
         <table class="w-full border-collapse text-sm agrolog-table">
@@ -76,6 +114,9 @@
                     @endif
                     @if(in_array('kolicina', $visibleColumns))
                     <th class="border border-gray-300 px-3 py-2 text-right">Količina kg/ha</th>
+                    @endif
+                    @if(in_array('hraniva', $visibleColumns))
+                    <th class="border border-gray-300 px-3 py-2 text-right" title="Udjeli N-P₂O₅-K₂O (%) i kg dušika po hektaru">N-P-K % / kg N/ha</th>
                     @endif
                     <th class="border border-gray-300 px-3 py-2 no-print text-center">Akcije</th>
                 </tr>
@@ -136,19 +177,28 @@
                     @endif
                     @if(in_array('gnojivo', $visibleColumns))
                     <td class="p-1 border border-gray-200">
-                        <input type="text" wire:model="form.tip_gnojiva" placeholder="npr. KAN 27%N" class="form-input w-full" list="tipovi-gnojiva">
-                        <datalist id="tipovi-gnojiva">
-                            @foreach($this->tipoviGnojiva as $tip)
-                                <option value="{{ $tip }}">
-                            @endforeach
-                        </datalist>
+                        <input type="text" wire:model.live.blur="form.tip_gnojiva" placeholder="npr. KAN 27% N" class="form-input w-full" list="tipovi-gnojiva" autocomplete="off">
+                        <div class="mt-1 flex items-center gap-1 text-xs text-gray-500">
+                            <span title="udio dušika, fosfora (P₂O₅) i kalija (K₂O) u %">N-P-K %</span>
+                            <input type="number" step="0.1" wire:key="n-form-{{ $form['n_posto'] ?? '' }}" wire:model.live.blur="form.n_posto" placeholder="N" class="form-input w-14 px-1">
+                            <input type="number" step="0.1" wire:key="p-form-{{ $form['p_posto'] ?? '' }}" wire:model="form.p_posto" placeholder="P" class="form-input w-14 px-1">
+                            <input type="number" step="0.1" wire:key="k-form-{{ $form['k_posto'] ?? '' }}" wire:model="form.k_posto" placeholder="K" class="form-input w-14 px-1">
+                            <label class="ml-1 flex items-center gap-1 whitespace-nowrap" title="Stajski gnoj, gnojovka, gnojnica — broji se u granicu 170 kg N/ha">
+                                <input type="checkbox" wire:key="o-form-{{ (int) ($form['organsko'] ?? 0) }}" wire:model="form.organsko" class="rounded"> stajski
+                            </label>
+                        </div>
                         @error('form.tip_gnojiva')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </td>
                     @endif
                     @if(in_array('kolicina', $visibleColumns))
                     <td class="p-1 border border-gray-200">
-                        <input type="number" wire:model="form.kolicina_kg_ha" step="0.01" placeholder="250" class="form-input w-full">
+                        <input type="number" wire:model.live.blur="form.kolicina_kg_ha" step="0.01" placeholder="250" class="form-input w-full">
                         @error('form.kolicina_kg_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </td>
+                    @endif
+                    @if(in_array('hraniva', $visibleColumns))
+                    <td class="p-1 border border-gray-200 text-right text-gray-600 whitespace-nowrap">
+                        {{ ($x = \App\Support\Gnojiva::kgHraniva($form['kolicina_kg_ha'] ?? null, $form['n_posto'] ?? null)) !== null ? number_format($x, 1, ',', '.') . ' kg N' : '—' }}
                     </td>
                     @endif
                     <td class="p-1 border border-gray-200 whitespace-nowrap">
@@ -185,17 +235,26 @@
                         @endif
                         @if(in_array('gnojivo', $visibleColumns))
                         <td class="p-1 border border-gray-200">
-                            <input type="text" wire:model="editForm.tip_gnojiva" class="form-input w-full" list="tipovi-gnojiva">
-                            <datalist id="tipovi-gnojiva">
-                                @foreach($this->tipoviGnojiva as $tip)
-                                    <option value="{{ $tip }}">
-                                @endforeach
-                            </datalist>
+                            <input type="text" wire:model.live.blur="editForm.tip_gnojiva" class="form-input w-full" list="tipovi-gnojiva" autocomplete="off">
+                            <div class="mt-1 flex items-center gap-1 text-xs text-gray-500">
+                                <span title="udio dušika, fosfora (P₂O₅) i kalija (K₂O) u %">N-P-K %</span>
+                                <input type="number" step="0.1" wire:key="n-editForm-{{ $editForm['n_posto'] ?? '' }}" wire:model.live.blur="editForm.n_posto" placeholder="N" class="form-input w-14 px-1">
+                                <input type="number" step="0.1" wire:key="p-editForm-{{ $editForm['p_posto'] ?? '' }}" wire:model="editForm.p_posto" placeholder="P" class="form-input w-14 px-1">
+                                <input type="number" step="0.1" wire:key="k-editForm-{{ $editForm['k_posto'] ?? '' }}" wire:model="editForm.k_posto" placeholder="K" class="form-input w-14 px-1">
+                                <label class="ml-1 flex items-center gap-1 whitespace-nowrap" title="Stajski gnoj, gnojovka, gnojnica — broji se u granicu 170 kg N/ha">
+                                    <input type="checkbox" wire:key="o-editForm-{{ (int) ($editForm['organsko'] ?? 0) }}" wire:model="editForm.organsko" class="rounded"> stajski
+                                </label>
+                            </div>
                         </td>
                         @endif
                         @if(in_array('kolicina', $visibleColumns))
                         <td class="p-1 border border-gray-200">
-                            <input type="number" wire:model="editForm.kolicina_kg_ha" step="0.01" class="form-input w-full">
+                            <input type="number" wire:model.live.blur="editForm.kolicina_kg_ha" step="0.01" class="form-input w-full">
+                        </td>
+                        @endif
+                        @if(in_array('hraniva', $visibleColumns))
+                        <td class="p-1 border border-gray-200 text-right text-gray-600 whitespace-nowrap">
+                            {{ ($x = \App\Support\Gnojiva::kgHraniva($editForm['kolicina_kg_ha'] ?? null, $editForm['n_posto'] ?? null)) !== null ? number_format($x, 1, ',', '.') . ' kg N' : '—' }}
                         </td>
                         @endif
                         <td class="p-1 border border-gray-200 no-print whitespace-nowrap">
@@ -211,6 +270,12 @@
                         @if(in_array('datum', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->datum->format('d.m.Y') }}</td>@endif
                         @if(in_array('gnojivo', $visibleColumns))<td class="px-3 py-2 border border-gray-200">{{ $row->tip_gnojiva }}</td>@endif
                         @if(in_array('kolicina', $visibleColumns))<td class="px-3 py-2 border border-gray-200 text-right font-medium">{{ number_format($row->kolicina_kg_ha, 2) }}</td>@endif
+                        @if(in_array('hraniva', $visibleColumns))
+                        <td class="px-3 py-2 border border-gray-200 text-right whitespace-nowrap">
+                            {{ $row->kg_n_ha !== null ? number_format($row->kg_n_ha, 1, ',', '.') : '—' }}
+                            @if($row->n_posto !== null)<div class="text-xs text-gray-500">{{ \App\Support\Gnojiva::postotak($row->n_posto) }}-{{ \App\Support\Gnojiva::postotak($row->p_posto) }}-{{ \App\Support\Gnojiva::postotak($row->k_posto) }}{{ $row->organsko ? ' · stajski' : '' }}</div>@endif
+                        </td>
+                        @endif
                         <td class="px-2 py-2 border border-gray-200 no-print whitespace-nowrap text-center">
                             <button wire:click="startEdit({{ $row->id }})" wire:confirm="Urediti ovaj zapis?" class="btn-icon-green" title="Uredi">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -232,7 +297,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center py-10 text-gray-400 italic">
+                    <td colspan="8" class="text-center py-10 text-gray-400 italic">
                         Nema unesenih gnojidbi. Kliknite <strong>+ Dodaj</strong> za unos.
                     </td>
                 </tr>

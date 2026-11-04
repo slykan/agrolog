@@ -40,16 +40,20 @@
     }
 }
 
-/* Print stilovi */
+/* Print stilovi — evidencije na A4 položeno (landscape), cijela širina tablice na jednom listu */
+@page { size: A4 landscape; margin: 8mm; }
 @media print {
     .no-print { display: none !important; }
     nav, header, footer { display: none !important; }
-    body { font-size: 11px; }
-    .agrolog-table { width: 100%; border-collapse: collapse; }
-    .agrolog-table th, .agrolog-table td { border: 1px solid #000 !important; padding: 3px 6px !important; }
+    body { font-size: 9px; background: #fff !important; }
+    .overflow-x-auto { overflow: visible !important; }
+    .agrolog-table, .form-header-table { width: 100% !important; border-collapse: collapse; table-layout: auto; font-size: 9px !important; }
+    .agrolog-table th, .agrolog-table td { border: 1px solid #000 !important; padding: 2px 4px !important; min-width: 0 !important; word-break: break-word; }
+    .agrolog-table th { font-size: 8px !important; letter-spacing: 0 !important; }
+    .agrolog-table tr { break-inside: avoid; }
     .agrolog-table thead { display: table-header-group; background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .shadow, .rounded-lg { box-shadow: none !important; border-radius: 0 !important; }
     .py-6 { padding: 0 !important; }
     .max-w-7xl { max-width: 100% !important; }
-    .sm\:px-6, .lg\:px-8 { padding: 0 !important; }
+    .sm\:px-6, .lg\:px-8, .sm\:px-4, .lg\:px-6, .px-2, .p-6 { padding: 0 !important; }
 }

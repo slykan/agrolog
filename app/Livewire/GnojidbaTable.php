@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Gnojidba;
 use App\Models\Kultura;
+use App\Support\Gnojiva;
 
 class GnojidbaTable extends Component
 {
@@ -17,7 +18,7 @@ class GnojidbaTable extends Component
     ];
     public array $editForm = [];
     public ?int $editingId = null;
-    public array $visibleColumns = ['arkod', 'povrsina', 'kultura', 'datum', 'gnojivo', 'kolicina'];
+    public array $visibleColumns = ['arkod', 'povrsina', 'kultura', 'datum', 'gnojivo', 'kolicina', 'hraniva'];
     public string $search = '';
     public array $filters = ['arkod' => '', 'kultura' => '', 'datum' => '', 'gnojivo' => ''];
     public string $formKulturaSearch = '';
@@ -35,7 +36,77 @@ class GnojidbaTable extends Component
 
     public function mount(): void
     {
-        $this->form['datum'] = date('Y-m-d');
+        $this->form = $this->praznaForma();
+    }
+
+    private function praznaForma(): array
+    {
+        return [
+            'kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => '',
+            'n_posto' => '', 'p_posto' => '', 'k_posto' => '', 'organsko' => false,
+        ];
+    }
+
+    /** Pravila za sastav gnojiva (%), zajednička za novi i uređeni zapis. */
+    private function hranivaPravila(string $prefix): array
+    {
+        return [
+            "$prefix.n_posto"  => 'nullable|numeric|min:0|max:100',
+            "$prefix.p_posto"  => 'nullable|numeric|min:0|max:100',
+            "$prefix.k_posto"  => 'nullable|numeric|min:0|max:100',
+            "$prefix.organsko" => 'boolean',
+        ];
+    }
+
+    /** Odabrano gnojivo s popisa (ili prepoznata formulacija) upiše svoj sastav. */
+    private function popuniSastav(string $forma, ?string $tip): void
+    {
+        if ($g = Gnojiva::prepoznaj($tip)) {
+            $this->{$forma}['n_posto'] = $g['n'];
+            $this->{$forma}['p_posto'] = $g['p'];
+            $this->{$forma}['k_posto'] = $g['k'];
+            $this->{$forma}['organsko'] = $g['organsko'];
+        }
+    }
+
+    public function updatedFormTipGnojiva($tip): void
+    {
+        $this->popuniSastav('form', $tip);
+    }
+
+    public function updatedEditFormTipGnojiva($tip): void
+    {
+        $this->popuniSastav('editForm', $tip);
+    }
+
+    /**
+     * Dušik u godini (prema filtru datuma ili tekućoj): po kulturi kg N/ha ukupno i iz stajskog gnoja,
+     * te prosjek gospodarstva za stajski gnoj (granica 170 kg N/ha, Akcijski program NN 95/25).
+     */
+    public function getBilancaDusikaProperty(): array
+    {
+        $godina = $this->filters['datum'] ? (int) substr($this->filters['datum'], 0, 4) : (int) date('Y');
+
+        $redovi = Gnojidba::where('gnojidbe.user_id', auth()->id())
+            ->whereYear('gnojidbe.datum', $godina)
+            ->join('kulture', 'kulture.id', '=', 'gnojidbe.kultura_id')
+            ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
+            ->selectRaw('kulture.id, kulture.naziv, kulture.posadjena_povrsina_ha, parcele.arkod_broj,
+                SUM(gnojidbe.kg_n_ha) as n_ukupno,
+                SUM(CASE WHEN gnojidbe.organsko THEN gnojidbe.kg_n_ha ELSE 0 END) as n_stajski')
+            ->groupBy('kulture.id', 'kulture.naziv', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj')
+            ->orderBy('parcele.arkod_broj')
+            ->get();
+
+        $ha = (float) Kultura::where('user_id', auth()->id())->where('godina', $godina)->sum('posadjena_povrsina_ha');
+        $kgStajski = $redovi->sum(fn ($r) => (float) $r->n_stajski * (float) $r->posadjena_povrsina_ha);
+
+        return [
+            'godina'   => $godina,
+            'redovi'   => $redovi,
+            'prosjek'  => $ha > 0 ? round($kgStajski / $ha, 1) : null,
+            'granica'  => Gnojiva::GRANICA_STAJSKI_N,
+        ];
     }
 
     public function getKultureProperty()
@@ -119,7 +190,10 @@ class GnojidbaTable extends Component
             ->distinct()
             ->orderBy('tip_gnojiva')
             ->pluck('tip_gnojiva')
-            ->filter();
+            ->filter()
+            ->merge(array_keys(Gnojiva::POPIS))
+            ->unique(fn ($t) => mb_strtolower(trim($t)))
+            ->values();
     }
 
     public function addRow(): void
@@ -127,12 +201,7 @@ class GnojidbaTable extends Component
         $this->showForm = true;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = [
-            'kultura_id'     => '',
-            'datum'          => date('Y-m-d'),
-            'tip_gnojiva'    => '',
-            'kolicina_kg_ha' => '',
-        ];
+        $this->form = $this->praznaForma();
     }
 
     public function cancelAdd(): void
@@ -140,7 +209,7 @@ class GnojidbaTable extends Component
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
+        $this->form = $this->praznaForma();
         $this->resetErrorBag();
     }
 
@@ -165,14 +234,14 @@ class GnojidbaTable extends Component
             'form.datum'          => 'required|date',
             'form.tip_gnojiva'    => 'required|string|max:100',
             'form.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999.99',
-        ]);
+        ] + $this->hranivaPravila('form'));
 
-        Gnojidba::create(array_merge($this->form, ['user_id' => auth()->id()]));
+        Gnojidba::create(Gnojidba::sHranivima(array_merge($this->form, ['user_id' => auth()->id()])));
 
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
+        $this->form = $this->praznaForma();
     }
 
     public function saveMultiple(): void
@@ -181,7 +250,7 @@ class GnojidbaTable extends Component
             'form.datum'          => 'required|date',
             'form.tip_gnojiva'    => 'nullable|string|max:100',
             'form.kolicina_kg_ha' => 'nullable|numeric|min:0.01|max:999999.99',
-        ]);
+        ] + $this->hranivaPravila('form'));
 
         $kulture = $this->filteredKulture;
 
@@ -194,8 +263,13 @@ class GnojidbaTable extends Component
             'datum'          => $this->form['datum'],
             'tip_gnojiva'    => $this->form['tip_gnojiva'] !== '' ? $this->form['tip_gnojiva'] : null,
             'kolicina_kg_ha' => $this->form['kolicina_kg_ha'] !== '' ? $this->form['kolicina_kg_ha'] : null,
+            'n_posto'        => $this->form['n_posto'],
+            'p_posto'        => $this->form['p_posto'],
+            'k_posto'        => $this->form['k_posto'],
+            'organsko'       => $this->form['organsko'],
             'user_id'        => auth()->id(),
         ];
+        $data = Gnojidba::sHranivima($data);
 
         foreach ($kulture as $kultura) {
             Gnojidba::create(array_merge($data, ['kultura_id' => $kultura->id]));
@@ -204,7 +278,7 @@ class GnojidbaTable extends Component
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = ['kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => ''];
+        $this->form = $this->praznaForma();
     }
 
     public function startEdit(int $id): void
@@ -216,6 +290,10 @@ class GnojidbaTable extends Component
             'datum'          => $row->datum->format('Y-m-d'),
             'tip_gnojiva'    => $row->tip_gnojiva,
             'kolicina_kg_ha' => $row->kolicina_kg_ha,
+            'n_posto'        => $row->n_posto ?? '',
+            'p_posto'        => $row->p_posto ?? '',
+            'k_posto'        => $row->k_posto ?? '',
+            'organsko'       => (bool) $row->organsko,
         ];
     }
 
@@ -226,11 +304,11 @@ class GnojidbaTable extends Component
             'editForm.datum'          => 'required|date',
             'editForm.tip_gnojiva'    => 'required|string|max:100',
             'editForm.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999.99',
-        ]);
+        ] + $this->hranivaPravila('editForm'));
 
         Gnojidba::where('id', $this->editingId)
             ->where('user_id', auth()->id())
-            ->update($this->editForm);
+            ->update(Gnojidba::sHranivima($this->editForm));
 
         $this->editingId = null;
         $this->editForm = [];
@@ -251,6 +329,11 @@ class GnojidbaTable extends Component
             'datum'          => now()->toDateString(),
             'tip_gnojiva'    => $row->tip_gnojiva,
             'kolicina_kg_ha' => $row->kolicina_kg_ha,
+            'n_posto'        => $row->n_posto,
+            'p_posto'        => $row->p_posto,
+            'k_posto'        => $row->k_posto,
+            'organsko'       => $row->organsko,
+            'kg_n_ha'        => $row->kg_n_ha,
         ]);
     }
 
