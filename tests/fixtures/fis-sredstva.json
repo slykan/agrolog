@@ -1,0 +1,39 @@
+{
+    "content": [
+        {
+            "pppId": 20,
+            "productName": "AMISTAR 250 SC",
+            "productRegistrationNumber": "UP/I-320-20/08-01/99",
+            "registrationOwner": "Syngenta Crop Protection AG",
+            "oldProductName": null,
+            "active": true
+        },
+        {
+            "pppId": 261,
+            "productName": "FOLICUR EW 250",
+            "productRegistrationNumber": "UP/I-320-20/97-01/22",
+            "registrationOwner": "BAYER AG",
+            "oldProductName": null,
+            "active": true
+        },
+        {
+            "pppId": 1726,
+            "productName": "AMISTAR ERA 240 EC",
+            "productRegistrationNumber": "UP/I-320-20/25-03/112",
+            "registrationOwner": "CAC CHEMICAL GmbH",
+            "oldProductName": "AMISTAR ERA 250 EC",
+            "active": true
+        },
+        {
+            "pppId": 113,
+            "productName": "CAPTAN ST-S",
+            "productRegistrationNumber": "UP/I-320-20/94-01/250",
+            "registrationOwner": "SHARDA Worldwide Exports Private Limited",
+            "oldProductName": null,
+            "active": false
+        }
+    ],
+    "totalElements": 4,
+    "pageSize": 2000,
+    "currentPage": 0
+}

@@ -157,14 +157,10 @@
                     @endif
                     @if(in_array('sredstvo', $visibleColumns))
                     <td class="p-1 border border-gray-200">
-                        <input type="text" wire:model.live.blur="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="trgovacki-nazivi">
+                        <input type="text" wire:model.live.blur="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="szb-sredstva" autocomplete="off">
                         <input type="text" wire:key="reg-{{ $form['registracijski_broj'] ?? '' }}" wire:model="form.registracijski_broj" placeholder="registracijski broj (s etikete)" class="form-input w-full mt-1">
-                        <datalist id="trgovacki-nazivi">
-                            @foreach($this->trgovackiNazivi as $naziv)
-                                <option value="{{ $naziv }}">
-                            @endforeach
-                        </datalist>
                         @error('form.trgovacki_naziv_sredstva')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
+                        @if($sredstvoNapomena)<p class="text-amber-700 text-xs mt-1">{{ $sredstvoNapomena }}</p>@endif
                         @error('form.registracijski_broj')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                     </td>
                     @endif
@@ -243,7 +239,8 @@
                         @endif
                         @if(in_array('sredstvo', $visibleColumns))
                         <td class="p-1 border border-gray-200">
-                            <input type="text" wire:model.live.blur="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="trgovacki-nazivi">
+                            <input type="text" wire:model.live.blur="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="szb-sredstva" autocomplete="off">
+                            @if($editSredstvoNapomena)<p class="text-amber-700 text-xs">{{ $editSredstvoNapomena }}</p>@endif
                             <input type="text" wire:key="reg-e-{{ $editForm['registracijski_broj'] ?? '' }}" wire:model="editForm.registracijski_broj" placeholder="registracijski broj" class="form-input w-full mt-1">
                         </td>
                         @endif

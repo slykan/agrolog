@@ -7,6 +7,21 @@
             <div class="bg-white shadow rounded-lg p-6">
                 <livewire:prskanje-table />
             </div>
+            {{-- prijedlozi za trgovački naziv: sredstva koja je korisnik već koristio + registar FIS-a --}}
+            @php
+                $vlastita = \App\Models\Prskanje::where('user_id', auth()->id())->whereNotNull('trgovacki_naziv_sredstva')
+                    ->distinct()->pluck('trgovacki_naziv_sredstva');
+                $registar = \App\Models\SzbSredstvo::orderByDesc('aktivno')->orderBy('naziv')->get(['naziv', 'registracijski_broj', 'aktivno']);
+                $uRegistru = $registar->pluck('naziv')->map(fn ($n) => mb_strtoupper($n))->flip();
+            @endphp
+            <datalist id="szb-sredstva">
+                @foreach($vlastita->reject(fn ($n) => isset($uRegistru[mb_strtoupper(trim($n))])) as $naziv)
+                    <option value="{{ $naziv }}">
+                @endforeach
+                @foreach($registar as $s)
+                    <option value="{{ $s->naziv }}" label="{{ $s->registracijski_broj }}{{ $s->aktivno ? '' : ' (neaktivno)' }}">
+                @endforeach
+            </datalist>
         </div>
     </div>
 </x-app-layout>

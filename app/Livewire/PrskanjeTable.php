@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Prskanje;
 use App\Models\Kultura;
+use App\Models\SzbSredstvo;
 use App\Support\SzbPopisi;
 
 class PrskanjeTable extends Component
@@ -28,6 +29,9 @@ class PrskanjeTable extends Component
     public array $filters = ['datum' => '', 'arkod' => '', 'kultura' => '', 'sredstvo' => ''];
     public string $formKulturaSearch = '';
     public bool $showKulturaPicker = false;
+    /** Napomena uz sredstvo (nije u registru FIS-a / registracija nije aktivna), za novi i uređeni zapis. */
+    public string $sredstvoNapomena = '';
+    public string $editSredstvoNapomena = '';
     protected array $validationAttributes = [
         'form.kultura_id' => 'ARKOD parcela',
         'form.datum_tretiranja' => 'datum tretiranja',
@@ -57,6 +61,7 @@ class PrskanjeTable extends Component
     /** Nova prazna forma; vrsta uporabe i sustav proizvodnje preuzimaju se iz zadnjeg prskanja. */
     private function praznaForma(): array
     {
+        $this->sredstvoNapomena = '';
         $zadnje = Prskanje::where('user_id', auth()->id())->latest('id')->first(['vrsta_uporabe', 'sustav_proizvodnje']);
 
         return [
@@ -174,15 +179,6 @@ class PrskanjeTable extends Component
         return $query->get();
     }
 
-    public function getTrgovackiNaziviProperty()
-    {
-        return Prskanje::where('user_id', auth()->id())
-            ->distinct()
-            ->orderBy('trgovacki_naziv_sredstva')
-            ->pluck('trgovacki_naziv_sredstva')
-            ->filter();
-    }
-
     /** Registracijski broj iz zadnjeg prskanja istim sredstvom (da se ne upisuje svaki put). */
     private function zadnjiRegistracijskiBroj(?string $naziv): ?string
     {
@@ -197,18 +193,38 @@ class PrskanjeTable extends Component
             ->value('registracijski_broj');
     }
 
+    /**
+     * Odabrano sredstvo: registracijski broj iz registra FIS-a (ako je sredstvo u registru),
+     * inače iz zadnjeg prskanja istim sredstvom. Vraća [registracijski broj ili null, napomena].
+     */
+    private function sredstvoIzRegistra(?string $naziv, ?string $trenutniBroj): array
+    {
+        if (blank($naziv)) {
+            return [$trenutniBroj, ''];
+        }
+
+        $sredstvo = SzbSredstvo::poNazivu($naziv);
+        if ($sredstvo) {
+            $napomena = $sredstvo->aktivno ? '' : 'Registracija ovog sredstva u FIS-u nije aktivna — provjerite smije li se još primjenjivati.';
+            return [$sredstvo->registracijski_broj ?: $trenutniBroj, $napomena];
+        }
+
+        $broj = blank($trenutniBroj) ? $this->zadnjiRegistracijskiBroj($naziv) : $trenutniBroj;
+        $napomena = SzbSredstvo::exists() ? 'Sredstvo nije pronađeno u registru FIS-a — provjerite naziv s etikete.' : '';
+
+        return [$broj, $napomena];
+    }
+
     public function updatedFormTrgovackiNazivSredstva($naziv): void
     {
-        if (blank($this->form['registracijski_broj'] ?? null)) {
-            $this->form['registracijski_broj'] = $this->zadnjiRegistracijskiBroj($naziv) ?? '';
-        }
+        [$broj, $this->sredstvoNapomena] = $this->sredstvoIzRegistra($naziv, $this->form['registracijski_broj'] ?? null);
+        $this->form['registracijski_broj'] = $broj ?? '';
     }
 
     public function updatedEditFormTrgovackiNazivSredstva($naziv): void
     {
-        if (blank($this->editForm['registracijski_broj'] ?? null)) {
-            $this->editForm['registracijski_broj'] = $this->zadnjiRegistracijskiBroj($naziv) ?? '';
-        }
+        [$broj, $this->editSredstvoNapomena] = $this->sredstvoIzRegistra($naziv, $this->editForm['registracijski_broj'] ?? null);
+        $this->editForm['registracijski_broj'] = $broj ?? '';
     }
 
     public function addRow(): void
@@ -330,6 +346,7 @@ class PrskanjeTable extends Component
     public function startEdit(int $id): void
     {
         $row = Prskanje::findOrFail($id);
+        $this->editSredstvoNapomena = '';
         $this->editingId = $id;
         $this->editForm = [
             'kultura_id'               => $row->kultura_id,
@@ -378,6 +395,7 @@ class PrskanjeTable extends Component
 
     public function cancelEdit(): void
     {
+        $this->editSredstvoNapomena = '';
         $this->editingId = null;
         $this->editForm = [];
     }
