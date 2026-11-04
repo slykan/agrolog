@@ -118,21 +118,31 @@
             <div class="text-center mb-14">
                 <span class="text-xs font-bold uppercase tracking-[0.3em] text-green-700">Što sve dobivate</span>
                 <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Sve što vam treba za agro evidenciju</h2>
-                <p class="mt-3 text-gray-600 max-w-xl mx-auto">Dizajnirano prema stvarnim potrebama poljoprivrednika i zahtjevima AGRONET sustava.</p>
+                <p class="mt-3 text-gray-600 max-w-2xl mx-auto">Dizajnirano prema stvarnim potrebama poljoprivrednika i zahtjevima AGRONET sustava — s ARKOD kartom, registrom sredstava i prognozom za vaše parcele.</p>
             </div>
             @php
+                // [naslov, opis, ikona (heroicons outline path), nova mogućnost]
                 $znacajke = [
-                    ['ARKOD parcele', 'Parcele i kulture po ARKOD broju i godini uzgoja, s posađenom površinom.', 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
-                    ['Evidencija gnojidbe', 'Datum, vrsta gnojiva i količina po ha. Pretraga i filtriranje po parcelama i kulturama.', 'M12 21c-4-3-7-7-7-11a7 7 0 0114 0c0 4-3 8-7 11zm0-11v6m0-6c-1.5-2-3.5-2.5-5-2m5 2c1.5-2 3.5-2.5 5-2'],
-                    ['Evidencija prskanja', 'Sredstvo, registracijski broj, doza, površina, vrijeme i količina vode — prema obrascu.', 'M12 3c3 4 6 7.5 6 11a6 6 0 01-12 0c0-3.5 3-7 6-11z'],
-                    ['PDF za AGRONET', 'Službeni obrazac evidencije u jednom kliku — spreman za ispis ili kontrolu.', 'M9 12h6m-6 4h4m4 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-                    ['Izvoz u CSV', 'Evidencija prskanja u tablici za Excel — za savjetnika, zadrugu ili vlastitu arhivu.', 'M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3'],
-                    ['Povijest se čuva', 'Zamjena kulture na parceli bez gubitka starih zapisa — evidencija ostaje točna godinama.', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
+                    ['ARKOD parcela na karti', 'Upišete ARKOD broj, a AgroLog parcelu pronađe u ARKOD-u, pokaže na satelitskoj karti i preuzme službenu površinu.', 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7', true],
+                    ['Karta svih parcela', 'Sve vaše parcele na jednoj karti s ARKOD brojevima i kulturama — zumirajte, pomičite, kliknite parcelu.', 'M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z', true],
+                    ['Prognoza i dani za prskanje', 'Prognoza za 5 dana za područje vaših parcela, s oznakom koji su dani povoljni za prskanje: vjetar, kiša, mraz, temperatura.', 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', true],
+                    ['Sredstva iz registra FIS-a', 'Oko 900 registriranih sredstava za zaštitu bilja — odaberete naziv, registracijski broj upiše se sam.', 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z', true],
+                    ['Dušik u gnojidbi', 'Odaberete gnojivo s popisa, AgroLog izračuna kg N/ha i prati granicu od 170 kg N/ha iz stajskog gnoja.', 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', true],
+                    ['Spremni za 2027.', 'EPPO kod, fenofaza (BBCH) i vrsta uporabe — evidencija prskanja izvozi se izravno u Ministarstvovu Excel tablicu.', 'M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z', true],
+                    ['Evidencija prskanja', 'Sredstvo, registracijski broj, doza, površina, vrijeme, voda i fenofaza — za svaku primjenu, prema obrascu.', 'M12 3c3 4 6 7.5 6 11a6 6 0 01-12 0c0-3.5 3-7 6-11z', false],
+                    ['Evidencija gnojidbe', 'Datum, gnojivo s udjelima N-P-K i količina po ha. Pretraga i filtriranje po parcelama i kulturama.', 'M12 21c-4-3-7-7-7-11a7 7 0 0114 0c0 4-3 8-7 11zm0-11v6m0-6c-1.5-2-3.5-2.5-5-2m5 2c1.5-2 3.5-2.5 5-2', false],
+                    ['Upozorenja za parcelu', 'Parcela u zoni zaštite izvorišta ili u području Natura 2000? AgroLog vas upozori već pri unosu.', 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z', true],
+                    ['PDF za AGRONET', 'Službeni obrazac evidencije u jednom kliku — cijela tablica na A4 listu, spremna za ispis ili kontrolu.', 'M9 12h6m-6 4h4m4 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', false],
+                    ['Izvoz u Excel i CSV', 'Evidencija u tablici za Excel — za savjetnika, zadrugu, kontrolu ili vlastitu arhivu.', 'M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3', false],
+                    ['Povijest se čuva', 'Zamjena kulture na parceli bez gubitka starih zapisa — evidencija ostaje točna godinama.', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', false],
                 ];
             @endphp
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                @foreach ($znacajke as [$naslov, $opis, $ikona])
-                    <div class="group p-7 rounded-2xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                @foreach ($znacajke as [$naslov, $opis, $ikona, $nova])
+                    <div class="group relative p-7 rounded-2xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                        @if($nova)
+                            <span class="absolute top-5 right-5 text-[10px] font-extrabold uppercase tracking-wider bg-[#3ee36f] text-[#06120a] rounded-full px-2 py-0.5">Novo</span>
+                        @endif
                         <div class="w-12 h-12 rounded-xl bg-[#06120a] flex items-center justify-center mb-5 shadow-[0_8px_24px_-8px_rgba(6,18,10,.6)] group-hover:bg-[#3ee36f] transition">
                             <svg class="w-6 h-6 text-[#3ee36f] group-hover:text-[#06120a] transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $ikona }}"/></svg>
                         </div>
@@ -141,6 +151,10 @@
                     </div>
                 @endforeach
             </div>
+            <p class="mt-8 text-center text-sm text-gray-500">
+                Povezano sa službenim izvorima: ARKOD (Agencija za plaćanja), registar sredstava FIS-a i format evidencije Ministarstva poljoprivrede.
+                <a href="{{ route('novosti') }}" class="font-semibold text-green-700 hover:underline">Što je novo &rarr;</a>
+            </p>
         </div>
     </section>
 
@@ -154,7 +168,7 @@
             </div>
             <div class="relative grid md:grid-cols-3 gap-10">
                 <div class="hidden md:block absolute top-7 left-[16%] right-[16%] h-px bg-gradient-to-r from-[#3ee36f]/0 via-[#3ee36f]/60 to-[#3ee36f]/0" aria-hidden="true"></div>
-                @foreach ([['Registrirajte se', 'Naziv gospodarstva, MIPG i OIB. Registracija traje manje od minute.'], ['Dodajte parcele', 'ARKOD brojevi parcela i kulture koje uzgajate, s posađenom površinom.'], ['Vodite evidenciju', 'Bilježite gnojidbu i prskanje, filtrirajte i ispišite PDF u jednom kliku.']] as $i => [$naslov, $opis])
+                @foreach ([['Registrirajte se', 'Naziv gospodarstva, MIPG i OIB. Registracija traje manje od minute.'], ['Dodajte parcele', 'Upišite ARKOD broj — parcela se pokaže na karti sa službenom površinom. Dodajte kulture koje uzgajate.'], ['Vodite evidenciju', 'Bilježite gnojidbu i prskanje uz prognozu za vaše parcele, ispišite PDF ili izvezite u Excel.']] as $i => [$naslov, $opis])
                     <div class="relative text-center">
                         <div class="w-14 h-14 mx-auto mb-5 rounded-full bg-[#06120a] ring-2 ring-[#3ee36f] text-[#3ee36f] flex items-center justify-center text-xl font-extrabold shadow-[0_0_30px_-4px_rgba(62,227,111,.6)]">{{ $i + 1 }}</div>
                         <h3 class="font-bold text-lg mb-2">{{ $naslov }}</h3>
