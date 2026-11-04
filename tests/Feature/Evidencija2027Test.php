@@ -136,6 +136,15 @@ class Evidencija2027Test extends TestCase
         $this->get('/sitemap.xml')->assertOk()->assertSee('/novosti/evidencija-szb-format-ministarstva-2027');
     }
 
+    public function test_upute_pokrivaju_nove_mogucnosti(): void
+    {
+        $this->get('/upute')->assertOk()
+            ->assertSee('Početna: karta parcela i prognoza')
+            ->assertSee('Što je N-P-K i morate li ga upisivati?')
+            ->assertSee('Excel (Ministarstvo)')
+            ->assertSee('Česta pitanja');
+    }
+
     public function test_excel_izvoz_traze_prijavu(): void
     {
         $this->get('/prskanje/izvoz.xlsx')->assertRedirect('/login');
