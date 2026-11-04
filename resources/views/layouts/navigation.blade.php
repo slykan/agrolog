@@ -51,6 +51,9 @@
                             <x-dropdown-link :href="route('admin.korisnici')">
                                 Admin
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.obavijesti')">
+                                Obavijesti korisnicima
+                            </x-dropdown-link>
                         @endcan
 
                         <!-- Authentication -->
@@ -101,8 +104,11 @@
                 </x-responsive-nav-link>
 
                 @can('admin')
-                    <x-responsive-nav-link :href="route('admin.korisnici')" :active="request()->routeIs('admin.*')">
+                    <x-responsive-nav-link :href="route('admin.korisnici')" :active="request()->routeIs('admin.korisni*')">
                         Admin
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.obavijesti')" :active="request()->routeIs('admin.obavijesti*')">
+                        Obavijesti korisnicima
                     </x-responsive-nav-link>
                 @endcan
 

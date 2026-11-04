@@ -19,3 +19,6 @@ Artisan::command('szb:registar', function () {
 })->purpose('Preuzmi registar sredstava za zaštitu bilja iz FIS-a');
 
 Schedule::command('szb:registar')->weeklyOn(1, '04:30');
+
+// red čekanja (obavijesti mailom): obrađuje se svake minute preko cron schedule:run
+Schedule::command('queue:work database --stop-when-empty --max-time=50 --tries=3')->everyMinute()->withoutOverlapping();

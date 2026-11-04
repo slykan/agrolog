@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EvidencijaIzvozController;
+use App\Http\Controllers\ObavijestController;
 use App\Http\Controllers\ParcelaArkodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SadrzajController;
@@ -73,11 +74,19 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/korisnici', [AdminController::class, 'korisnici'])->name('korisnici');
         Route::get('/korisnici/{user}', [AdminController::class, 'korisnik'])->name('korisnik');
+        Route::get('/obavijesti', [ObavijestController::class, 'index'])->name('obavijesti');
+        Route::post('/obavijesti', [ObavijestController::class, 'posalji'])->name('obavijesti.posalji');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// odjava od obavijesti iz maila (potpisani link; POST za jednoklik odjavu iz mail klijenta, bez CSRF-a)
+Route::match(['get', 'post'], '/obavijesti/odjava/{user}', [ObavijestController::class, 'odjava'])
+    ->middleware('signed')
+    ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)
+    ->name('obavijesti.odjava');
 
 require __DIR__.'/auth.php';

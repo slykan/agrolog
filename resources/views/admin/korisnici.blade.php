@@ -10,7 +10,10 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Admin &mdash; korisnici</h2>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Admin &mdash; korisnici</h2>
+            <a href="{{ route('admin.obavijesti') }}" class="btn-primary">&#9993; Obavijest svima</a>
+        </div>
     </x-slot>
 
     <div class="py-6">

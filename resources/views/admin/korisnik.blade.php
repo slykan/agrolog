@@ -28,6 +28,7 @@
                             'Registriran' => $vrijeme($user->created_at),
                             'Zadnja aktivnost' => $vrijeme($user->last_seen_at),
                             'Zadnji unos' => $vrijeme($zadnjiZapis),
+                            'Obavijesti mailom' => $user->obavijesti_odjava_at ? 'odjavljen ' . $vrijeme($user->obavijesti_odjava_at) : 'prima',
                         ] as $k => $v)
                             <div class="flex justify-between gap-4 border-b border-gray-100 pb-1.5">
                                 <dt class="text-gray-500">{{ $k }}</dt>
