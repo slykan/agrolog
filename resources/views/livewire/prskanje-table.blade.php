@@ -157,8 +157,8 @@
                     @endif
                     @if(in_array('sredstvo', $visibleColumns))
                     <td class="p-1 border border-gray-200">
-                        <input type="text" wire:model.blur="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="trgovacki-nazivi">
-                        <input type="text" wire:model="form.registracijski_broj" placeholder="registracijski broj (s etikete)" class="form-input w-full mt-1">
+                        <input type="text" wire:model.live.blur="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="trgovacki-nazivi">
+                        <input type="text" wire:key="reg-{{ $form['registracijski_broj'] ?? '' }}" wire:model="form.registracijski_broj" placeholder="registracijski broj (s etikete)" class="form-input w-full mt-1">
                         <datalist id="trgovacki-nazivi">
                             @foreach($this->trgovackiNazivi as $naziv)
                                 <option value="{{ $naziv }}">
@@ -243,8 +243,8 @@
                         @endif
                         @if(in_array('sredstvo', $visibleColumns))
                         <td class="p-1 border border-gray-200">
-                            <input type="text" wire:model.blur="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="trgovacki-nazivi">
-                            <input type="text" wire:model="editForm.registracijski_broj" placeholder="registracijski broj" class="form-input w-full mt-1">
+                            <input type="text" wire:model.live.blur="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="trgovacki-nazivi">
+                            <input type="text" wire:key="reg-e-{{ $editForm['registracijski_broj'] ?? '' }}" wire:model="editForm.registracijski_broj" placeholder="registracijski broj" class="form-input w-full mt-1">
                         </td>
                         @endif
                         @if(in_array('kolicina', $visibleColumns))

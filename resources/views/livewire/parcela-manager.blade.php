@@ -11,19 +11,21 @@
         <div class="flex flex-wrap gap-3 items-end">
             <div>
                 <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
-                <input type="text" wire:model="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40">
+                <input type="text" wire:model.live.blur="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40" inputmode="numeric">
                 @error('parcelaForm.arkod_broj')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Površina (ha)</label>
-                <input type="number" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                <input type="number" wire:key="povrsina-{{ $arkodNadjen['id'] ?? 'x' }}-{{ $parcelaForm['povrsina_ha'] }}" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
                 @error('parcelaForm.povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div class="flex gap-2">
-                <button wire:click="saveParcela" class="btn-xs-green">Spremi</button>
+                <button wire:click="saveParcela" class="btn-xs-green">{{ $arkodNadjen ? 'Potvrdi i spremi' : 'Spremi' }}</button>
                 <button wire:click="$set('showParcelaForm', false)" class="btn-xs-gray">Odustani</button>
             </div>
+            <span wire:loading wire:target="parcelaForm.arkod_broj" class="text-xs text-gray-500">Tražim parcelu u ARKOD-u…</span>
         </div>
+        @include('livewire.partials.arkod-pregled')
     </div>
     @endif
 
@@ -64,13 +66,13 @@
             @endif
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Kultura</label>
-                <input type="text" wire:model.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
+                <input type="text" wire:model.live.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
                        list="kulture-prijedlozi" autocomplete="off" class="form-input w-40">
                 @error('kulturaForm.naziv')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label class="block text-xs text-gray-600 mb-1" title="Naziv usjeva s Ministarstvova popisa — iz njega se uzima EPPO kod za evidenciju SZB">Usjev za evidenciju (EPPO)</label>
-                <input type="text" wire:model="kulturaForm.eppo_naziv" placeholder="prepozna se iz naziva"
+                <input type="text" wire:key="eppo-{{ $kulturaForm['eppo_naziv'] ?? '' }}" wire:model="kulturaForm.eppo_naziv" placeholder="prepozna se iz naziva"
                        list="eppo-popis" autocomplete="off" class="form-input w-56">
                 @error('kulturaForm.eppo_naziv')<p class="text-red-500 text-xs mt-1 max-w-xs">{{ $message }}</p>@enderror
             </div>
@@ -104,8 +106,20 @@
             {{-- Parcela header --}}
             <div class="flex items-center justify-between bg-green-50 px-4 py-2">
                 <div class="flex items-center gap-4">
-                    <span class="font-bold text-green-800 text-lg">{{ $parcela->arkod_broj }}</span>
+                    <span class="flex items-center gap-1.5">
+                        <button type="button" wire:click="prikaziKartu({{ $parcela->id }})" wire:loading.attr="disabled"
+                                class="w-7 h-7 rounded-md flex items-center justify-center text-green-700 hover:bg-green-100 transition" title="Prikaži parcelu na karti">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                        </button>
+                        <span class="font-bold text-green-800 text-lg">{{ $parcela->arkod_broj }}</span>
+                    </span>
                     <span class="text-sm text-gray-600">{{ number_format($parcela->povrsina_ha, 2) }} ha</span>
+                    @if($parcela->arkod_povrsina_ha !== null && (float) $parcela->povrsina_ha > (float) $parcela->arkod_povrsina_ha + 0.005)
+                        <span class="text-xs text-amber-700" title="Upisana površina veća je od površine u ARKOD-u">ARKOD: {{ number_format($parcela->arkod_povrsina_ha, 2) }} ha</span>
+                    @endif
+                    @if($parcela->arkod_vrsta_uporabe)
+                        <span class="hidden sm:inline text-xs text-gray-400">{{ $parcela->arkod_vrsta_uporabe }}{{ $parcela->arkod_naziv ? ' · ' . $parcela->arkod_naziv : '' }}</span>
+                    @endif
                     <span class="text-xs text-gray-400">{{ $parcela->kulture->whereNull('zavrsena_at')->count() }} aktivnih kultura</span>
                 </div>
                 <div class="flex gap-2">
@@ -121,19 +135,20 @@
                 <div class="flex flex-wrap gap-3 items-end">
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
-                        <input type="text" wire:model="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40">
+                        <input type="text" wire:model.live.blur="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40" inputmode="numeric">
                         @error('parcelaForm.arkod_broj')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Površina (ha)</label>
-                        <input type="number" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                        <input type="number" wire:key="povrsina-{{ $arkodNadjen['id'] ?? 'x' }}-{{ $parcelaForm['povrsina_ha'] }}" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
                         @error('parcelaForm.povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div class="flex gap-2">
-                        <button wire:click="saveParcela" class="btn-xs-green">Spremi</button>
+                        <button wire:click="saveParcela" class="btn-xs-green">{{ $arkodNadjen ? 'Potvrdi i spremi' : 'Spremi' }}</button>
                         <button wire:click="cancelParcelaEdit" class="btn-xs-gray">Odustani</button>
                     </div>
                 </div>
+                @include('livewire.partials.arkod-pregled')
             </div>
             @endif
 
@@ -158,7 +173,7 @@
                             <div class="flex flex-wrap gap-3 items-end">
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Kultura</label>
-                                    <input type="text" wire:model.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
+                                    <input type="text" wire:model.live.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
                                            list="kulture-prijedlozi" autocomplete="off" class="form-input w-40">
                                     @error('kulturaForm.naziv')<p class="text-red-500 text-xs mt-1 max-w-xs">{{ $message }}</p>@enderror
                                     @if(($kultura->gnojidbe_count + $kultura->prskanja_count) > 0)
@@ -167,7 +182,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1" title="Naziv usjeva s Ministarstvova popisa — iz njega se uzima EPPO kod za evidenciju SZB">Usjev za evidenciju (EPPO)</label>
-                                    <input type="text" wire:model="kulturaForm.eppo_naziv" placeholder="prepozna se iz naziva"
+                                    <input type="text" wire:key="eppo-{{ $kulturaForm['eppo_naziv'] ?? '' }}" wire:model="kulturaForm.eppo_naziv" placeholder="prepozna se iz naziva"
                                            list="eppo-popis" autocomplete="off" class="form-input w-56">
                                     @error('kulturaForm.eppo_naziv')<p class="text-red-500 text-xs mt-1 max-w-xs">{{ $message }}</p>@enderror
                                 </div>
@@ -233,5 +248,30 @@
             <p class="text-sm mt-1">Kliknite <strong>+ Nova parcela</strong> za početak.</p>
         </div>
         @endforelse
+    </div>
+    {{-- Popup s kartom parcele (ikona karte uz ARKOD broj) --}}
+    <div wire:ignore x-data="{ otvoren: false, d: {} }"
+         @arkod-karta.window="d = $event.detail; otvoren = true; $nextTick(() => { if (d.poligon) agroKarta.nacrtaj($refs.karta, d.poligon) })"
+         @keydown.escape.window="otvoren = false"
+         x-show="otvoren" x-cloak
+         class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4">
+        <div @click.outside="otvoren = false" class="w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-xl">
+            <div class="flex items-center justify-between border-b px-5 py-3">
+                <h3 class="font-semibold text-gray-800">ARKOD <span x-text="d.arkod"></span></h3>
+                <button type="button" @click="otvoren = false" class="w-8 h-8 rounded-full text-gray-500 hover:bg-gray-100" aria-label="Zatvori">&#10005;</button>
+            </div>
+            <div x-show="d.poligon" x-ref="karta" class="h-[60vh] bg-gray-100"></div>
+            <div x-show="!d.poligon" class="px-6 py-12 text-center text-sm text-gray-500">
+                Ovaj ARKOD broj nije pronađen u javnom ARKOD-u Agencije za plaćanja (ili servis trenutno ne odgovara). Provjerite broj u „Uredi”.
+            </div>
+            <div class="flex flex-wrap gap-x-6 gap-y-1 px-5 py-3 text-sm text-gray-600">
+                <span>Upisano: <b x-text="(d.povrsina ?? 0).toFixed(2).replace('.', ',') + ' ha'"></b></span>
+                <template x-if="d.arkodPovrsina !== null && d.arkodPovrsina !== undefined">
+                    <span>Prema ARKOD-u: <b x-text="d.arkodPovrsina.toFixed(2).replace('.', ',') + ' ha'"></b></span>
+                </template>
+                <span x-show="d.vrsta" x-text="d.vrsta"></span>
+                <span x-show="d.naziv" x-text="d.naziv" class="text-gray-400"></span>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:georss="http://www.georss.org/georss" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title>NIPP:hr.land_parcels</title><description>ARKOD je evidencija uporabe poljoprivrednog zemljišta na području Republike Hrvatske koju u digitalnom grafičkom obliku vodi Agencija za plaćanja u skladu s člankom 70. Uredbe (EU) br. 1306/2013 Europskog parlamenta i Vijeća. ARKOD parcele predstavljaju neprekinute površine poljoprivrednog zemljišta koje obrađuje jedan poljoprivrednik, klasificirane s obzirom na vrstu uporabe poljoprivrednog zemljišta iz Priloga I. Pravilnika o evidenciji uporabe poljoprivrednog zemljišta (NN 17/2018). Upis poljoprivrednog zemljišta – vektorizacija ARKOD poligona provodi se metodom fotointerpretacije poljoprivrednog zemljišta na DOF podlogama u mjerilu 1:5000 u podružnicama Agencije za plaćanja, iskaza poljoprivrednika o korištenju poljoprivrednog zemljišta uz dokaz o vlasništvu ili posjedu. ARKOD podaci koriste se unutar IAKS sustava za praćenje potpora vezanih uz površine, a što se tehnički provodi godišnjim popunjavanjem Jedinstvenog zahtjeva kroz AGRONET aplikaciju. Promjene na ARKOD podacima provode se: na zahtjev poljoprivrednika koji je dužan prijaviti promjene u roku od 30 dana od njihova nastanka, zahtjeva vlasnika zemljišta (nesuglasnog i neinformiranog), prilikom zanavljanja DOF-a (godišnja dinamika 50% teritorija države), temeljem rezultata administrativne kontrole, kontrole na terenu, brze terenske provjere, rješenja poljoprivredne inspekcije, provedbom vizualne provjere, rezultata kontrole kvalitete ARKOD-a i administrativne odluke Agencije za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju.&#13;
+&#13;
+ARKOD trenutni podaci – obuhvaćaju trenutno stanje prostornih podataka ARKOD parcela.</description><link><![CDATA[https://servisi.apprrr.hr/NIPP/wms?service=wms&request=GetMap&version=1.1.1&format=application%2Frss%2Bxml&layers=NIPP%3Ahr.land_parcels&styles=hr.arkod&cql_filter=id%3D1515096&height=720&width=1024&transparent=false&bbox=13.4%2C42.3%2C19.5%2C46.6&srs=EPSG%3A4326]]></link><atom:link href="https://servisi.apprrr.hr/NIPP/wms?service=wms&amp;request=GetMap&amp;version=1.1.1&amp;format=application%2Frss%2Bxml&amp;layers=NIPP%3Ahr.land_parcels&amp;styles=hr.arkod&amp;cql_filter=id%3D1515096&amp;height=720&amp;width=1024&amp;transparent=false&amp;bbox=13.4%2C42.3%2C19.5%2C46.6&amp;srs=EPSG%3A4326" rel="self"/><item><title>hr.land_parcels.1515096</title><link><![CDATA[https://servisi.apprrr.hr/NIPP/wms/reflect?format=application%2Fatom%2Bxml&layers=NIPP%3Ahr.land_parcels&featureid=hr.land_parcels.1515096]]></link><guid><![CDATA[https://servisi.apprrr.hr/NIPP/wms/reflect?format=application%2Fatom%2Bxml&layers=NIPP%3Ahr.land_parcels&featureid=hr.land_parcels.1515096]]></guid><description><![CDATA[<h4>hr.land_parcels</h4>
+
+<ul class="textattributes">
+  <li><strong><span class="atr-name">id</span>:</strong> <span class="atr-value">1515096</span></li>
+  <li><strong><span class="atr-name">land_use_id</span>:</strong> <span class="atr-value">200.0</span></li>
+  <li><strong><span class="atr-name">home_name</span>:</strong> <span class="atr-value">KOD PETROSA</span></li>
+  <li><strong><span class="atr-name">area</span>:</strong> <span class="atr-value">187534.02</span></li>
+  <li><strong><span class="atr-name">perim</span>:</strong> <span class="atr-value">1780.86823738626</span></li>
+  <li><strong><span class="atr-name">slope</span>:</strong> <span class="atr-value">0.00</span></li>
+  <li><strong><span class="atr-name">z_avg</span>:</strong> <span class="atr-value">90.100</span></li>
+  
+  <li><strong><span class="atr-name">mines_status</span>:</strong> <span class="atr-value">N</span></li>
+  
+  <li><strong><span class="atr-name">water_protect_zone</span>:</strong> <span class="atr-value">Vz0</span></li>
+  <li><strong><span class="atr-name">natura2000</span>:</strong> <span class="atr-value">0.0</span></li>
+  
+  
+  
+  
+  
+  
+  <li><strong><span class="atr-name">sanitary_protection_zone</span>:</strong> <span class="atr-value">SZI0</span></li>
+  
+  
+  
+  <li><strong><span class="atr-name">irrigation</span>:</strong> <span class="atr-value">0</span></li>
+  <li><strong><span class="atr-name">irrigation_source</span>:</strong> <span class="atr-value">0</span></li>
+  <li><strong><span class="atr-name">irrigation_type</span>:</strong> <span class="atr-value">0</span></li>
+  
+  <li><strong><span class="atr-name">jpaid</span>:</strong> <span class="atr-value">1403123045691</span></li>
+</ul>
+]]></description><georss:polygon>45.54708994734906 18.642941797852956 45.54728436510659 18.643591062868342 45.54730150604822 18.643655351432198 45.54892586720812 18.645452348978363 45.551405620573476 18.64437980514786 45.55226381190299 18.644002284294768 45.552174192561345 18.643846243864033 45.55177592920805 18.64320826599469 45.55128087515649 18.642459968516217 45.551160321383705 18.642326233926905 45.551125368677766 18.642279374306156 45.551013211761955 18.642214147257558 45.55086322093597 18.642151068689124 45.550698795691055 18.642051580830557 45.55061765863002 18.641944500372134 45.550484961767374 18.641631053652187 45.55037928751732 18.641354495884826 45.55028593267826 18.64109275145024 45.55020294882491 18.640949742279677 45.549897958957786 18.64056843541704 45.549798530994806 18.640453440749592 45.54971336785802 18.640411285369776 45.54945714981859 18.640042837940584 45.54916509813026 18.63960142876182 45.548782185179036 18.63895934688236 45.54871554760939 18.63888509862702 45.548625444458175 18.63885299188183 45.54857005325145 18.6388508901092 45.54842566704135 18.6388920290316 45.548169088716584 18.639004215479357 45.547435768625064 18.63931346374841 45.54695097813985 18.63950304614717 45.5464478913962 18.639727789341155 45.54638414105114 18.639768399568 45.54636557645562 18.639817896535703 45.54643143874762 18.64033675682007 45.54651555966505 18.64095671526527 45.546574002268464 18.641199186410116 45.54673536575764 18.641730643216835 45.54708994734906 18.642941797852956</georss:polygon></item></channel></rss>

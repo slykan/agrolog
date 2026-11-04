@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\EvidencijaIzvozController;
+use App\Http\Controllers\ParcelaArkodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SadrzajController;
 use Illuminate\Support\Facades\Route;
@@ -66,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/gnojidba', fn() => view('gnojidba'))->name('gnojidba');
     Route::get('/prskanje', fn() => view('prskanje'))->name('prskanje');
     Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
+    Route::get('/parcele/{parcela}/arkod', ParcelaArkodController::class)->name('parcela.arkod');
     Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {

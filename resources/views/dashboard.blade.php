@@ -92,6 +92,63 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Karta svih parcela (oblik iz ARKOD-a; parcele bez spremljenog oblika dohvate se u pozadini) --}}
+            @php
+                $zaKartu = $parcele->map(fn ($p) => [
+                    'id'      => $p->id,
+                    'arkod'   => $p->arkod_broj,
+                    'poligon' => $p->arkod_poligon,
+                    'ha'      => (float) $p->povrsina_ha,
+                    'kulture' => $p->kulture->whereNull('zavrsena_at')->pluck('naziv')->join(', '),
+                    'url'     => route('parcela.arkod', $p),
+                ])->values();
+            @endphp
+            @include('partials.karta')
+            <div class="bg-white shadow-sm rounded-xl p-6"
+                 x-data="dashKarta(@js($zaKartu))" x-init="pokreni($refs.karta)">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-gray-700">Karta mojih parcela</h3>
+                    <span class="text-xs text-gray-400" x-text="status"></span>
+                </div>
+                <div x-ref="karta" class="h-[28rem] rounded-lg ring-1 ring-gray-200 bg-gray-100"></div>
+                <p class="mt-2 text-xs text-gray-400">Kotačićem miša ili gumbima +/− zumirate, povlačenjem pomičete kartu. Klik na parcelu prikazuje kulture.</p>
+            </div>
+            <script>
+                function dashKarta(parcele) {
+                    return {
+                        status: '',
+                        pokreni(el) {
+                            const map = agroKarta.karta(el, { scrollWheelZoom: 'center' });
+                            map.setView([45.1, 16.4], 7);   // Hrvatska dok se parcele ne učitaju
+                            const sloj = L.featureGroup().addTo(map);
+                            const crtaj = (p) => {
+                                if (!p.poligon) return;
+                                L.polygon(p.poligon, { color: '#3ee36f', weight: 2.5, fillOpacity: 0.3 })
+                                    .bindTooltip(String(p.arkod), { permanent: true, direction: 'center', className: 'agro-oznaka' })
+                                    .bindPopup(`<b>ARKOD ${p.arkod}</b><br>${p.ha.toFixed(2).replace('.', ',')} ha<br>${p.kulture || 'bez aktivnih kultura'}<br><a href="{{ route('parcele') }}">Parcele &amp; Kulture →</a>`)
+                                    .addTo(sloj);
+                            };
+                            const prilagodi = () => { if (sloj.getLayers().length) map.fitBounds(sloj.getBounds(), { padding: [30, 30], maxZoom: 16 }); };
+
+                            parcele.forEach(crtaj);
+                            prilagodi();
+
+                            const bez = parcele.filter(p => !p.poligon);
+                            if (!bez.length) return;
+                            this.status = 'Tražim ' + bez.length + ' parcela u ARKOD-u…';
+                            Promise.all(bez.map(p => fetch(p.url, { headers: { Accept: 'application/json' } })
+                                .then(r => r.ok ? r.json() : null).catch(() => null)
+                                .then(d => { if (d && d.poligon) { p.poligon = d.poligon; crtaj(p); return true; } return false; })))
+                                .then(rez => {
+                                    const nema = rez.filter(x => !x).length;
+                                    this.status = nema ? nema + ' parcela nije pronađeno u ARKOD-u' : '';
+                                    prilagodi();
+                                });
+                        },
+                    };
+                }
+            </script>
             @endif
 
             {{-- Kontakt --}}
