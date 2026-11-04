@@ -69,7 +69,7 @@
                     </th>
                     @endif
                     @if(in_array('gnojivo', $visibleColumns))
-                    <th class="border border-gray-300 px-3 py-2 text-left">
+                    <th class="border border-gray-300 px-3 py-2 text-left min-w-[14rem]">
                         Tip gnojiva (naziv)
                         <input type="text" wire:model.live="filters.gnojivo" class="filter-input no-print mt-1 block w-full" placeholder="filter...">
                     </th>

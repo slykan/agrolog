@@ -76,7 +76,7 @@
                     <th class="border border-gray-300 px-2 py-2 text-right">Tretirana površina/ha</th>
                     @endif
                     @if(in_array('sredstvo', $visibleColumns))
-                    <th class="border border-gray-300 px-2 py-2 text-left">
+                    <th class="border border-gray-300 px-2 py-2 text-left min-w-[16rem]">
                         Trgovački naziv sredstva / reg. broj
                         <input type="text" wire:model.live="filters.sredstvo" class="filter-input no-print mt-1 block w-full" placeholder="filter...">
                     </th>
@@ -156,7 +156,7 @@
                     </td>
                     @endif
                     @if(in_array('sredstvo', $visibleColumns))
-                    <td class="p-1 border border-gray-200">
+                    <td class="p-1 border border-gray-200 min-w-[16rem]">
                         <input type="text" wire:model.live.blur="form.trgovacki_naziv_sredstva" placeholder="npr. Roundup" class="form-input w-full" list="szb-sredstva" autocomplete="off">
                         <input type="text" wire:key="reg-{{ $form['registracijski_broj'] ?? '' }}" wire:model="form.registracijski_broj" placeholder="registracijski broj (s etikete)" class="form-input w-full mt-1">
                         @error('form.trgovacki_naziv_sredstva')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
@@ -238,7 +238,7 @@
                         <td class="p-1 border border-gray-200"><input type="number" wire:model="editForm.tretirana_povrsina_ha" step="0.01" class="form-input w-full"></td>
                         @endif
                         @if(in_array('sredstvo', $visibleColumns))
-                        <td class="p-1 border border-gray-200">
+                        <td class="p-1 border border-gray-200 min-w-[16rem]">
                             <input type="text" wire:model.live.blur="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="szb-sredstva" autocomplete="off">
                             @if($editSredstvoNapomena)<p class="text-amber-700 text-xs">{{ $editSredstvoNapomena }}</p>@endif
                             <input type="text" wire:key="reg-e-{{ $editForm['registracijski_broj'] ?? '' }}" wire:model="editForm.registracijski_broj" placeholder="registracijski broj" class="form-input w-full mt-1">
