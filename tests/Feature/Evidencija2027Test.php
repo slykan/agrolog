@@ -25,6 +25,11 @@ class Evidencija2027Test extends TestCase
         $this->assertSame(['Kukuruz', 'ZEAMX'], SzbPopisi::usjevZaKulturu('Kukuruz hibrid 2026'));
         $this->assertNull(SzbPopisi::usjevZaKulturu('Nešto izmišljeno'));
         $this->assertNotEmpty(SzbPopisi::bbchZaUsjev('Pšenica'));
+
+        // svaka česta kultura iz prijedloga ima EPPO kod na Ministarstvovu popisu
+        foreach (SzbPopisi::CESTE_KULTURE as $k) {
+            $this->assertArrayHasKey($k, SzbPopisi::eppo(), $k);
+        }
     }
 
     public function test_kultura_dobiva_eppo_kod(): void
@@ -36,6 +41,7 @@ class Evidencija2027Test extends TestCase
             ->call('openKulturaForm', $p->id)
             ->set('kulturaForm.naziv', 'Soja')
             ->assertSet('kulturaForm.eppo_naziv', 'Soja')
+            ->assertSee('<option value="Suncokret">', false)   // česte kulture u prijedlozima
             ->set('kulturaForm.posadjena_povrsina_ha', 2)
             ->call('saveKultura')
             ->assertHasNoErrors();

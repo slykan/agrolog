@@ -35,6 +35,19 @@ class SzbPopisi
         'ekoloska'   => 'Ekološka površina',
     ];
 
+    /**
+     * Najčešće kulture za prijedloge pri unosu (nazivi točno kao na Ministarstvovu EPPO popisu,
+     * pa se EPPO kod uvijek prepozna). Može se upisati i bilo koja druga kultura.
+     */
+    public const CESTE_KULTURE = [
+        'Pšenica', 'Ječam', 'Kukuruz', 'Kukuruz za silažu', 'Kukuruz šećerac', 'Soja', 'Suncokret', 'Uljana repica',
+        'Šećerna repa', 'Zob', 'Raž', 'Pšenoraž', 'Proso', 'Sirak', 'Lucerna', 'Djetelina', 'Crvena djetelina', 'Travnjaci',
+        'Krumpir', 'Duhan', 'Konoplja', 'Vinova loza', 'Jabuka', 'Kruška', 'Šljiva', 'Trešnja', 'Višnja', 'Breskva',
+        'Marelica', 'Orah', 'Lijeska', 'Maslina', 'Mandarina', 'Jagoda', 'Malina', 'Borovnica', 'Rajčica', 'Paprika',
+        'Krastavac', 'Lubenica', 'Dinja', 'Luk', 'Češnjak', 'Mrkva', 'Kupus', 'Zelena salata', 'Grah', 'Grašak',
+        'Bundeva', 'Tikva', 'Lavanda', 'Kamilica',
+    ];
+
     private static ?array $eppo = null;
     private static ?array $bbch = null;
 

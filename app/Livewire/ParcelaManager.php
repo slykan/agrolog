@@ -48,10 +48,14 @@ class ParcelaManager extends Component
     #[Computed]
     public function postojeceKulture()
     {
+        // prvo kulture koje je korisnik već upisao, zatim najčešće kulture; slobodan unos ostaje
         return Kultura::where('user_id', auth()->id())
             ->distinct()
             ->orderBy('naziv')
-            ->pluck('naziv');
+            ->pluck('naziv')
+            ->merge(SzbPopisi::CESTE_KULTURE)
+            ->unique(fn ($n) => mb_strtolower(trim($n)))
+            ->values();
     }
 
     /** Upisani ARKOD broj: potraži parcelu u javnom ARKOD-u, pokaži je na karti i ponudi službenu površinu. */
