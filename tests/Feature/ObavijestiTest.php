@@ -89,6 +89,20 @@ class ObavijestiTest extends TestCase
         $this->assertNotNull($v->fresh()->obavijesti_odjava_at);
     }
 
+    public function test_admin_ponovno_ukljuci_korisnika(): void
+    {
+        $admin = $this->admin();
+        $u = User::factory()->create(['obavijesti_odjava_at' => now()]);
+
+        $this->actingAs($admin)->get('/admin/korisnici')->assertOk()->assertSee(route('admin.korisnik.obavijesti', $u));
+        $this->actingAs($admin)->post(route('admin.korisnik.obavijesti', $u))->assertRedirect();
+        $this->assertNull($u->fresh()->obavijesti_odjava_at);
+        $this->actingAs($admin)->post(route('admin.korisnik.obavijesti', $u));
+        $this->assertNotNull($u->fresh()->obavijesti_odjava_at);
+
+        $this->actingAs($u)->post(route('admin.korisnik.obavijesti', $u))->assertForbidden();
+    }
+
     public function test_samo_admin(): void
     {
         $u = User::factory()->create();

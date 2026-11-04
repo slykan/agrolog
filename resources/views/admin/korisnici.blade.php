@@ -18,6 +18,9 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            @if(session('poruka'))
+                <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('poruka') }}</div>
+            @endif
 
             {{-- Brojke --}}
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -60,6 +63,7 @@
                                 <th class="py-2 pr-4 text-right">{!! $sortLink('parcele', 'Parcele') !!}</th>
                                 <th class="py-2 pr-4 text-right">Kulture</th>
                                 <th class="py-2 pr-4 text-right">{!! $sortLink('zapisi', 'Zapisi') !!}</th>
+                                <th class="py-2 pr-4 text-center" title="Prima obavijesti mailom (Admin → Obavijesti)">Obavijesti</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y">
@@ -87,9 +91,17 @@
                                         {{ $k->zapisi_count }}
                                         <div class="text-xs text-gray-400">{{ $k->gnojidbe_count }} gn · {{ $k->prskanja_count }} pr</div>
                                     </td>
+                                    <td class="py-2.5 pr-4 text-center" onclick="event.stopPropagation()">
+                                        <form method="POST" action="{{ route('admin.korisnik.obavijesti', $k) }}">
+                                            @csrf
+                                            <label class="inline-flex items-center gap-1 cursor-pointer" title="{{ $k->obavijesti_odjava_at ? 'Odjavljen ' . $k->obavijesti_odjava_at->timezone('Europe/Zagreb')->format('d.m.Y.') . ' — klikom ponovno uključite' : 'Prima obavijesti — klikom isključite' }}">
+                                                <input type="checkbox" class="rounded text-green-600" @checked(! $k->obavijesti_odjava_at) onchange="this.form.submit()">
+                                            </label>
+                                        </form>
+                                    </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="7" class="py-8 text-center text-gray-500">Nema korisnika.</td></tr>
+                                <tr><td colspan="8" class="py-8 text-center text-gray-500">Nema korisnika.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

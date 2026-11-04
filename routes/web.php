@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/korisnici', [AdminController::class, 'korisnici'])->name('korisnici');
         Route::get('/korisnici/{user}', [AdminController::class, 'korisnik'])->name('korisnik');
+        Route::post('/korisnici/{user}/obavijesti', [ObavijestController::class, 'prekidac'])->name('korisnik.obavijesti');
         Route::get('/obavijesti', [ObavijestController::class, 'index'])->name('obavijesti');
         Route::post('/obavijesti', [ObavijestController::class, 'posalji'])->name('obavijesti.posalji');
     });

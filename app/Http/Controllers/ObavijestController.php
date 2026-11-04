@@ -66,6 +66,14 @@ class ObavijestController extends Controller
             "Obavijest je u redu za slanje: {$i} primatelja. Slanje traje oko {$trajanje} min (" . self::U_MINUTI . ' mailova u minuti).');
     }
 
+    // POST /admin/korisnici/{user}/obavijesti — admin uključuje/isključuje korisnika s liste za obavijesti
+    public function prekidac(User $user)
+    {
+        $user->forceFill(['obavijesti_odjava_at' => $user->obavijesti_odjava_at ? null : now()])->save();
+
+        return back()->with('poruka', $user->email . ($user->obavijesti_odjava_at ? ' više ne prima obavijesti.' : ' ponovno prima obavijesti.'));
+    }
+
     // GET|POST /obavijesti/odjava/{user} (potpisani link iz maila)
     public function odjava(Request $request, User $user)
     {
