@@ -39,6 +39,17 @@
 
         <div class="relative max-w-6xl mx-auto px-6 pt-16 pb-14 lg:pt-24 lg:pb-20">
             <div class="max-w-xl">
+                {{-- istaknuta novost --}}
+                @php
+                    $istaknuta = \App\Http\Controllers\SadrzajController::novosti()[0] ?? null;
+                @endphp
+                @if($istaknuta)
+                    <a href="{{ route('novost', $istaknuta['slug']) }}" class="group inline-flex items-center gap-2 mb-7 max-w-full rounded-full bg-white/10 hover:bg-white/15 ring-1 ring-[#3ee36f]/50 pl-1.5 pr-4 py-1.5 text-sm transition">
+                        <span class="flex-none rounded-full bg-[#3ee36f] text-[#06120a] text-[11px] font-extrabold uppercase tracking-wide px-2.5 py-0.5">Novo</span>
+                        <span class="truncate text-white/90">{{ $istaknuta['kratko'] }}</span>
+                        <span class="flex-none text-[#3ee36f] group-hover:translate-x-0.5 transition" aria-hidden="true">→</span>
+                    </a>
+                @endif
                 <p class="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.35em] text-white/80 mb-6">Digitalni alati za poljoprivrednike</p>
                 <h1 class="text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-[4.2rem] font-extrabold tracking-tight">
                     Službeni obrazac<br>

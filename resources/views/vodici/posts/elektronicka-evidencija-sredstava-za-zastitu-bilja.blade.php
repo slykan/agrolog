@@ -23,6 +23,11 @@
     Fitosanitarni informacijski sustav (FIS) na portalu ePoljoprivreda. Do tada se evidencija može voditi u
     drugim elektroničkim alatima koji omogućuju strojno čitljiv izvoz podataka.
 </p>
+<p>
+    Ministarstvo je objavilo i prijedlog tablice „Evidencija SBZ.xlsx” s popisom usjeva (EPPO kodovi) i fenofaza (BBCH).
+    AgroLog izvozi evidenciju izravno u tu tablicu — vidi novost
+    <a href="{{ route('novost', 'evidencija-szb-format-ministarstva-2027') }}">Evidencija prskanja u formatu Ministarstva</a>.
+</p>
 
 <h2>Što evidencija mora sadržavati</h2>
 <p>Za <strong>svaku pojedinačnu primjenu</strong> evidencija mora biti točna, potpuna i ažurna, a uključuje najmanje:</p>

@@ -64,9 +64,15 @@
             @endif
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Kultura</label>
-                <input type="text" wire:model="kulturaForm.naziv" placeholder="npr. Pšenica"
+                <input type="text" wire:model.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
                        list="kulture-prijedlozi" autocomplete="off" class="form-input w-40">
                 @error('kulturaForm.naziv')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+            <div>
+                <label class="block text-xs text-gray-600 mb-1" title="Naziv usjeva s Ministarstvova popisa — iz njega se uzima EPPO kod za evidenciju SZB">Usjev za evidenciju (EPPO)</label>
+                <input type="text" wire:model="kulturaForm.eppo_naziv" placeholder="prepozna se iz naziva"
+                       list="eppo-popis" autocomplete="off" class="form-input w-56">
+                @error('kulturaForm.eppo_naziv')<p class="text-red-500 text-xs mt-1 max-w-xs">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Posađena površina (ha)</label>
@@ -152,12 +158,18 @@
                             <div class="flex flex-wrap gap-3 items-end">
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Kultura</label>
-                                    <input type="text" wire:model="kulturaForm.naziv" placeholder="npr. Pšenica"
+                                    <input type="text" wire:model.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
                                            list="kulture-prijedlozi" autocomplete="off" class="form-input w-40">
                                     @error('kulturaForm.naziv')<p class="text-red-500 text-xs mt-1 max-w-xs">{{ $message }}</p>@enderror
                                     @if(($kultura->gnojidbe_count + $kultura->prskanja_count) > 0)
                                         <p class="text-xs text-gray-500 mt-1 max-w-xs">Naziv se ne može mijenjati jer kultura ima zapise. Za novu kulturu koristi „Zamijeni kulturu".</p>
                                     @endif
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-600 mb-1" title="Naziv usjeva s Ministarstvova popisa — iz njega se uzima EPPO kod za evidenciju SZB">Usjev za evidenciju (EPPO)</label>
+                                    <input type="text" wire:model="kulturaForm.eppo_naziv" placeholder="prepozna se iz naziva"
+                                           list="eppo-popis" autocomplete="off" class="form-input w-56">
+                                    @error('kulturaForm.eppo_naziv')<p class="text-red-500 text-xs mt-1 max-w-xs">{{ $message }}</p>@enderror
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Posađena površina (ha)</label>
@@ -181,6 +193,11 @@
                     <tr class="border-t border-gray-100 hover:bg-gray-50 {{ $kultura->zavrsena_at ? 'text-gray-400 bg-gray-50/60' : '' }}">
                         <td class="px-4 py-2 font-medium uppercase">
                             {{ $kultura->naziv }}
+                            @if($kultura->eppo_kod)
+                                <span class="ml-1 text-[10px] font-normal normal-case text-gray-400" title="{{ $kultura->eppo_naziv }}">EPPO {{ $kultura->eppo_kod }}</span>
+                            @elseif(! $kultura->zavrsena_at)
+                                <button wire:click="editKultura({{ $kultura->id }})" class="ml-1 text-[10px] font-normal normal-case text-amber-600 hover:underline" title="Za evidenciju SZB od 2027. odaberite usjev s Ministarstvova popisa">bez EPPO koda</button>
+                            @endif
                             @if($kultura->zavrsena_at)
                                 <span class="ml-2 normal-case text-xs font-normal bg-gray-200 text-gray-600 rounded px-2 py-0.5">završena {{ $kultura->zavrsena_at->format('d.m.Y.') }}</span>
                             @endif

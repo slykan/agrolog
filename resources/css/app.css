@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+[x-cloak] { display: none !important; }
+
 @layer components {
     .btn-primary {
         @apply bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded transition;

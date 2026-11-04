@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Prskanje;
+use App\Support\SzbExcelIzvoz;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -12,6 +14,27 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class EvidencijaIzvozController extends Controller
 {
+    /** Ministarstvov predložak "Evidencija SBZ.xlsx" popunjen zapisima (format obvezan od 1.1.2027.). */
+    public function prskanjaXlsx(Request $request): BinaryFileResponse
+    {
+        $godina = (int) $request->query('godina') ?: null;
+
+        $redovi = Prskanje::where('prskanja.user_id', $request->user()->id)
+            ->join('kulture', 'kulture.id', '=', 'prskanja.kultura_id')
+            ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
+            ->when($godina, fn ($q) => $q->whereYear('prskanja.datum_tretiranja', $godina))
+            ->orderBy('prskanja.datum_tretiranja')
+            ->orderBy('prskanja.id')
+            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj')
+            ->get();
+
+        $ime = 'evidencija-szb' . ($godina ? '-' . $godina : '') . '-' . now()->format('Y-m-d') . '.xlsx';
+
+        return response()->download(SzbExcelIzvoz::napravi($redovi, $request->user()), $ime, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend();
+    }
+
     public function prskanja(Request $request): StreamedResponse
     {
         $godina = (int) $request->query('godina') ?: null;
@@ -22,7 +45,7 @@ class EvidencijaIzvozController extends Controller
             ->when($godina, fn ($q) => $q->whereYear('prskanja.datum_tretiranja', $godina))
             ->orderBy('prskanja.datum_tretiranja')
             ->orderBy('prskanja.id')
-            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'parcele.arkod_broj')
+            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj')
             ->get();
 
         $ime = 'evidencija-szb'.($godina ? '-'.$godina : '').'-'.now()->format('Y-m-d').'.csv';
@@ -34,6 +57,7 @@ class EvidencijaIzvozController extends Controller
                 'Datum primjene', 'Vrijeme od', 'Vrijeme do', 'ARKOD ID parcele', 'Kultura',
                 'Tretirana površina (ha)', 'Trgovački naziv sredstva', 'Registracijski broj',
                 'Doza (l/ha ili kg/ha)', 'Količina vode (l/ha)',
+                'EPPO kod', 'Fenofaza (BBCH)', 'Vrsta uporabe', 'Sustav proizvodnje',
             ], ';');
             $broj = fn ($v) => $v === null ? '' : str_replace('.', ',', rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.'));
             foreach ($redovi as $r) {
@@ -48,6 +72,10 @@ class EvidencijaIzvozController extends Controller
                     $r->registracijski_broj,
                     $broj($r->kolicina_sredstva_l_ha),
                     $broj($r->kolicina_vode_l_ha),
+                    $r->eppo_kod,
+                    $r->bbch,
+                    \App\Support\SzbPopisi::VRSTE_UPORABE[$r->vrsta_uporabe] ?? '',
+                    \App\Support\SzbPopisi::SUSTAVI[$r->sustav_proizvodnje] ?? '',
                 ], ';');
             }
             fclose($out);

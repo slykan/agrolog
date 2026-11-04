@@ -34,6 +34,27 @@ class SadrzajController extends Controller
         ];
     }
 
+    /** Novosti o AgroLogu i propisima, najnovija prva (prva se ističe na naslovnici). */
+    public static function novosti(): array
+    {
+        return [
+            ['slug' => 'evidencija-szb-format-ministarstva-2027', 'title' => 'Evidencija prskanja u formatu Ministarstva: AgroLog je spreman za 2027.', 'kratko' => 'Evidencija SZB u formatu Ministarstva za 2027.', 'excerpt' => 'Od 1. siječnja 2027. evidencija o uporabi sredstava za zaštitu bilja vodi se u propisanom elektroničkom formatu. AgroLog sada bilježi EPPO kod, fenofazu (BBCH), vrstu uporabe i sustav proizvodnje te izvozi evidenciju izravno u Ministarstvovu Excel tablicu.', 'date' => '2026-11-04', 'read' => '4 min'],
+        ];
+    }
+
+    public function novostiIndex(): View
+    {
+        return view('novosti.index', ['novosti' => self::novosti()]);
+    }
+
+    public function novost(string $slug): View
+    {
+        $n = collect(self::novosti())->firstWhere('slug', $slug);
+        abort_unless($n && view()->exists('novosti.posts.'.$slug), 404);
+
+        return view('novosti.show', ['n' => $n, 'ostali' => collect(self::novosti())->where('slug', '!=', $slug)->values()->all()]);
+    }
+
     public function alati(): View
     {
         return view('alati.index', ['alati' => self::ALATI]);

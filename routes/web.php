@@ -28,6 +28,8 @@ Route::get('/upute', function () {
 
 Route::get('/alati', [SadrzajController::class, 'alati'])->name('alati');
 Route::get('/alati/{slug}', [SadrzajController::class, 'alat'])->name('alat');
+Route::get('/novosti', [SadrzajController::class, 'novostiIndex'])->name('novosti');
+Route::get('/novosti/{slug}', [SadrzajController::class, 'novost'])->name('novost');
 Route::get('/vodici', [SadrzajController::class, 'vodiciIndex'])->name('vodici');
 Route::get('/vodici/{slug}', [SadrzajController::class, 'vodic'])->name('vodic');
 
@@ -42,6 +44,10 @@ Route::get('/sitemap.xml', function () {
     $urls[] = ['loc' => route('alati'), 'priority' => '0.9', 'changefreq' => 'monthly'];
     foreach (array_keys(SadrzajController::ALATI) as $s) {
         $urls[] = ['loc' => route('alat', $s), 'priority' => '0.9', 'changefreq' => 'monthly'];
+    }
+    $urls[] = ['loc' => route('novosti'), 'priority' => '0.8', 'changefreq' => 'weekly'];
+    foreach (SadrzajController::novosti() as $n) {
+        $urls[] = ['loc' => route('novost', $n['slug']), 'priority' => '0.8', 'changefreq' => 'monthly'];
     }
     $urls[] = ['loc' => route('vodici'), 'priority' => '0.8', 'changefreq' => 'weekly'];
     foreach (SadrzajController::vodici() as $v) {
@@ -60,6 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/gnojidba', fn() => view('gnojidba'))->name('gnojidba');
     Route::get('/prskanje', fn() => view('prskanje'))->name('prskanje');
     Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
+    Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/korisnici', [AdminController::class, 'korisnici'])->name('korisnici');

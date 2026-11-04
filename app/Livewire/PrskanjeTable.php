@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Prskanje;
 use App\Models\Kultura;
+use App\Support\SzbPopisi;
 
 class PrskanjeTable extends Component
 {
@@ -22,7 +23,7 @@ class PrskanjeTable extends Component
     ];
     public array $editForm = [];
     public ?int $editingId = null;
-    public array $visibleColumns = ['datum', 'arkod', 'kultura', 'vel_povrsina', 'tret_povrsina', 'sredstvo', 'kolicina', 'vrijeme', 'voda'];
+    public array $visibleColumns = ['datum', 'arkod', 'kultura', 'vel_povrsina', 'tret_povrsina', 'sredstvo', 'kolicina', 'vrijeme', 'voda', 'szb'];
     public string $search = '';
     public array $filters = ['datum' => '', 'arkod' => '', 'kultura' => '', 'sredstvo' => ''];
     public string $formKulturaSearch = '';
@@ -50,7 +51,46 @@ class PrskanjeTable extends Component
 
     public function mount(): void
     {
-        $this->form['datum_tretiranja'] = date('Y-m-d');
+        $this->form = $this->praznaForma();
+    }
+
+    /** Nova prazna forma; vrsta uporabe i sustav proizvodnje preuzimaju se iz zadnjeg prskanja. */
+    private function praznaForma(): array
+    {
+        $zadnje = Prskanje::where('user_id', auth()->id())->latest('id')->first(['vrsta_uporabe', 'sustav_proizvodnje']);
+
+        return [
+            'kultura_id'               => '',
+            'datum_tretiranja'         => date('Y-m-d'),
+            'tretirana_povrsina_ha'    => '',
+            'trgovacki_naziv_sredstva' => '',
+            'registracijski_broj'      => '',
+            'kolicina_sredstva_l_ha'   => '',
+            'vrijeme_od'               => '',
+            'vrijeme_do'               => '',
+            'kolicina_vode_l_ha'       => '',
+            'vrsta_uporabe'            => $zadnje?->vrsta_uporabe ?? 'otvoreno',
+            'bbch'                     => '',
+            'sustav_proizvodnje'       => $zadnje?->sustav_proizvodnje ?? 'neekoloska',
+        ];
+    }
+
+    /** Pravila za polja evidencije SZB 2027. (EU 2023/564), zajednička za novi i uređeni zapis. */
+    private function szbPravila(string $prefix): array
+    {
+        return [
+            "$prefix.vrsta_uporabe"      => 'required|in:' . implode(',', array_keys(SzbPopisi::VRSTE_UPORABE)),
+            "$prefix.bbch"               => 'nullable|string|max:255',
+            "$prefix.sustav_proizvodnje" => 'required|in:' . implode(',', array_keys(SzbPopisi::SUSTAVI)),
+        ];
+    }
+
+    /** Fenofaze (BBCH) za kulturu odabranu u formi — prijedlozi u polju, slobodan unos je dopušten. */
+    public function bbchPrijedlozi($kulturaId): array
+    {
+        $k = $kulturaId ? $this->kulture->firstWhere('id', (int) $kulturaId) : null;
+
+        return $k ? SzbPopisi::bbchZaUsjev($k->eppo_naziv ?: $k->naziv) : [];
     }
 
     public function getKultureProperty()
@@ -176,17 +216,7 @@ class PrskanjeTable extends Component
         $this->showForm = true;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = [
-            'kultura_id'               => '',
-            'datum_tretiranja'         => date('Y-m-d'),
-            'tretirana_povrsina_ha'    => '',
-            'trgovacki_naziv_sredstva' => '',
-            'registracijski_broj'       => '',
-            'kolicina_sredstva_l_ha'   => '',
-            'vrijeme_od'               => '',
-            'vrijeme_do'               => '',
-            'kolicina_vode_l_ha'       => '',
-        ];
+        $this->form = $this->praznaForma();
     }
 
     public function cancelAdd(): void
@@ -194,13 +224,7 @@ class PrskanjeTable extends Component
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = [
-            'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),
-            'tretirana_povrsina_ha' => '', 'trgovacki_naziv_sredstva' => '',
-            'registracijski_broj'       => '',
-            'kolicina_sredstva_l_ha' => '', 'vrijeme_od' => '',
-            'vrijeme_do' => '', 'kolicina_vode_l_ha' => '',
-        ];
+        $this->form = $this->praznaForma();
         $this->resetErrorBag();
     }
 
@@ -245,7 +269,7 @@ class PrskanjeTable extends Component
             'form.vrijeme_od'               => 'nullable|date_format:H:i',
             'form.vrijeme_do'               => 'nullable|date_format:H:i',
             'form.kolicina_vode_l_ha'       => 'nullable|numeric|min:0|max:999999.99',
-        ]);
+        ] + $this->szbPravila('form'));
 
         $data = $this->form;
         $data['tretirana_povrsina_ha'] = $data['tretirana_povrsina_ha'] !== '' ? $data['tretirana_povrsina_ha'] : null;
@@ -253,18 +277,13 @@ class PrskanjeTable extends Component
         $data['vrijeme_od'] = $data['vrijeme_od'] !== '' ? $data['vrijeme_od'] : null;
         $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
         $data['registracijski_broj'] = blank($data['registracijski_broj'] ?? null) ? null : trim($data['registracijski_broj']);
+        $data['bbch'] = blank($data['bbch'] ?? null) ? null : trim($data['bbch']);
         Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
 
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = [
-            'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),
-            'tretirana_povrsina_ha' => '', 'trgovacki_naziv_sredstva' => '',
-            'registracijski_broj'       => '',
-            'kolicina_sredstva_l_ha' => '', 'vrijeme_od' => '',
-            'vrijeme_do' => '', 'kolicina_vode_l_ha' => '',
-        ];
+        $this->form = $this->praznaForma();
     }
 
     public function saveMultiple(): void
@@ -278,7 +297,7 @@ class PrskanjeTable extends Component
             'form.vrijeme_od'               => 'nullable|date_format:H:i',
             'form.vrijeme_do'               => 'nullable|date_format:H:i',
             'form.kolicina_vode_l_ha'       => 'nullable|numeric|min:0|max:999999.99',
-        ]);
+        ] + $this->szbPravila('form'));
 
         $kulture = $this->filteredKulture;
 
@@ -287,7 +306,7 @@ class PrskanjeTable extends Component
             return;
         }
 
-        $nullableFields = ['tretirana_povrsina_ha', 'trgovacki_naziv_sredstva', 'registracijski_broj', 'kolicina_sredstva_l_ha', 'kolicina_vode_l_ha', 'vrijeme_od', 'vrijeme_do'];
+        $nullableFields = ['tretirana_povrsina_ha', 'trgovacki_naziv_sredstva', 'registracijski_broj', 'bbch', 'kolicina_sredstva_l_ha', 'kolicina_vode_l_ha', 'vrijeme_od', 'vrijeme_do'];
         $data = $this->form;
         foreach ($nullableFields as $field) {
             $data[$field] = blank($data[$field]) ? null : $data[$field];
@@ -305,13 +324,7 @@ class PrskanjeTable extends Component
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
-        $this->form = [
-            'kultura_id' => '', 'datum_tretiranja' => date('Y-m-d'),
-            'tretirana_povrsina_ha' => '', 'trgovacki_naziv_sredstva' => '',
-            'registracijski_broj'       => '',
-            'kolicina_sredstva_l_ha' => '', 'vrijeme_od' => '',
-            'vrijeme_do' => '', 'kolicina_vode_l_ha' => '',
-        ];
+        $this->form = $this->praznaForma();
     }
 
     public function startEdit(int $id): void
@@ -328,6 +341,9 @@ class PrskanjeTable extends Component
             'vrijeme_od'               => $row->vrijeme_od ? substr($row->vrijeme_od, 0, 5) : '',
             'vrijeme_do'               => $row->vrijeme_do ? substr($row->vrijeme_do, 0, 5) : '',
             'kolicina_vode_l_ha'       => $row->kolicina_vode_l_ha,
+            'vrsta_uporabe'            => $row->vrsta_uporabe ?? 'otvoreno',
+            'bbch'                     => $row->bbch ?? '',
+            'sustav_proizvodnje'       => $row->sustav_proizvodnje ?? 'neekoloska',
         ];
     }
 
@@ -343,7 +359,7 @@ class PrskanjeTable extends Component
             'editForm.vrijeme_od'               => 'nullable|date_format:H:i',
             'editForm.vrijeme_do'               => 'nullable|date_format:H:i',
             'editForm.kolicina_vode_l_ha'       => 'nullable|numeric|min:0|max:999999.99',
-        ]);
+        ] + $this->szbPravila('editForm'));
 
         $data = $this->editForm;
         $data['tretirana_povrsina_ha'] = $data['tretirana_povrsina_ha'] !== '' ? $data['tretirana_povrsina_ha'] : null;
@@ -351,6 +367,7 @@ class PrskanjeTable extends Component
         $data['vrijeme_od'] = $data['vrijeme_od'] !== '' ? $data['vrijeme_od'] : null;
         $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
         $data['registracijski_broj'] = blank($data['registracijski_broj'] ?? null) ? null : trim($data['registracijski_broj']);
+        $data['bbch'] = blank($data['bbch'] ?? null) ? null : trim($data['bbch']);
         Prskanje::where('id', $this->editingId)
             ->where('user_id', auth()->id())
             ->update($data);
@@ -379,6 +396,9 @@ class PrskanjeTable extends Component
             'vrijeme_od'                => $row->vrijeme_od,
             'vrijeme_do'                => $row->vrijeme_do,
             'kolicina_vode_l_ha'        => $row->kolicina_vode_l_ha,
+            'vrsta_uporabe'             => $row->vrsta_uporabe,
+            'bbch'                      => $row->bbch,
+            'sustav_proizvodnje'        => $row->sustav_proizvodnje,
         ]);
     }
 

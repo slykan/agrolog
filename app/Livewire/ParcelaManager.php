@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Models\Parcela;
 use App\Models\Kultura;
+use App\Support\SzbPopisi;
 
 class ParcelaManager extends Component
 {
@@ -15,7 +16,7 @@ class ParcelaManager extends Component
 
     public bool $showKulturaForm = false;
     public ?int $kulturaParcelaId = null;
-    public array $kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => ''];
+    public array $kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => ''];
     public ?int $editKulturaId = null;
 
     /** Kultura koju nova kultura zamjenjuje (stara se označi završenom i ostaje u evidenciji). */
@@ -77,9 +78,18 @@ class ParcelaManager extends Component
             $this->editKulturaId = null;
             $this->kulturaForm = [
                 'naziv' => '',
+                'eppo_naziv' => '',
                 'posadjena_povrsina_ha' => $parcela->povrsina_ha,
                 'godina' => date('Y'),
             ];
+        }
+    }
+
+    /** Upisani naziv kulture predloži usjev s Ministarstvova popisa (EPPO), ako još nije odabran. */
+    public function updatedKulturaFormNaziv($naziv): void
+    {
+        if (blank($this->kulturaForm['eppo_naziv'] ?? null)) {
+            $this->kulturaForm['eppo_naziv'] = SzbPopisi::usjevZaKulturu($naziv)[0] ?? '';
         }
     }
 
@@ -121,7 +131,7 @@ class ParcelaManager extends Component
         $this->showKulturaForm = true;
         $this->editKulturaId = null;
         $this->zamjenaZaId = null;
-        $this->kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => date('Y')];
+        $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => date('Y')];
     }
 
     /** Nova kultura na istoj parceli umjesto postojeće (npr. ječam → kukuruz). Stara ostaje sa svim zapisima. */
@@ -133,7 +143,7 @@ class ParcelaManager extends Component
         $this->zavrsenaDatum = date('Y-m-d');
         $this->editKulturaId = null;
         $this->showKulturaForm = true;
-        $this->kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => $k->posadjena_povrsina_ha, 'godina' => date('Y')];
+        $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => $k->posadjena_povrsina_ha, 'godina' => date('Y')];
         $this->poruka = '';
         $this->clearValidation();
     }
@@ -162,6 +172,7 @@ class ParcelaManager extends Component
         $this->kulturaParcelaId = $k->parcela_id;
         $this->kulturaForm = [
             'naziv'                 => $k->naziv,
+            'eppo_naziv'            => $k->eppo_naziv ?? '',
             'posadjena_povrsina_ha' => $k->posadjena_povrsina_ha,
             'godina'                => $k->godina,
         ];
@@ -172,7 +183,7 @@ class ParcelaManager extends Component
     public function cancelKulturaEdit(): void
     {
         $this->editKulturaId = null;
-        $this->kulturaForm = ['naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => date('Y')];
+        $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => date('Y')];
         $this->clearValidation();
     }
 
@@ -182,7 +193,16 @@ class ParcelaManager extends Component
             'kulturaForm.naziv'                 => 'required|string|max:100',
             'kulturaForm.posadjena_povrsina_ha' => 'required|numeric|min:0.01',
             'kulturaForm.godina'                => 'required|integer|min:2000|max:2100',
-        ]);
+            'kulturaForm.eppo_naziv'            => 'nullable|string|max:255',
+        ], [], ['kulturaForm.eppo_naziv' => 'usjev (EPPO)']);
+
+        // Usjev za evidenciju SZB: s Ministarstvova popisa, ili prepoznat iz naziva kulture
+        $eppoNaziv = trim((string) ($this->kulturaForm['eppo_naziv'] ?? ''));
+        if ($eppoNaziv !== '' && ! isset(SzbPopisi::eppo()[$eppoNaziv])) {
+            $this->addError('kulturaForm.eppo_naziv', 'Odaberite usjev s ponuđenog popisa Ministarstva (ili ostavite prazno).');
+            return;
+        }
+        $usjev = $eppoNaziv !== '' ? [$eppoNaziv, SzbPopisi::eppo()[$eppoNaziv]] : SzbPopisi::usjevZaKulturu($this->kulturaForm['naziv']);
 
         $parcela = Parcela::where('user_id', auth()->id())->findOrFail($this->kulturaParcelaId);
 
@@ -219,6 +239,8 @@ class ParcelaManager extends Component
         $data = array_merge($this->kulturaForm, [
             'user_id'    => auth()->id(),
             'parcela_id' => $this->kulturaParcelaId,
+            'eppo_naziv' => $usjev[0] ?? null,
+            'eppo_kod'   => $usjev[1] ?? null,
         ]);
 
         if ($this->editKulturaId) {
@@ -239,6 +261,7 @@ class ParcelaManager extends Component
             // Ostavlja formu otvorenom za unos sledeće kulture
             $this->kulturaForm = [
                 'naziv' => '',
+                'eppo_naziv' => '',
                 'posadjena_povrsina_ha' => '',
                 'godina' => date('Y'),
             ];

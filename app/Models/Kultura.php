@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Kultura extends Model
 {
     protected $table = 'kulture';
-    protected $fillable = ['user_id', 'parcela_id', 'naziv', 'posadjena_povrsina_ha', 'godina', 'zavrsena_at'];
+    protected $fillable = ['user_id', 'parcela_id', 'naziv', 'eppo_naziv', 'eppo_kod', 'posadjena_povrsina_ha', 'godina', 'zavrsena_at'];
     protected $casts = ['zavrsena_at' => 'date'];
 
     public function user() { return $this->belongsTo(User::class); }

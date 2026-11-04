@@ -8,6 +8,29 @@
     <div class="py-10">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
+            {{-- Što je novo: najnovija novost, može se zatvoriti (pamti se u pregledniku po novosti) --}}
+            @php
+                $novost = \App\Http\Controllers\SadrzajController::novosti()[0] ?? null;
+            @endphp
+            @if($novost)
+                <div x-data="{
+                        kljuc: 'agrolog-novost-{{ $novost['slug'] }}',
+                        vidljivo: false,
+                        init() { try { this.vidljivo = localStorage.getItem(this.kljuc) !== 'zatvoreno' } catch (e) { this.vidljivo = true } },
+                        zatvori() { this.vidljivo = false; try { localStorage.setItem(this.kljuc, 'zatvoreno') } catch (e) {} },
+                     }"
+                     x-show="vidljivo" x-cloak
+                     class="relative bg-green-600 text-white rounded-xl p-6 pr-12 shadow-sm">
+                    <button type="button" @click="zatvori()"
+                            class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-white hover:bg-white/15 transition"
+                            aria-label="Zatvori">&#10005;</button>
+                    <p class="text-xs font-extrabold uppercase tracking-widest text-green-100 mb-1">Što je novo!</p>
+                    <h3 class="text-lg font-bold mb-1">{{ $novost['title'] }}</h3>
+                    <p class="text-sm text-green-50 leading-relaxed mb-4">EPPO kod uz svaku kulturu, fenofaza (BBCH) pri prskanju i izvoz evidencije izravno u Ministarstvovu Excel tablicu — obvezni format od 1.1.2027.</p>
+                    <a href="{{ route('novost', $novost['slug']) }}" class="inline-flex items-center gap-1.5 bg-white text-green-700 hover:bg-green-50 font-semibold text-sm px-4 py-2 rounded-lg transition">Više <span aria-hidden="true">→</span></a>
+                </div>
+            @endif
+
             {{-- Pozdrav --}}
             <div class="bg-white shadow-sm rounded-xl p-8">
                 <h3 class="text-lg font-semibold text-green-700 mb-2">AgroLog &mdash; evidencija poljoprivrednih radova</h3>
@@ -75,7 +98,7 @@
             <div class="bg-green-50 border border-green-200 rounded-xl p-6 text-sm text-gray-600">
                 <p>
                     Za prijedloge, dodatke ili prijavu problema obratite se na:
-                    <a href="mailto:slynetwork@gmail.com" class="font-semibold text-green-700 hover:underline">slynetwork@gmail.com</a>
+                    <a href="mailto:info@on-click.hr" class="font-semibold text-green-700 hover:underline">info@on-click.hr</a>
                 </p>
             </div>
 
