@@ -63,7 +63,7 @@ class EvidencijaSzbTest extends TestCase
         $csv = $this->actingAs($u)->get('/prskanje/izvoz.csv')->assertOk()->streamedContent();
 
         $this->assertStringContainsString('Registracijski broj', $csv);
-        $this->assertStringContainsString('2026-05-01;;;2468135;Pšenica;3,2;"Sredstvo Ž";REG-42;1,5;', $csv);
+        $this->assertStringContainsString('01.05.2026;;;2468135;Pšenica;3,2;"Sredstvo Ž";REG-42;1,5;', $csv);
         $this->assertStringNotContainsString('Tuđe sredstvo', $csv);
     }
 
