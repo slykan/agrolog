@@ -7,9 +7,12 @@ use App\Models\Prskanje;
 use App\Models\Kultura;
 use App\Models\SzbSredstvo;
 use App\Support\SzbPopisi;
+use App\Livewire\Concerns\BiraSkladiste;
 
 class PrskanjeTable extends Component
 {
+    use BiraSkladiste;
+
     public bool $showForm = false;
     public array $form = [
         'kultura_id'                => '',
@@ -77,6 +80,7 @@ class PrskanjeTable extends Component
             'vrsta_uporabe'            => $zadnje?->vrsta_uporabe ?? 'otvoreno',
             'bbch'                     => '',
             'sustav_proizvodnje'       => $zadnje?->sustav_proizvodnje ?? 'neekoloska',
+            'skladiste_id'             => \App\Support\Skladiste::zadanoId(auth()->user()) ?? '',
         ];
     }
 
@@ -294,6 +298,7 @@ class PrskanjeTable extends Component
         $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
         $data['registracijski_broj'] = blank($data['registracijski_broj'] ?? null) ? null : trim($data['registracijski_broj']);
         $data['bbch'] = blank($data['bbch'] ?? null) ? null : trim($data['bbch']);
+        $data['skladiste_id'] = $this->skladisteZaSpremanje($data['skladiste_id'] ?? null);
         Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
 
         $this->showForm = false;
@@ -328,6 +333,7 @@ class PrskanjeTable extends Component
             $data[$field] = blank($data[$field]) ? null : $data[$field];
         }
         $data['user_id'] = auth()->id();
+        $data['skladiste_id'] = $this->skladisteZaSpremanje($data['skladiste_id'] ?? null);
         unset($data['kultura_id']);
 
         foreach ($kulture as $kultura) {
@@ -361,6 +367,7 @@ class PrskanjeTable extends Component
             'vrsta_uporabe'            => $row->vrsta_uporabe ?? 'otvoreno',
             'bbch'                     => $row->bbch ?? '',
             'sustav_proizvodnje'       => $row->sustav_proizvodnje ?? 'neekoloska',
+            'skladiste_id'             => $row->skladiste_id ?? '',
         ];
     }
 
@@ -385,6 +392,7 @@ class PrskanjeTable extends Component
         $data['vrijeme_do'] = $data['vrijeme_do'] !== '' ? $data['vrijeme_do'] : null;
         $data['registracijski_broj'] = blank($data['registracijski_broj'] ?? null) ? null : trim($data['registracijski_broj']);
         $data['bbch'] = blank($data['bbch'] ?? null) ? null : trim($data['bbch']);
+        $data['skladiste_id'] = $this->skladisteZaSpremanje($data['skladiste_id'] ?? null);
         Prskanje::where('id', $this->editingId)
             ->where('user_id', auth()->id())
             ->update($data);
@@ -417,6 +425,7 @@ class PrskanjeTable extends Component
             'vrsta_uporabe'             => $row->vrsta_uporabe,
             'bbch'                      => $row->bbch,
             'sustav_proizvodnje'        => $row->sustav_proizvodnje,
+            'skladiste_id'              => $row->skladiste_id,
         ]);
     }
 

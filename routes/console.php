@@ -20,5 +20,11 @@ Artisan::command('szb:registar', function () {
 
 Schedule::command('szb:registar')->weeklyOn(1, '04:30');
 
+Artisan::command('mehanizacija:podsjetnici', function () {
+    $this->info('Poslano podsjetnika: ' . \App\Support\Mehanizacija::posaljiPodsjetnike());
+})->purpose('Pošalji mailom podsjetnike na rokove mehanizacije (registracija, osiguranje, servis...)');
+
+Schedule::command('mehanizacija:podsjetnici')->dailyAt('07:00');
+
 // red čekanja (obavijesti mailom): obrađuje se svake minute preko cron schedule:run
 Schedule::command('queue:work database --stop-when-empty --max-time=50 --tries=3')->everyMinute()->withoutOverlapping();

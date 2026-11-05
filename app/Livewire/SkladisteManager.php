@@ -4,45 +4,139 @@ namespace App\Livewire;
 
 use App\Models\Gnojidba;
 use App\Models\Prskanje;
+use App\Models\Skladiste as SkladisteModel;
 use App\Models\SkladisteUlaz;
 use App\Models\SzbSredstvo;
 use App\Support\Gnojiva;
 use App\Support\Skladiste;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class SkladisteManager extends Component
 {
+    /** Skladište koje se prikazuje (kartica). */
+    public ?int $aktivno = null;
+
+    /** Forma skladišta (novo ili uređivanje). */
+    public bool $showSkladisteForm = false;
+    public ?int $skladisteEditId = null;
+    public array $sf = ['naziv' => '', 'lokacija' => ''];
+
+    /** Forma nabave. */
     public bool $showForm = false;
     public ?int $editingId = null;
     public array $form = [];
-    /** Otvoreni artikl (md5 ključa "vrsta|NAZIV") s popisom ulaza i potrošnje. */
+
+    /** Otvoreni artikl (md5 ključa "skladiste|vrsta|NAZIV") s popisom ulaza i potrošnje. */
     public ?string $otvoren = null;
     /** Stvarno stanje upisano pri inventuri, po artiklu (md5 ključa). */
     public array $inventura = [];
+    /** Prijenos u drugo skladište, po artiklu: [kolicina, skladiste_id]. */
+    public array $prijenos = [];
     public string $filterVrsta = '';
+    public string $poruka = '';
 
     protected array $validationAttributes = [
-        'form.naziv' => 'naziv', 'form.datum' => 'datum', 'form.kolicina' => 'količina',
-        'form.jedinica' => 'jedinica', 'form.cijena' => 'cijena', 'form.dobavljac' => 'dobavljač',
+        'form.naziv' => 'naziv', 'form.datum' => 'datum', 'form.kolicina' => 'količina', 'form.skladiste_id' => 'skladište',
+        'form.jedinica' => 'jedinica', 'form.cijena' => 'cijena', 'form.dobavljac' => 'dobavljač', 'sf.naziv' => 'naziv skladišta',
     ];
 
     public function mount(): void
     {
+        $this->aktivno = Skladiste::zadanoId(auth()->user());
         $this->form = $this->praznaForma();
+        $this->showSkladisteForm = ! $this->aktivno;   // nema skladišta: odmah forma za prvo
     }
 
-    private function praznaForma(string $vrsta = 'szb', string $naziv = ''): array
+    private function praznaForma(string $vrsta = 'szb', string $naziv = '', ?int $skladisteId = null): array
     {
         return [
-            'vrsta' => $vrsta, 'naziv' => $naziv, 'datum' => date('Y-m-d'), 'kolicina' => '',
+            'skladiste_id' => $skladisteId ?? $this->aktivno, 'vrsta' => $vrsta, 'naziv' => $naziv, 'datum' => date('Y-m-d'), 'kolicina' => '',
             'jedinica' => $vrsta === 'gnojivo' ? 'kg' : 'L', 'cijena' => '', 'dobavljac' => '', 'napomena' => '',
         ];
     }
 
-    public function ukljuci(): void
+    private function mojeSkladiste($id): SkladisteModel
     {
-        auth()->user()->forceFill(['koristi_skladiste' => true])->save();
+        return SkladisteModel::where('user_id', auth()->id())->findOrFail((int) $id);
     }
+
+    // ---- skladišta ----
+
+    public function odaberi(int $id): void
+    {
+        $this->aktivno = $this->mojeSkladiste($id)->id;
+        $this->otvoren = null;
+        $this->poruka = '';
+    }
+
+    public function novoSkladiste(): void
+    {
+        $this->skladisteEditId = null;
+        $this->sf = ['naziv' => '', 'lokacija' => ''];
+        $this->showSkladisteForm = true;
+        $this->resetErrorBag();
+    }
+
+    public function urediSkladiste(int $id): void
+    {
+        $s = $this->mojeSkladiste($id);
+        $this->skladisteEditId = $s->id;
+        $this->sf = ['naziv' => $s->naziv, 'lokacija' => $s->lokacija ?? ''];
+        $this->showSkladisteForm = true;
+        $this->resetErrorBag();
+    }
+
+    public function spremiSkladiste(): void
+    {
+        $this->validate(['sf.naziv' => 'required|string|max:100', 'sf.lokacija' => 'nullable|string|max:150']);
+        $podaci = ['naziv' => trim($this->sf['naziv']), 'lokacija' => blank($this->sf['lokacija']) ? null : trim($this->sf['lokacija'])];
+
+        if ($this->skladisteEditId) {
+            $this->mojeSkladiste($this->skladisteEditId)->update($podaci);
+        } else {
+            $prvo = ! SkladisteModel::where('user_id', auth()->id())->exists();
+            $s = SkladisteModel::create($podaci + ['user_id' => auth()->id(), 'zadano' => $prvo]);
+            $this->aktivno = $s->id;
+        }
+        $this->showSkladisteForm = false;
+        $this->skladisteEditId = null;
+    }
+
+    public function odustaniSkladiste(): void
+    {
+        $this->showSkladisteForm = false;
+        $this->skladisteEditId = null;
+        $this->resetErrorBag();
+    }
+
+    /** Zadano skladište: iz njega troše zapisi prskanja i gnojidbe kojima skladište nije izabrano. */
+    public function postaviZadano(int $id): void
+    {
+        $s = $this->mojeSkladiste($id);
+        SkladisteModel::where('user_id', auth()->id())->update(['zadano' => false]);
+        $s->update(['zadano' => true]);
+    }
+
+    /** Briše se samo prazno skladište (bez ulaza); zapisi koji su iz njega trošili prelaze na zadano. */
+    public function obrisiSkladiste(int $id): void
+    {
+        $s = $this->mojeSkladiste($id);
+        if ($s->ulazi()->exists()) {
+            $this->poruka = 'Skladište "' . $s->naziv . '" ima ulaze. Prvo ih obrišite ili prenesite robu u drugo skladište.';
+            return;
+        }
+        $bioZadano = $s->zadano;
+        $s->delete();
+        if ($bioZadano) {
+            SkladisteModel::where('user_id', auth()->id())->orderBy('id')->first()?->update(['zadano' => true]);
+        }
+        $this->aktivno = Skladiste::zadanoId(auth()->user());
+        $this->showSkladisteForm = ! $this->aktivno;
+        $this->poruka = '';
+    }
+
+    // ---- nabava ----
 
     /** Artikl po md5 ključa (ključ s nazivom ne ide u wire:click ni u ime polja). */
     private function artiklPoHashu(?string $h): ?array
@@ -54,7 +148,7 @@ class SkladisteManager extends Component
     {
         $artikl = $this->artiklPoHashu($h);
         $this->editingId = null;
-        $this->form = $this->praznaForma($artikl['vrsta'] ?? $vrsta, $artikl['naziv'] ?? '');
+        $this->form = $this->praznaForma($artikl['vrsta'] ?? $vrsta, $artikl['naziv'] ?? '', $artikl['skladiste_id'] ?? null);
         if ($artikl) {
             $this->form['jedinica'] = $artikl['jedinica'];
         }
@@ -69,7 +163,8 @@ class SkladisteManager extends Component
             return;
         }
         $kljuc = Skladiste::kljuc($naziv);
-        $postojeci = $this->artikli->first(fn ($a) => Skladiste::kljuc($a['naziv']) === $kljuc);
+        $postojeci = $this->artikli->sortBy(fn ($a) => $a['skladiste_id'] == ($this->form['skladiste_id'] ?? null) ? 0 : 1)
+            ->first(fn ($a) => Skladiste::kljuc($a['naziv']) === $kljuc);
         if ($postojeci) {
             $this->form['vrsta'] = $postojeci['vrsta'];
             $this->form['jedinica'] = $postojeci['jedinica'];
@@ -89,6 +184,7 @@ class SkladisteManager extends Component
     public function spremi(): void
     {
         $this->validate([
+            'form.skladiste_id' => 'required|integer',
             'form.vrsta'     => 'required|in:szb,gnojivo',
             'form.naziv'     => 'required|string|max:200',
             'form.datum'     => 'required|date',
@@ -100,6 +196,7 @@ class SkladisteManager extends Component
         ]);
 
         $f = $this->form;
+        $skladiste = $this->mojeSkladiste($f['skladiste_id']);
         $kolicina = (float) $f['kolicina'];
         $jedinica = $f['jedinica'];
         if ($jedinica === 't') {   // tone se spremaju kao kg
@@ -107,6 +204,7 @@ class SkladisteManager extends Component
             $jedinica = 'kg';
         }
         $podaci = [
+            'skladiste_id' => $skladiste->id,
             'vrsta' => $f['vrsta'], 'naziv' => trim(preg_replace('/\s+/u', ' ', $f['naziv'])), 'datum' => $f['datum'],
             'kolicina' => $kolicina, 'jedinica' => $jedinica,
             'cijena' => blank($f['cijena']) ? null : $f['cijena'],
@@ -115,21 +213,22 @@ class SkladisteManager extends Component
         ];
 
         if ($this->editingId) {
-            SkladisteUlaz::where('user_id', auth()->id())->whereKey($this->editingId)->update($podaci);
+            SkladisteUlaz::where('user_id', auth()->id())->whereNull('prijenos_par')->whereKey($this->editingId)->update($podaci);
         } else {
             SkladisteUlaz::create($podaci + ['user_id' => auth()->id(), 'korekcija' => false]);
         }
 
-        $this->otvoren = md5($f['vrsta'] . '|' . Skladiste::kljuc($podaci['naziv']));
+        $this->aktivno = $skladiste->id;
+        $this->otvoren = md5($skladiste->id . '|' . $f['vrsta'] . '|' . Skladiste::kljuc($podaci['naziv']));
         $this->odustani();
     }
 
     public function uredi(int $id): void
     {
-        $u = SkladisteUlaz::where('user_id', auth()->id())->where('korekcija', false)->findOrFail($id);
+        $u = SkladisteUlaz::where('user_id', auth()->id())->where('korekcija', false)->whereNull('prijenos_par')->findOrFail($id);
         $this->editingId = $u->id;
         $this->form = [
-            'vrsta' => $u->vrsta, 'naziv' => $u->naziv, 'datum' => $u->datum->format('Y-m-d'),
+            'skladiste_id' => $u->skladiste_id, 'vrsta' => $u->vrsta, 'naziv' => $u->naziv, 'datum' => $u->datum->format('Y-m-d'),
             'kolicina' => (float) $u->kolicina, 'jedinica' => $u->jedinica,
             'cijena' => $u->cijena, 'dobavljac' => $u->dobavljac, 'napomena' => $u->napomena,
         ];
@@ -137,9 +236,18 @@ class SkladisteManager extends Component
         $this->resetErrorBag();
     }
 
+    /** Briše ulaz; prijenos se briše u oba skladišta. */
     public function obrisi(int $id): void
     {
-        SkladisteUlaz::where('user_id', auth()->id())->whereKey($id)->delete();
+        $u = SkladisteUlaz::where('user_id', auth()->id())->find($id);
+        if (! $u) {
+            return;
+        }
+        if ($u->prijenos_par) {
+            SkladisteUlaz::where('user_id', auth()->id())->where('prijenos_par', $u->prijenos_par)->delete();
+        } else {
+            $u->delete();
+        }
     }
 
     public function odustani(): void
@@ -167,12 +275,39 @@ class SkladisteManager extends Component
         $razlika = round((float) $stvarno - $artikl['stanje'], 3);
         if (abs($razlika) >= 0.001) {
             SkladisteUlaz::create([
-                'user_id' => auth()->id(), 'vrsta' => $artikl['vrsta'], 'naziv' => $artikl['naziv'], 'datum' => date('Y-m-d'),
-                'kolicina' => $razlika, 'jedinica' => $artikl['jedinica'], 'korekcija' => true,
+                'user_id' => auth()->id(), 'skladiste_id' => $artikl['skladiste_id'], 'vrsta' => $artikl['vrsta'], 'naziv' => $artikl['naziv'],
+                'datum' => date('Y-m-d'), 'kolicina' => $razlika, 'jedinica' => $artikl['jedinica'], 'korekcija' => true,
                 'napomena' => 'Inventura: stvarno stanje ' . Skladiste::broj($stvarno, 3) . ' ' . $artikl['jedinica'],
             ]);
         }
         unset($this->inventura[$h]);
+    }
+
+    /** Prijenos robe u drugo skladište: izlaz iz ovog i ulaz u drugo (s prosječnom cijenom), povezani kao par. */
+    public function prenesi(string $h): void
+    {
+        $artikl = $this->artiklPoHashu($h);
+        $kolicina = (float) str_replace(',', '.', (string) ($this->prijenos[$h]['kolicina'] ?? ''));
+        $ciljId = (int) ($this->prijenos[$h]['skladiste_id'] ?? 0);
+        $cilj = SkladisteModel::where('user_id', auth()->id())->find($ciljId);
+        if (! $artikl || $kolicina <= 0 || ! $cilj || $cilj->id === $artikl['skladiste_id']) {
+            $this->addError('prijenos.' . $h, 'Upišite količinu veću od 0 i odaberite drugo skladište.');
+            return;
+        }
+        $par = (string) Str::uuid();
+        $zajednicko = ['user_id' => auth()->id(), 'vrsta' => $artikl['vrsta'], 'naziv' => $artikl['naziv'], 'datum' => date('Y-m-d'),
+                       'jedinica' => $artikl['jedinica'], 'prijenos_par' => $par];
+        SkladisteUlaz::create($zajednicko + ['skladiste_id' => $artikl['skladiste_id'], 'kolicina' => -$kolicina, 'korekcija' => true,
+            'napomena' => 'Prijenos u: ' . $cilj->naziv]);
+        SkladisteUlaz::create($zajednicko + ['skladiste_id' => $cilj->id, 'kolicina' => $kolicina, 'korekcija' => false,
+            'cijena' => $artikl['cijena_po_jedinici'] !== null ? round($kolicina * $artikl['cijena_po_jedinici'], 2) : null,
+            'napomena' => 'Prijenos iz: ' . $artikl['skladiste']]);
+        unset($this->prijenos[$h]);
+    }
+
+    public function getSkladistaProperty()
+    {
+        return Skladiste::skladista(auth()->user());
     }
 
     public function getArtikliProperty()

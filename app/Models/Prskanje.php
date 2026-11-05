@@ -8,7 +8,7 @@ class Prskanje extends Model
 {
     protected $table = 'prskanja';
     protected $fillable = [
-        'user_id', 'kultura_id', 'datum_tretiranja', 'tretirana_povrsina_ha',
+        'user_id', 'kultura_id', 'skladiste_id', 'datum_tretiranja', 'tretirana_povrsina_ha',
         'trgovacki_naziv_sredstva', 'registracijski_broj', 'vrsta_uporabe', 'bbch', 'sustav_proizvodnje', 'kolicina_sredstva_l_ha',
         'vrijeme_od', 'vrijeme_do', 'kolicina_vode_l_ha'
     ];

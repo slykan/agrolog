@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Gnojidba extends Model
 {
     protected $table = 'gnojidbe';
-    protected $fillable = ['user_id', 'kultura_id', 'datum', 'tip_gnojiva', 'kolicina_kg_ha', 'n_posto', 'p_posto', 'k_posto', 'organsko', 'kg_n_ha'];
+    protected $fillable = ['user_id', 'kultura_id', 'skladiste_id', 'datum', 'tip_gnojiva', 'kolicina_kg_ha', 'n_posto', 'p_posto', 'k_posto', 'organsko', 'kg_n_ha'];
     protected $casts = ['datum' => 'date', 'organsko' => 'boolean'];
 
     /**

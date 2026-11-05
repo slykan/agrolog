@@ -20,8 +20,8 @@
 
 <h2>Skladište je neobavezno</h2>
 <p>
-    Za postojeće korisnike skladište je isključeno, pa se ništa ne mijenja dok ga sami ne uključite:
-    <strong>Profil → Skladište → Koristim skladište</strong>. Tada se u izborniku pojavi stavka <em>Skladište</em>.
+    Dok ne dodate skladište, ništa se ne mijenja. U izborniku kliknite <strong>Skladište</strong> i dodajte prvo, npr. „Glavno skladište”.
+    Možete ih imati i više (npr. „Ekonomija”), s prijenosom robe između njih.
 </p>
 <p>
     Prati se samo ono što unesete na skladište. Ako želite pratiti samo skupa sredstva, unesite samo njih, a sve ostalo radi kao i do sada.

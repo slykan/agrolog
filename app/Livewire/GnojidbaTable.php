@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Livewire\Concerns\BiraSkladiste;
 use Livewire\Component;
 use App\Models\Gnojidba;
 use App\Models\Kultura;
@@ -9,6 +10,8 @@ use App\Support\Gnojiva;
 
 class GnojidbaTable extends Component
 {
+    use BiraSkladiste;
+
     public bool $showForm = false;
     public array $form = [
         'kultura_id'    => '',
@@ -44,6 +47,7 @@ class GnojidbaTable extends Component
         return [
             'kultura_id' => '', 'datum' => date('Y-m-d'), 'tip_gnojiva' => '', 'kolicina_kg_ha' => '',
             'n_posto' => '', 'p_posto' => '', 'k_posto' => '', 'organsko' => false,
+            'skladiste_id' => \App\Support\Skladiste::zadanoId(auth()->user()) ?? '',
         ];
     }
 
@@ -236,7 +240,7 @@ class GnojidbaTable extends Component
             'form.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999.99',
         ] + $this->hranivaPravila('form'));
 
-        Gnojidba::create(Gnojidba::sHranivima(array_merge($this->form, ['user_id' => auth()->id()])));
+        Gnojidba::create(Gnojidba::sHranivima(array_merge($this->form, ['user_id' => auth()->id(), 'skladiste_id' => $this->skladisteZaSpremanje($this->form['skladiste_id'] ?? null)])));
 
         $this->showForm = false;
         $this->showKulturaPicker = false;
@@ -267,6 +271,7 @@ class GnojidbaTable extends Component
             'p_posto'        => $this->form['p_posto'],
             'k_posto'        => $this->form['k_posto'],
             'organsko'       => $this->form['organsko'],
+            'skladiste_id'   => $this->skladisteZaSpremanje($this->form['skladiste_id'] ?? null),
             'user_id'        => auth()->id(),
         ];
         $data = Gnojidba::sHranivima($data);
@@ -294,6 +299,7 @@ class GnojidbaTable extends Component
             'p_posto'        => $row->p_posto ?? '',
             'k_posto'        => $row->k_posto ?? '',
             'organsko'       => (bool) $row->organsko,
+            'skladiste_id'   => $row->skladiste_id ?? '',
         ];
     }
 
@@ -308,7 +314,7 @@ class GnojidbaTable extends Component
 
         Gnojidba::where('id', $this->editingId)
             ->where('user_id', auth()->id())
-            ->update(Gnojidba::sHranivima($this->editForm));
+            ->update(Gnojidba::sHranivima(array_merge($this->editForm, ['skladiste_id' => $this->skladisteZaSpremanje($this->editForm['skladiste_id'] ?? null)])));
 
         $this->editingId = null;
         $this->editForm = [];
@@ -334,6 +340,7 @@ class GnojidbaTable extends Component
             'k_posto'        => $row->k_posto,
             'organsko'       => $row->organsko,
             'kg_n_ha'        => $row->kg_n_ha,
+            'skladiste_id'   => $row->skladiste_id,
         ]);
     }
 

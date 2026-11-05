@@ -189,7 +189,8 @@
                         </div>
                         <p class="mt-1 text-[11px] leading-snug text-gray-400">N-P-K = % dušika, fosfora i kalija. Upiše se sam kad odaberete gnojivo s popisa; za drugo gnojivo prepišite tri broja s vreće (npr. 15-15-15) ili ostavite prazno.</p>
                         @error('form.tip_gnojiva')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        @if($sk = \App\Support\Skladiste::napomena(auth()->user(), 'gnojivo', $form['tip_gnojiva'] ?? null, $form['kolicina_kg_ha'] ?? null, $this->selectedKultura?->posadjena_povrsina_ha))<p class="text-xs mt-1 {{ $sk['minus'] ? 'text-red-600' : 'text-green-700' }}">{{ $sk['tekst'] }}</p>@endif
+                        @if($this->skladista->count() > 1)<label class="mt-1 flex items-center gap-1 text-xs text-gray-500"><span class="whitespace-nowrap">Iz skladišta</span><select wire:model.live="form.skladiste_id" class="form-input flex-1 py-0.5 text-xs">@foreach($this->skladista as $skl)<option value="{{ $skl->id }}">{{ $skl->naziv }}</option>@endforeach</select></label>@endif
+                        @if($sk = \App\Support\Skladiste::napomena(auth()->user(), 'gnojivo', $form['tip_gnojiva'] ?? null, $form['kolicina_kg_ha'] ?? null, $this->selectedKultura?->posadjena_povrsina_ha, $form['skladiste_id'] ?? null))<p class="text-xs mt-1 {{ $sk['minus'] ? 'text-red-600' : 'text-green-700' }}">{{ $sk['tekst'] }}</p>@endif
                     </td>
                     @endif
                     @if(in_array('kolicina', $visibleColumns))
@@ -238,6 +239,7 @@
                         @if(in_array('gnojivo', $visibleColumns))
                         <td data-label="Gnojivo" class="mob-puna p-1 border border-gray-200">
                             <input type="text" wire:model.live.blur="editForm.tip_gnojiva" class="form-input w-full" list="tipovi-gnojiva" autocomplete="off">
+                        @if($this->skladista->count() > 1)<label class="mt-1 flex items-center gap-1 text-xs text-gray-500"><span class="whitespace-nowrap">Iz skladišta</span><select wire:model.live="editForm.skladiste_id" class="form-input flex-1 py-0.5 text-xs">@foreach($this->skladista as $skl)<option value="{{ $skl->id }}">{{ $skl->naziv }}</option>@endforeach</select></label>@endif
                             <div class="mt-1 flex flex-wrap items-center gap-1 text-xs text-gray-500">
                                 <span class="whitespace-nowrap" title="udio dušika, fosfora (P₂O₅) i kalija (K₂O) u %">N-P-K %</span>
                                 <input type="number" step="0.1" wire:key="n-editForm-{{ $editForm['n_posto'] ?? '' }}" wire:model.live.blur="editForm.n_posto" placeholder="N" class="form-input w-14 px-1">

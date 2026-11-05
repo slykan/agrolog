@@ -161,7 +161,8 @@
                         <input type="text" wire:key="reg-{{ $form['registracijski_broj'] ?? '' }}" wire:model="form.registracijski_broj" placeholder="registracijski broj (s etikete)" class="form-input w-full mt-1">
                         @error('form.trgovacki_naziv_sredstva')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                         @if($sredstvoNapomena)<p class="text-amber-700 text-xs mt-1">{{ $sredstvoNapomena }}</p>@endif
-                        @if($sk = \App\Support\Skladiste::napomena(auth()->user(), 'szb', $form['trgovacki_naziv_sredstva'] ?? null, $form['kolicina_sredstva_l_ha'] ?? null, $form['kultura_id'] ? ($form['tretirana_povrsina_ha'] ?? null) : null))<p class="text-xs mt-1 {{ $sk['minus'] ? 'text-red-600' : 'text-green-700' }}">{{ $sk['tekst'] }}</p>@endif
+                        @if($this->skladista->count() > 1)<label class="mt-1 flex items-center gap-1 text-xs text-gray-500"><span class="whitespace-nowrap">Iz skladišta</span><select wire:model.live="form.skladiste_id" class="form-input flex-1 py-0.5 text-xs">@foreach($this->skladista as $skl)<option value="{{ $skl->id }}">{{ $skl->naziv }}</option>@endforeach</select></label>@endif
+                        @if($sk = \App\Support\Skladiste::napomena(auth()->user(), 'szb', $form['trgovacki_naziv_sredstva'] ?? null, $form['kolicina_sredstva_l_ha'] ?? null, $form['kultura_id'] ? ($form['tretirana_povrsina_ha'] ?? null) : null, $form['skladiste_id'] ?? null))<p class="text-xs mt-1 {{ $sk['minus'] ? 'text-red-600' : 'text-green-700' }}">{{ $sk['tekst'] }}</p>@endif
                         @error('form.registracijski_broj')<p class="text-red-500 text-xs">{{ $message }}</p>@enderror
                     </td>
                     @endif
@@ -242,6 +243,7 @@
                         <td data-label="Sredstvo / reg. broj" class="mob-puna p-1 border border-gray-200 min-w-[16rem]">
                             <input type="text" wire:model.live.blur="editForm.trgovacki_naziv_sredstva" class="form-input w-full" list="szb-sredstva" autocomplete="off">
                             @if($editSredstvoNapomena)<p class="text-amber-700 text-xs">{{ $editSredstvoNapomena }}</p>@endif
+                        @if($this->skladista->count() > 1)<label class="mt-1 flex items-center gap-1 text-xs text-gray-500"><span class="whitespace-nowrap">Iz skladišta</span><select wire:model.live="editForm.skladiste_id" class="form-input flex-1 py-0.5 text-xs">@foreach($this->skladista as $skl)<option value="{{ $skl->id }}">{{ $skl->naziv }}</option>@endforeach</select></label>@endif
                             <input type="text" wire:key="reg-e-{{ $editForm['registracijski_broj'] ?? '' }}" wire:model="editForm.registracijski_broj" placeholder="registracijski broj" class="form-input w-full mt-1">
                         </td>
                         @endif

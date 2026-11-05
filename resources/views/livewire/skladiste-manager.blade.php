@@ -1,21 +1,73 @@
 <div>
-@if(! auth()->user()->koristi_skladiste)
-    {{-- Skladište je neobavezno: dok nije uključeno, ništa se ne prati --}}
-    <div class="max-w-2xl">
+@php
+    $skladista = $this->skladista;
+    $aktivnoSkl = $skladista->firstWhere('id', $aktivno) ?? $skladista->first();
+@endphp
+
+@if($poruka)
+    <div class="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-700">{{ $poruka }}</div>
+@endif
+
+@if($skladista->isEmpty())
+    {{-- Skladište je neobavezno: dok korisnik ne doda skladište, ništa se ne prati --}}
+    <div class="max-w-2xl mb-6">
         <h3 class="text-lg font-bold text-gray-800 mb-2">Skladište sredstava i gnojiva</h3>
         <p class="text-sm text-gray-600 mb-4">Upišete što ste kupili, a AgroLog sam oduzima ono što ste poprskali i pognojili. Uvijek znate koliko vam je ostalo.</p>
-        <ul class="text-sm text-gray-700 space-y-2 mb-6">
+        <ul class="text-sm text-gray-700 space-y-2">
             <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> <span><strong>Ulaz:</strong> nabava s količinom i, po želji, cijenom i dobavljačem.</span></li>
             <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> <span><strong>Izlaz sam od sebe:</strong> doza iz prskanja ili gnojidbe × površina. Kad ispravite ili obrišete zapis, ispravi se i stanje.</span></li>
+            <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> <span><strong>Više skladišta</strong> (npr. glavno i ekonomija), s prijenosom robe između njih.</span></li>
             <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> <span><strong>Upozorenje</strong> kad je nečega malo ili je stanje u minusu. Unos u evidenciju se nikad ne blokira.</span></li>
-            <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> <span>Prati se samo ono što unesete na skladište. Ostala sredstva i gnojiva rade kao i do sada.</span></li>
         </ul>
-        <button wire:click="ukljuci" class="btn-primary">Uključi skladište</button>
-        <p class="text-xs text-gray-400 mt-3">Skladište možete isključiti u profilu. Podaci ostaju spremljeni.</p>
+        <p class="text-sm text-gray-500 mt-4">Neobavezno je: dok ne dodate skladište, AgroLog ne prati zalihe i sve radi kao i do sada.</p>
     </div>
-@else
+@endif
+
+@if($showSkladisteForm)
+    <div class="mb-6 rounded-lg border {{ $skladisteEditId ? 'border-blue-200 bg-blue-50' : 'border-green-200 bg-green-50' }} p-4 max-w-2xl">
+        <h4 class="font-semibold text-gray-800 mb-3">{{ $skladisteEditId ? 'Uredi skladište' : ($skladista->isEmpty() ? 'Dodajte prvo skladište' : 'Novo skladište') }}</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label class="block text-sm"><span class="text-gray-600">Naziv</span>
+                <input type="text" wire:model="sf.naziv" wire:keydown.enter="spremiSkladiste" placeholder="npr. Glavno skladište, Ekonomija" class="form-input w-full mt-1">
+                @error('sf.naziv')<span class="text-red-500 text-xs">{{ $message }}</span>@enderror
+            </label>
+            <label class="block text-sm"><span class="text-gray-600">Lokacija <span class="text-gray-400">neobavezno</span></span>
+                <input type="text" wire:model="sf.lokacija" placeholder="npr. dvorište, Vladimira Nazora 5" class="form-input w-full mt-1">
+            </label>
+        </div>
+        <div class="flex gap-2 mt-3">
+            <button wire:click="spremiSkladiste" class="btn-xs-green">{{ $skladista->isEmpty() ? 'Dodaj skladište' : 'Spremi' }}</button>
+            @if($skladista->isNotEmpty())<button wire:click="odustaniSkladiste" class="btn-xs-gray">Odustani</button>@endif
+        </div>
+    </div>
+@elseif($skladista->isEmpty())
+    <button wire:click="novoSkladiste" class="btn-primary">+ Dodaj skladište</button>
+@endif
+
+@if($skladista->isNotEmpty())
+    {{-- kartice skladišta --}}
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+        @foreach($skladista as $sk)
+            <button wire:click="odaberi({{ $sk->id }})" wire:key="skl-{{ $sk->id }}"
+                    class="px-4 py-2 rounded-lg border text-sm font-medium {{ $aktivnoSkl->id === $sk->id ? 'bg-green-600 border-green-600 text-white' : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50' }}">
+                {{ $sk->naziv }}@if($sk->zadano && $skladista->count() > 1) <span title="glavno skladište: iz njega se troši ako kod prskanja ili gnojidbe nije izabrano drugo">★</span>@endif
+            </button>
+        @endforeach
+        <button wire:click="novoSkladiste" class="px-3 py-2 rounded-lg border border-dashed border-gray-300 text-sm text-gray-600 hover:border-green-500 hover:text-green-700">+ Skladište</button>
+    </div>
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 mb-5">
+        @if($aktivnoSkl->lokacija)<span>{{ $aktivnoSkl->lokacija }}</span>@endif
+        @if($skladista->count() > 1)
+            @if($aktivnoSkl->zadano)<span class="text-green-700">★ Glavno skladište: iz njega se troši kad kod prskanja ili gnojidbe nije izabrano drugo</span>
+            @else<button wire:click="postaviZadano({{ $aktivnoSkl->id }})" class="underline hover:text-green-700">Postavi kao glavno</button>@endif
+        @endif
+        <button wire:click="urediSkladiste({{ $aktivnoSkl->id }})" class="underline hover:text-green-700">Preimenuj</button>
+        <button wire:click="obrisiSkladiste({{ $aktivnoSkl->id }})" wire:confirm="Obrisati skladište {{ $aktivnoSkl->naziv }}?" class="underline hover:text-red-700">Obriši skladište</button>
+    </div>
+
     @php
-        $artikli = $this->artikli;
+        $sviArtikli = $this->artikli;
+        $artikli = $sviArtikli->where('skladiste_id', $aktivnoSkl->id);
         $prikaz = $filterVrsta ? $artikli->where('vrsta', $filterVrsta) : $artikli;
         $uMinusu = $artikli->where('status', 'minus')->count();
         $priKraju = $artikli->where('status', 'malo')->count();
@@ -42,6 +94,14 @@
         <div class="mb-6 rounded-lg border {{ $editingId ? 'border-blue-200 bg-blue-50' : 'border-yellow-200 bg-yellow-50' }} p-4">
             <h4 class="font-semibold text-gray-800 mb-3">{{ $editingId ? 'Uredi nabavu' : 'Nova nabava' }}</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                @if($skladista->count() > 1)
+                <label class="block text-sm">
+                    <span class="text-gray-600">Skladište</span>
+                    <select wire:model="form.skladiste_id" class="form-input w-full mt-1">
+                        @foreach($skladista as $sk)<option value="{{ $sk->id }}">{{ $sk->naziv }}</option>@endforeach
+                    </select>
+                </label>
+                @endif
                 <label class="block text-sm">
                     <span class="text-gray-600">Vrsta</span>
                     <select wire:model.live="form.vrsta" class="form-input w-full mt-1">
@@ -101,7 +161,7 @@
 
     @if($artikli->isEmpty())
         <div class="text-center py-12 text-gray-500">
-            <p class="font-medium text-gray-700 mb-1">Na skladištu još nema ničega.</p>
+            <p class="font-medium text-gray-700 mb-1">U skladištu {{ $aktivnoSkl->naziv }} još nema ničega.</p>
             <p class="text-sm">Unesite prvu nabavu. Od tog datuma AgroLog oduzima potrošnju iz prskanja i gnojidbe.</p>
         </div>
     @else
@@ -158,13 +218,13 @@
                                         <li class="px-3 py-2 flex flex-wrap items-center gap-x-3 gap-y-1">
                                             <span class="text-gray-500 w-24">{{ $u->datum->format('d.m.Y.') }}</span>
                                             <span class="font-medium {{ $u->kolicina < 0 ? 'text-red-700' : '' }}">{{ $u->kolicina > 0 ? '+' : '' }}{{ $b($u->kolicina, 3) }} {{ $u->jedinica }}</span>
-                                            @if($u->korekcija)<span class="text-xs px-2 rounded-full bg-gray-200 text-gray-600">inventura</span>@endif
+                                            @if($u->prijenos_par)<span class="text-xs px-2 rounded-full bg-blue-100 text-blue-700">{{ $u->napomena }}</span>@elseif($u->korekcija)<span class="text-xs px-2 rounded-full bg-gray-200 text-gray-600">inventura</span>@endif
                                             @if($u->cijena !== null)<span class="text-gray-600">{{ $b($u->cijena) }} €</span>@endif
                                             @if($u->dobavljac)<span class="text-gray-500">{{ $u->dobavljac }}</span>@endif
-                                            @if($u->napomena && ! $u->korekcija)<span class="text-gray-400 text-xs">{{ $u->napomena }}</span>@endif
+                                            @if($u->napomena && ! $u->korekcija && ! $u->prijenos_par)<span class="text-gray-400 text-xs">{{ $u->napomena }}</span>@endif
                                             <span class="ml-auto flex gap-1">
-                                                @unless($u->korekcija)<button wire:click="uredi({{ $u->id }})" class="btn-xs-blue">Uredi</button>@endunless
-                                                <button wire:click="obrisi({{ $u->id }})" wire:confirm="Obrisati ovaj ulaz sa skladišta?" class="btn-xs-red">✕</button>
+                                                @unless($u->korekcija || $u->prijenos_par)<button wire:click="uredi({{ $u->id }})" class="btn-xs-blue">Uredi</button>@endunless
+                                                <button wire:click="obrisi({{ $u->id }})" wire:confirm="{{ $u->prijenos_par ? 'Obrisati prijenos (u oba skladišta)?' : 'Obrisati ovaj ulaz sa skladišta?' }}" class="btn-xs-red">✕</button>
                                             </span>
                                         </li>
                                     @endforeach
@@ -179,6 +239,21 @@
                                     </div>
                                     @error('inventura.' . $kid)<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </div>
+                                @if($skladista->count() > 1)
+                                <div class="mt-3 bg-white rounded border border-gray-200 p-3">
+                                    <p class="text-xs text-gray-600 mb-2"><strong>Prijenos</strong> u drugo skladište:</p>
+                                    <div class="flex flex-wrap gap-2 items-center">
+                                        <input type="text" inputmode="decimal" wire:model="prijenos.{{ $kid }}.kolicina" placeholder="količina" class="form-input w-28">
+                                        <span class="text-gray-500">{{ $j }} u</span>
+                                        <select wire:model="prijenos.{{ $kid }}.skladiste_id" class="form-input">
+                                            <option value="">odaberite…</option>
+                                            @foreach($skladista->where('id', '!=', $a['skladiste_id']) as $sk)<option value="{{ $sk->id }}">{{ $sk->naziv }}</option>@endforeach
+                                        </select>
+                                        <button wire:click="prenesi('{{ $kid }}')" class="btn-xs-gray">Prenesi</button>
+                                    </div>
+                                    @error('prijenos.' . $kid)<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                </div>
+                                @endif
                             </div>
                             <div>
                                 <h5 class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Potrošnja iz evidencije {{ $a['vrsta'] === 'szb' ? 'prskanja' : 'gnojidbe' }}</h5>
@@ -208,7 +283,8 @@
     @endif
 
     <p class="text-xs text-gray-400 mt-4">
-        Potrošnja = doza po hektaru × tretirana površina, iz zapisa od datuma prve nabave tog artikla.
+        Potrošnja = doza po hektaru × tretirana površina, iz zapisa od datuma prve nabave tog artikla u ovo skladište.
+        @if($skladista->count() > 1) Kod prskanja i gnojidbe birate iz kojeg skladišta uzimate; ako ne izaberete, troši se iz glavnog (★).@endif
         Naziv u prskanju ili gnojidbi mora biti isti kao na skladištu (velika i mala slova nisu bitna).
     </p>
 @endif

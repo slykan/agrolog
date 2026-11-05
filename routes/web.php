@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
     Route::get('/parcele/{parcela}/arkod', ParcelaArkodController::class)->name('parcela.arkod');
     Route::get('/skladiste', fn() => view('skladiste'))->name('skladiste');
+    Route::get('/mehanizacija', fn() => view('mehanizacija'))->name('mehanizacija');
     Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
@@ -82,7 +83,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::patch('/profile/skladiste', [ProfileController::class, 'skladiste'])->name('profile.skladiste');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

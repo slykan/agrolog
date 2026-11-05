@@ -37,14 +37,6 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    /** Skladište uključeno / isključeno (podaci ostaju spremljeni). */
-    public function skladiste(Request $request): RedirectResponse
-    {
-        $request->user()->forceFill(['koristi_skladiste' => $request->boolean('koristi_skladiste')])->save();
-
-        return Redirect::route('profile.edit')->with('status', 'skladiste-updated');
-    }
-
     /**
      * Delete the user's account.
      */

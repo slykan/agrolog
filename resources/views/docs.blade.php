@@ -52,6 +52,7 @@
                     <a href="#viseredni-unos" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Višeredni unos</a>
                     <a href="#kopiranje" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kopiranje zapisa</a>
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
+                    <a href="#mehanizacija" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Mehanizacija</a>
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
                     <a href="#profil" class="block text-gray-600 hover:text-green-700 py-1 transition">8. Profil i obavijesti</a>
@@ -251,8 +252,16 @@
                     </div>
                     <div class="space-y-4 text-gray-600 leading-relaxed">
                         <p>Skladište pokazuje koliko vam je ostalo svakog sredstva i gnojiva. Vi upisujete samo nabavu, a potrošnju AgroLog računa iz evidencije.</p>
-                        <h3 class="font-semibold text-gray-800 text-lg">Uključivanje</h3>
-                        <p><strong class="text-gray-800">Profil → Skladište → Koristim skladište.</strong> U izborniku se pojavi stavka <em>Skladište</em>. Kad ga isključite, više se nigdje ne prikazuje, a podaci ostaju spremljeni.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg">Prvo skladište</h3>
+                        <p>U izborniku kliknite <strong class="text-gray-800">Skladište</strong> i upišite naziv, npr. „Glavno skladište”. Dok ne dodate skladište, AgroLog ne prati zalihe i ništa se ne mijenja.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Više skladišta</h3>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Gumbom <strong class="text-gray-800">+ Skladište</strong> dodate drugo (npr. „Ekonomija”). Svako ima svoje stanje.</li>
+                            <li>Prvo skladište je <strong>glavno (★)</strong>. Iz njega se troši kad kod prskanja ili gnojidbe ne izaberete drugo. Glavno možete promijeniti.</li>
+                            <li>Kod prskanja i gnojidbe, ispod naziva sredstva ili gnojiva, birate <strong>Iz skladišta</strong>.</li>
+                            <li><strong>Prijenos:</strong> u detaljima artikla upišete količinu i skladište u koje prenosite. Brisanjem prijenosa poništava se u oba skladišta.</li>
+                            <li>Skladište se može obrisati tek kad je prazno (bez ulaza).</li>
+                        </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Nabava (ulaz)</h3>
                         <ol class="list-decimal pl-6 space-y-1">
                             <li>Kliknite <strong class="text-gray-800">+ Nabava sredstva</strong> ili <strong class="text-gray-800">+ Nabava gnojiva</strong></li>
@@ -272,6 +281,33 @@
                             <li><strong>Inventura:</strong> u detaljima artikla upišite stvarnu količinu i AgroLog doda ispravak za razliku.</li>
                         </ul>
                         <p>Ako uz nabavu upišete cijenu, vidi se prosječna cijena po L ili kg i vrijednost zalihe.</p>
+                    </div>
+                </section>
+
+                {{-- MEHANIZACIJA (neobavezno) --}}
+                <section id="mehanizacija">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Mehanizacija: rokovi i podsjetnici (neobavezno)</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Za traktore, priključke i vozila vodite registraciju, tehnički pregled, osiguranje, servis i pregled prskalice. AgroLog vas mailom podsjeti prije isteka. Dok ne dodate prvi stroj, ništa se ne prikazuje ni ne šalje.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg">Dodavanje stroja</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>U izborniku <strong class="text-gray-800">Mehanizacija</strong> kliknite <strong class="text-gray-800">+ Dodaj stroj ili vozilo</strong></li>
+                            <li>Odaberite vrstu (traktor, prskalica, prikolica…) i upišite naziv, npr. „John Deere 6120M”, te po želji registraciju i godinu</li>
+                            <li>Ispod odmah upišite do kada vrijede rokovi koji se za tu vrstu nude (npr. registracija i osiguranje za traktor, pregled za prskalicu). Može i kasnije</li>
+                        </ol>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Rokovi i podsjetnik</h3>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Uz svaki stroj su gumbi <strong>+ Registracija</strong>, <strong>+ Osiguranje (AO)</strong>… za rokove koji još nisu upisani, i <strong>+ Drugi rok</strong> za bilo što svoje.</li>
+                            <li>Boja pokazuje stanje: zeleno vrijedi, žuto ističe uskoro, crveno je isteklo. Hitni rokovi su i na početnoj stranici.</li>
+                            <li><strong>Podsjetnik mailom</strong> stiže zadano 30 dana prije isteka, a ako rok prođe, još jedan. Za svaki rok možete izabrati 7 do 90 dana ili „bez podsjetnika”.</li>
+                        </ul>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Obnovljeno</h3>
+                        <p>Kad obavite registraciju, pregled ili platite osiguranje, kliknite <strong class="text-gray-800">Obnovljeno</strong>. AgroLog predloži sljedeći datum (+1 godina, a za pregled prskalice +3 godine), vi ga po potrebi ispravite i spremite. Stari rok ostaje u povijesti stroja.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Servisna knjiga</h3>
+                        <p><strong class="text-gray-800">+ Servis</strong> upisuje datum, što je rađeno, radne sate, trošak i servisera. Ako stroj ima rok servisa, on se sam pomakne godinu dana od datuma servisa. Popis svih servisa s ukupnim troškom je pod <strong>Servisna knjiga</strong>.</p>
                     </div>
                 </section>
 
@@ -318,7 +354,6 @@
                         <ul class="list-disc pl-6 space-y-1">
                             <li>Naziv gospodarstva, MIPG broj, OIB</li>
                             <li>Ime i prezime, e-mail adresa, lozinka</li>
-                            <li>Skladište: uključeno ili isključeno (vidi <a href="#skladiste" class="text-green-700 hover:underline">Skladište</a>)</li>
                         </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Obavijesti mailom</h3>
                         <p>Povremeno šaljemo kratku obavijest o važnim novostima u AgroLogu i promjenama propisa o evidencijama. Ne želite ih primati? U dnu svakog takvog maila je poveznica <strong>Odjavite se jednim klikom</strong>. Odjava ne utječe na vaš račun ni na evidencije. Sve novosti su i na stranici <a href="{{ route('novosti') }}" class="text-green-700 hover:underline font-medium">Novosti</a>.</p>
