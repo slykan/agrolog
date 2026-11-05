@@ -335,6 +335,7 @@
                 <section id="izvoz">
                     {!! $naslov(6, 'Ispis i izvoz — PDF, Excel za Ministarstvo, CSV') !!}
                     <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800"><strong>Izvještaji:</strong> u izborniku <strong>Izvještaji</strong> birate razdoblje (ova godina, prošla, 12 mjeseci ili od–do) i jednim klikom dobijete ispis/PDF evidencije prskanja i gnojidbe, Excel za Ministarstvo te CSV gnojidbe i prometa skladišta. Na vrhu su ukupna sredstva, gnojiva i dušik za razdoblje.</div>
                         <h3 class="font-semibold text-gray-800 text-lg">Ispis / PDF</h3>
                         <ol class="list-decimal pl-6 space-y-1">
                             <li>Po potrebi filtrirajte zapise (kultura, ARKOD, datum) i kvačicama iznad tablice odaberite stupce</li>

@@ -23,6 +23,8 @@ class EvidencijaIzvozController extends Controller
             ->join('kulture', 'kulture.id', '=', 'prskanja.kultura_id')
             ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
             ->when($godina, fn ($q) => $q->whereYear('prskanja.datum_tretiranja', $godina))
+            ->when($request->filled('od'), fn ($q) => $q->where('prskanja.datum_tretiranja', '>=', $request->date('od')->toDateString()))
+            ->when($request->filled('do'), fn ($q) => $q->where('prskanja.datum_tretiranja', '<', $request->date('do')->addDay()->toDateString()))
             ->orderBy('prskanja.datum_tretiranja')
             ->orderBy('prskanja.id')
             ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj')
@@ -43,6 +45,8 @@ class EvidencijaIzvozController extends Controller
             ->join('kulture', 'kulture.id', '=', 'prskanja.kultura_id')
             ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
             ->when($godina, fn ($q) => $q->whereYear('prskanja.datum_tretiranja', $godina))
+            ->when($request->filled('od'), fn ($q) => $q->where('prskanja.datum_tretiranja', '>=', $request->date('od')->toDateString()))
+            ->when($request->filled('do'), fn ($q) => $q->where('prskanja.datum_tretiranja', '<', $request->date('do')->addDay()->toDateString()))
             ->orderBy('prskanja.datum_tretiranja')
             ->orderBy('prskanja.id')
             ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj')
@@ -62,7 +66,7 @@ class EvidencijaIzvozController extends Controller
             $broj = fn ($v) => $v === null ? '' : str_replace('.', ',', rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.'));
             foreach ($redovi as $r) {
                 fputcsv($out, [
-                    $r->datum_tretiranja?->format('Y-m-d'),
+                    $r->datum_tretiranja?->format('d.m.Y'),
                     $r->vrijeme_od ? substr($r->vrijeme_od, 0, 5) : '',
                     $r->vrijeme_do ? substr($r->vrijeme_do, 0, 5) : '',
                     $r->arkod_broj,

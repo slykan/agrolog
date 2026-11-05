@@ -21,7 +21,7 @@ class GnojidbaTable extends Component
     ];
     public array $editForm = [];
     public ?int $editingId = null;
-    public array $visibleColumns = ['arkod', 'povrsina', 'kultura', 'datum', 'gnojivo', 'kolicina', 'hraniva'];
+    public array $visibleColumns = ['datum', 'arkod', 'kultura', 'povrsina', 'gnojivo', 'kolicina', 'hraniva'];
     public string $search = '';
     public array $filters = ['arkod' => '', 'kultura' => '', 'datum' => '', 'gnojivo' => ''];
     public string $formKulturaSearch = '';

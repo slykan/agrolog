@@ -72,6 +72,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/skladiste', fn() => view('skladiste'))->name('skladiste');
     Route::get('/mehanizacija', fn() => view('mehanizacija'))->name('mehanizacija');
     Route::get('/troskovi', fn() => view('troskovi'))->name('troskovi');
+    Route::get('/izvjestaji', fn() => view('izvjestaji'))->name('izvjestaji');
+    Route::get('/izvjestaji/ispis/{vrsta}', [\App\Http\Controllers\IzvjestajiController::class, 'ispis'])->name('izvjestaji.ispis');
+    Route::get('/izvjestaji/gnojidba.csv', [\App\Http\Controllers\IzvjestajiController::class, 'gnojidbeCsv'])->name('izvjestaji.gnojidba.csv');
+    Route::get('/izvjestaji/skladiste.csv', [\App\Http\Controllers\IzvjestajiController::class, 'skladisteCsv'])->name('izvjestaji.skladiste.csv');
     Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {

@@ -3,23 +3,6 @@
         <div class="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">{{ session('success') }}</div>
     @endif
 
-    {{-- Zaglavlje obrasca --}}
-    <table class="w-full border-collapse text-sm mb-4 form-header-table">
-        <tr>
-            <td colspan="2" class="border border-gray-400 text-center font-bold py-2 uppercase tracking-wide text-base">
-                Evidencija korištenja gnojiva {{ date('Y') }}. godina
-            </td>
-        </tr>
-        <tr>
-            <td class="border border-gray-400 px-3 py-1 font-bold uppercase w-48">Naziv gospodarstva</td>
-            <td class="border border-gray-400 px-3 py-1">{{ auth()->user()->naziv_gospodarstva }}</td>
-        </tr>
-        <tr>
-            <td class="border border-gray-400 px-3 py-1 font-bold uppercase">MIPG</td>
-            <td class="border border-gray-400 px-3 py-1">{{ auth()->user()->mipg }}</td>
-        </tr>
-    </table>
-
     {{-- Akcije (samo ekran) --}}
     <div class="flex flex-wrap items-center justify-end gap-2 mb-4 no-print">
         <div class="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto no-print">
@@ -31,7 +14,7 @@
     {{-- Odabir vidljivih stupaca + search --}}
     <div class="no-print mob-stupci flex flex-wrap gap-3 mb-3 text-sm items-center bg-gray-50 p-2 rounded">
         <span class="font-semibold text-gray-600 mr-1">Stupci:</span>
-        @foreach(['arkod' => 'ARKOD', 'povrsina' => 'Površina', 'kultura' => 'Kultura', 'datum' => 'Datum', 'gnojivo' => 'Tip gnojiva', 'kolicina' => 'Kol. kg/ha', 'hraniva' => 'kg N/ha'] as $key => $label)
+        @foreach(['datum' => 'Datum', 'arkod' => 'ARKOD', 'kultura' => 'Kultura', 'povrsina' => 'Površina', 'gnojivo' => 'Tip gnojiva', 'kolicina' => 'Kol. kg/ha', 'hraniva' => 'kg N/ha'] as $key => $label)
             <label class="flex items-center gap-1 cursor-pointer select-none">
                 <input type="checkbox" wire:click="toggleColumn('{{ $key }}')" @checked(in_array($key, $visibleColumns)) class="rounded">
                 {{ $label }}
@@ -80,19 +63,40 @@
         </div>
     @endif
 
+    {{-- zaglavlje obrasca odmah iznad tablice, kao kod prskanja --}}
+    {{-- Zaglavlje obrasca --}}
+    <table class="w-full border-collapse text-sm form-header-table">
+        <tr>
+            <td colspan="2" class="border border-gray-400 text-center font-bold py-2 uppercase tracking-wide text-base">
+                Evidencija korištenja gnojiva {{ date('Y') }}. godina
+            </td>
+        </tr>
+        <tr>
+            <td class="border border-gray-400 px-3 py-1 font-bold uppercase w-48">Naziv gospodarstva</td>
+            <td class="border border-gray-400 px-3 py-1">{{ auth()->user()->naziv_gospodarstva }}</td>
+        </tr>
+        <tr>
+            <td class="border border-gray-400 px-3 py-1 font-bold uppercase">MIPG</td>
+            <td class="border border-gray-400 px-3 py-1">{{ auth()->user()->mipg }}</td>
+        </tr>
+    </table>
+
     <div class="overflow-x-auto">
         <table class="w-full border-collapse text-sm agrolog-table mob-kartice">
             <thead>
                 <tr class="bg-gray-100 text-gray-700 text-xs uppercase tracking-wide">
                     <th class="border border-gray-300 px-2 py-2 text-center w-8">Rb.</th>
+                    @if(in_array('datum', $visibleColumns))
+                    <th class="border border-gray-300 px-3 py-2 text-left">
+                        Datum
+                        <input type="date" wire:model.live="filters.datum" class="filter-input no-print mt-1 block w-full">
+                    </th>
+                    @endif
                     @if(in_array('arkod', $visibleColumns))
                     <th class="border border-gray-300 px-3 py-2 text-left">
                         ARKOD Parcela
                         <input type="text" wire:model.live="filters.arkod" class="filter-input no-print mt-1 block w-full" placeholder="filter...">
                     </th>
-                    @endif
-                    @if(in_array('povrsina', $visibleColumns))
-                    <th class="border border-gray-300 px-3 py-2 text-right">Površina/ha</th>
                     @endif
                     @if(in_array('kultura', $visibleColumns))
                     <th class="border border-gray-300 px-3 py-2 text-left">
@@ -100,11 +104,8 @@
                         <input type="text" wire:model.live="filters.kultura" class="filter-input no-print mt-1 block w-full" placeholder="filter...">
                     </th>
                     @endif
-                    @if(in_array('datum', $visibleColumns))
-                    <th class="border border-gray-300 px-3 py-2 text-left">
-                        Datum
-                        <input type="date" wire:model.live="filters.datum" class="filter-input no-print mt-1 block w-full">
-                    </th>
+                    @if(in_array('povrsina', $visibleColumns))
+                    <th class="border border-gray-300 px-3 py-2 text-right">Površina/ha</th>
                     @endif
                     @if(in_array('gnojivo', $visibleColumns))
                     <th class="border border-gray-300 px-3 py-2 text-left min-w-[14rem]">
@@ -126,6 +127,12 @@
                 @if($showForm)
                 <tr class="bg-yellow-50 no-print">
                     <td class="mob-skrij p-1 border border-gray-200 text-center text-gray-400">*</td>
+                    @if(in_array('datum', $visibleColumns))
+                    <td data-label="Datum" class="p-1 border border-gray-200">
+                        <input type="date" wire:model="form.datum" class="form-input w-full">
+                        @error('form.datum')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </td>
+                    @endif
                     @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
                     <td data-label="Parcela i kultura" class="mob-puna p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                         <div class="space-y-1">
@@ -167,12 +174,6 @@
                                 {{ $errors->first() }}
                             </div>
                         @endif
-                    </td>
-                    @endif
-                    @if(in_array('datum', $visibleColumns))
-                    <td data-label="Datum" class="p-1 border border-gray-200">
-                        <input type="date" wire:model="form.datum" class="form-input w-full">
-                        @error('form.datum')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </td>
                     @endif
                     @if(in_array('gnojivo', $visibleColumns))
@@ -222,6 +223,11 @@
                     @if($editingId === $row->id)
                         {{-- Edit mode --}}
                         <td class="mob-skrij px-2 py-2 border border-gray-200 text-center text-gray-400">*</td>
+                        @if(in_array('datum', $visibleColumns))
+                        <td data-label="Datum" class="p-1 border border-gray-200">
+                            <input type="date" wire:model="editForm.datum" class="form-input w-full">
+                        </td>
+                        @endif
                         @if(in_array('arkod', $visibleColumns) || in_array('povrsina', $visibleColumns) || in_array('kultura', $visibleColumns))
                         <td data-label="Parcela i kultura" class="mob-puna p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                             <select wire:model="editForm.kultura_id" class="form-input w-full">
@@ -229,11 +235,6 @@
                                     <option value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} {{ $k->godina }} ({{ $k->posadjena_povrsina_ha }} ha){{ $k->zavrsena_at ? ' — završena' : '' }}</option>
                                 @endforeach
                             </select>
-                        </td>
-                        @endif
-                        @if(in_array('datum', $visibleColumns))
-                        <td data-label="Datum" class="p-1 border border-gray-200">
-                            <input type="date" wire:model="editForm.datum" class="form-input w-full">
                         </td>
                         @endif
                         @if(in_array('gnojivo', $visibleColumns))
@@ -268,10 +269,10 @@
                     @else
                         {{-- View mode --}}
                         <td class="mob-skrij px-2 py-2 border border-gray-200 text-center">{{ $loop->iteration }}</td>
-                        @if(in_array('arkod', $visibleColumns))<td data-label="ARKOD" class="px-3 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
-                        @if(in_array('povrsina', $visibleColumns))<td data-label="Površina (ha)" class="px-3 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
-                        @if(in_array('kultura', $visibleColumns))<td data-label="Kultura" class="px-3 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
                         @if(in_array('datum', $visibleColumns))<td data-label="Datum" class="px-3 py-2 border border-gray-200">{{ $row->datum->format('d.m.Y') }}</td>@endif
+                        @if(in_array('arkod', $visibleColumns))<td data-label="ARKOD" class="px-3 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
+                        @if(in_array('kultura', $visibleColumns))<td data-label="Kultura" class="px-3 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
+                        @if(in_array('povrsina', $visibleColumns))<td data-label="Površina (ha)" class="px-3 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
                         @if(in_array('gnojivo', $visibleColumns))<td data-label="Gnojivo" class="mob-puna px-3 py-2 border border-gray-200">{{ $row->tip_gnojiva }}</td>@endif
                         @if(in_array('kolicina', $visibleColumns))<td data-label="Količina kg/ha" class="px-3 py-2 border border-gray-200 text-right font-medium">{{ number_format($row->kolicina_kg_ha, 2) }}</td>@endif
                         @if(in_array('hraniva', $visibleColumns))

@@ -11,7 +11,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 xl:-my-px xl:ms-10 xl:flex">
+                <div class="hidden space-x-6 2xl:space-x-8 xl:-my-px xl:ms-8 2xl:ms-10 xl:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         Početna
                     </x-nav-link>
@@ -32,6 +32,9 @@
                     </x-nav-link>
                     <x-nav-link :href="route('mehanizacija')" :active="request()->routeIs('mehanizacija')">
                         Mehanizacija
+                    </x-nav-link>
+                    <x-nav-link :href="route('izvjestaji')" :active="request()->routeIs('izvjestaji*')">
+                        Izvještaji
                     </x-nav-link>
                 </div>
             </div>
@@ -101,6 +104,7 @@
             <x-responsive-nav-link :href="route('skladiste')" :active="request()->routeIs('skladiste')">Skladište</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('troskovi')" :active="request()->routeIs('troskovi')">Troškovi</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('mehanizacija')" :active="request()->routeIs('mehanizacija')">Mehanizacija</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('izvjestaji')" :active="request()->routeIs('izvjestaji*')">Izvještaji</x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
