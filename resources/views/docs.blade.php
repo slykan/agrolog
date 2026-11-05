@@ -47,15 +47,18 @@
                     <a href="#pocetna" class="block text-gray-600 hover:text-green-700 py-1 transition">2. Početna: karta i prognoza</a>
                     <a href="#parcele" class="block text-gray-600 hover:text-green-700 py-1 transition">3. Parcele i kulture</a>
                     <a href="#prskanje" class="block text-gray-600 hover:text-green-700 py-1 transition">4. Evidencija prskanja</a>
+                    <a href="#provjera-fis" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Provjera prema FIS-u</a>
                     <a href="#gnojidba" class="block text-gray-600 hover:text-green-700 py-1 transition">5. Evidencija gnojidbe</a>
                     <a href="#viseredni-unos" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Višeredni unos</a>
                     <a href="#kopiranje" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kopiranje zapisa</a>
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
-                    <a href="#troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Troškovi</a>
+                    <a href="#troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Troškovi i dobit</a>
                     <a href="#mehanizacija" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Mehanizacija</a>
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
                     <a href="#profil" class="block text-gray-600 hover:text-green-700 py-1 transition">8. Profil i obavijesti</a>
+                    <a href="#savjetnik" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Pristup savjetniku</a>
+                    <a href="#mobitel" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ AgroLog na mobitelu</a>
                     <a href="#pitanja" class="block text-gray-600 hover:text-green-700 py-1 transition">9. Česta pitanja</a>
                 </div>
             </aside>
@@ -89,7 +92,9 @@
                         <ul class="list-disc pl-6 space-y-1">
                             <li><strong class="text-gray-800">Što je novo</strong> — kratka obavijest o novostima u AgroLogu. Zatvorite je s ✕, a pojavit će se opet tek kad stigne nova.</li>
                             <li><strong class="text-gray-800">Prognoza za 5 dana</strong> za područje vaših parcela: vrijeme, temperatura, kiša, vjetar i oznaka je li dan povoljan za prskanje.</li>
-                            <li><strong class="text-gray-800">Karta svih parcela</strong> na satelitskoj podlozi, s ARKOD brojevima. Zumirate kotačićem miša ili gumbima +/−, kartu pomičete povlačenjem, a klik na parcelu pokaže kulture na njoj.</li>
+                            <li><strong class="text-gray-800">Karta svih parcela</strong> na satelitskoj podlozi, s ARKOD brojevima. Zumirate kotačićem miša ili gumbima +/−, kartu pomičete povlačenjem, a klik na parcelu pokaže kulture na njoj. Gumbom ⛶ kartu otvorite <strong>preko cijelog zaslona</strong> (Esc ili isti gumb je zatvara).</li>
+                            <li><strong class="text-gray-800">Pregled gospodarstva</strong> ispod karte — za odabrano razdoblje (ova godina, prošla, 12 mjeseci ili od–do): broj prskanja i gnojidbi, potrošena sredstva i gnojiva, dušik i graf po mjesecima.</li>
+                            <li><strong class="text-gray-800">Zvono</strong> uz vaše ime u gornjem desnom kutu — broj pokazuje koliko stvari traži pažnju: aktivne karence, rokovi mehanizacije koji ističu, sredstva pri kraju ili u minusu na skladištu i zapisi koje treba dopuniti za evidenciju 2027. Klik otvara kratki popis, a <strong>Više</strong> vodi na stranicu gdje se to rješava.</li>
                         </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Kada je dan povoljan za prskanje</h3>
                         <div class="overflow-x-auto">
@@ -151,10 +156,10 @@
 
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Dodavanje zapisa</h3>
                         <ol class="list-decimal pl-6 space-y-1">
-                            <li>Kliknite <strong>+ Dodaj</strong></li>
+                            <li>U izborniku <strong>Aktivnosti → Prskanje</strong> kliknite <strong>+ Dodaj</strong></li>
                             <li>Pretražite i odaberite kulturu — <strong>tretirana površina se popuni sama</strong> iz posađene površine</li>
                             <li>Počnite tipkati <strong>trgovački naziv sredstva</strong> — nude se sredstva koja ste već koristili i sva sredstva iz <strong>registra FIS-a</strong>. Odabirom se <strong>registracijski broj upiše sam</strong>.</li>
-                            <li>Unesite datum, dozu (L/ha ili kg/ha), po potrebi vrijeme od–do i količinu vode</li>
+                            <li>Unesite datum, dozu (L/ha ili kg/ha), po potrebi vrijeme od–do (24-satni zapis, npr. 17:30) i količinu vode</li>
                             <li>U stupcu <strong>Fenofaza / uporaba</strong> upišite fazu razvoja (BBCH, nude se faze za odabranu kulturu), vrstu uporabe (na otvorenom, plastenik…) i je li površina ekološka</li>
                             <li>Kliknite <strong>Spremi</strong></li>
                         </ol>
@@ -162,6 +167,27 @@
                             <strong>Upozorenja uz sredstvo:</strong> ako registracija sredstva u FIS-u nije aktivna, AgroLog vas upozori da provjerite smije li se još primjenjivati. Ako sredstvo nije pronađeno u registru, provjerite naziv s etikete — zapis se svejedno može spremiti.
                         </div>
                         <p>Vrsta uporabe i sustav proizvodnje pamte se iz zadnjeg unosa, pa ih ne morate birati svaki put.</p>
+                    </div>
+                </section>
+
+                {{-- PROVJERA PREMA FIS-u --}}
+                <section id="provjera-fis">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Provjera prskanja prema registru FIS-a</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Kad u prskanju odaberete kulturu i sredstvo iz registra, AgroLog odmah ispod sredstva pokaže što o toj kombinaciji piše u registru Ministarstva (FIS):</p>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>registrirano za kulturu</strong> ✓ — ili upozorenje ako sredstvo za tu kulturu nije registrirano;</li>
+                            <li><strong>karenca</strong> — broj dana i datum prije kojeg se ne smije brati ni žeti (npr. „žetva ne prije 05.06.2026.”);</li>
+                            <li><strong>broj tretmana</strong> — koliko je primjena dozvoljeno u sezoni i koliko ih je već upisano za tu kulturu;</li>
+                            <li><strong>doza i način primjene</strong> iz registracije, na klik.</li>
+                        </ul>
+                        <p>Aktivne karence vide se i u <strong>zvonu</strong> uz vaše ime, dok ne prođu.</p>
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+                            <strong>Važno:</strong> provjera je pomoć, ne zamjena za etiketu. Spremanje se nikad ne blokira. Ako registar trenutno ne odgovara, piše da provjera nije dostupna, a zapis spremite normalno.
+                        </div>
                     </div>
                 </section>
 
@@ -295,8 +321,12 @@
                         <ul class="list-disc pl-6 space-y-1">
                             <li><strong>Nabava</strong> su ulazi na skladište s upisanom cijenom, po mjesecima i po vrsti (zaštita bilja, gnojivo). Prijenosi između skladišta i inventure se ne broje.</li>
                             <li><strong>Utrošak</strong> je doza × površina iz svakog zapisa prskanja i gnojidbe, pomnožena s prosječnom nabavnom cijenom tog sredstva ili gnojiva.</li>
-                            <li>Tablica <strong>Trošak po parceli i kulturi</strong> pokazuje iznos za zaštitu, gnojidbu, ukupno i po hektaru.</li>
+                            <li>Tablica <strong>Trošak po parceli i kulturi</strong> pokazuje iznos za zaštitu, gnojidbu, ukupno i po hektaru. Gumbima <strong>Parcela / Kultura</strong> desno birate grupiranje, a graf ispod pokazuje isto.</li>
+                            <li><strong>Mehanizacija</strong> na dnu zbraja troškove servisa iz <a href="#mehanizacija" class="text-green-700 hover:underline">servisne knjige</a>. Gore su zbrojevi <strong>Trošak mehanizacije</strong> i <strong>Sveukupni trošak</strong>.</li>
+                            <li>Razdoblje birate kao i na početnoj: ova godina, prošla, 12 mjeseci ili od–do.</li>
                         </ul>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Dobit po hektaru</h3>
+                        <p>Kod kulture (Parcele &amp; Kulture) kliknite <strong class="text-gray-800">Prinos</strong> i upišite prinos (t), prodajnu cijenu (€/t), potpore i po želji ostale troškove (sjeme, gorivo, najam). Na Troškovima se tada vidi <strong>prihod, trošak i dobit po kulturi i po hektaru</strong>, a gubitak je označen crveno.</p>
                         <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800">
                             <strong>Savjet:</strong> brojke su točne samo ako uz nabavu upišete cijenu. Ako neko sredstvo nema cijenu, ispod tablice piše koliko zapisa nije uračunato.
                         </div>
@@ -310,7 +340,7 @@
                         <h2 class="text-2xl font-bold text-gray-900">Mehanizacija: rokovi i podsjetnici (neobavezno)</h2>
                     </div>
                     <div class="space-y-4 text-gray-600 leading-relaxed">
-                        <p>Za traktore, priključke i vozila vodite registraciju, tehnički pregled, osiguranje, servis i pregled prskalice. AgroLog vas mailom podsjeti prije isteka. Dok ne dodate prvi stroj, ništa se ne prikazuje ni ne šalje.</p>
+                        <p>Mehanizacija je u izborniku odmah iza Skladišta. Za traktore, priključke i vozila vodite registraciju, tehnički pregled, osiguranje, servis i pregled prskalice. AgroLog vas mailom podsjeti prije isteka. Dok ne dodate prvi stroj, ništa se ne prikazuje ni ne šalje.</p>
                         <h3 class="font-semibold text-gray-800 text-lg">Dodavanje stroja</h3>
                         <ol class="list-decimal pl-6 space-y-1">
                             <li>U izborniku <strong class="text-gray-800">Mehanizacija</strong> kliknite <strong class="text-gray-800">+ Dodaj stroj ili vozilo</strong></li>
@@ -375,11 +405,45 @@
                             <li>Naziv gospodarstva, MIPG broj, OIB</li>
                             <li>Ime i prezime, e-mail adresa, lozinka</li>
                         </ul>
-                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Pristup savjetniku</h3>
-                        <p>U profilu, pod <strong>Pristup savjetniku</strong>, upišite e-mail savjetnika (agronom, savjetodavna služba, zadruga) i odaberite <strong>samo pregled</strong> ili <strong>pregled i unos</strong>. Savjetnik prihvati poziv iz maila i vaše gospodarstvo vidi pod <strong>Klijenti</strong>. Svaku njegovu izmjenu vidite u <strong>povijesti izmjena</strong>, a pristup možete promijeniti ili ukinuti u bilo kojem trenutku. Savjetnik ne vidi vaš profil ni lozinku.</p>
+                        <p>U istom padajućem izborniku pod imenom su i ove <strong>Upute</strong>, a u profilu i <a href="#savjetnik" class="text-green-700 hover:underline">pristup savjetniku</a>.</p>
 
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Obavijesti mailom</h3>
                         <p>Povremeno šaljemo kratku obavijest o važnim novostima u AgroLogu i promjenama propisa o evidencijama. Ne želite ih primati? U dnu svakog takvog maila je poveznica <strong>Odjavite se jednim klikom</strong>. Odjava ne utječe na vaš račun ni na evidencije. Sve novosti su i na stranici <a href="{{ route('novosti') }}" class="text-green-700 hover:underline font-medium">Novosti</a>.</p>
+                    </div>
+                </section>
+
+                {{-- PRISTUP SAVJETNIKU --}}
+                <section id="savjetnik">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Pristup savjetniku</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <h3 class="font-semibold text-gray-800 text-lg">Za gospodarstvo: pozovite savjetnika</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Otvorite <strong>Profil → Pristup savjetniku</strong></li>
+                            <li>Upišite e-mail savjetnika (agronom, savjetodavna služba, zadruga) i odaberite <strong>samo pregled</strong> ili <strong>pregled i unos</strong></li>
+                            <li>Savjetnik dobije mail s poveznicom, prijavi se ili besplatno registrira i prihvati poziv. Vi dobijete potvrdu mailom</li>
+                        </ol>
+                        <p>Svaku izmjenu savjetnika vidite u <strong>povijesti izmjena</strong> u profilu (tko, kada, što). Prava možete promijeniti, poziv poslati ponovno ili pristup <strong>ukinuti</strong> jednim klikom — vrijedi odmah. Savjetnik ne vidi vaš profil ni lozinku.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Za savjetnika: Klijenti</h3>
+                        <p>U padajućem izborniku pod imenom je <strong>Klijenti</strong> — popis gospodarstava koja su vam dala pristup, s površinom, zadnjim unosom i onim što traži pažnju. <strong>Otvori</strong> vas prebaci u gospodarstvo klijenta (na vrhu je traka „Radite u gospodarstvu …”), a <strong>Natrag na svoje</strong> vraća u vaše. Uz „samo pregled” sve vidite i ispisujete, ali ne možete mijenjati.</p>
+                    </div>
+                </section>
+
+                {{-- MOBITEL --}}
+                <section id="mobitel">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">AgroLog na mobitelu</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>AgroLog možete dodati na početni zaslon mobitela i otvarati ga kao aplikaciju:</p>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>Android (Chrome):</strong> kliknite <strong>Instaliraj aplikaciju</strong> kad se ponudi, ili u izborniku preglednika ⋮ → <strong>Dodaj na početni zaslon</strong>.</li>
+                            <li><strong>iPhone (Safari):</strong> gumb <strong>Dijeli</strong> → <strong>Dodaj na početni zaslon</strong>.</li>
+                        </ul>
+                        <p>Za rad je potreban internet. Bez veze AgroLog pokaže poruku da pokušate ponovno kad se veza vrati.</p>
                     </div>
                 </section>
 
@@ -395,7 +459,8 @@
                             ['Što je N-P-K kod gnojiva i moram li ga upisivati?', 'N-P-K su postoci dušika, fosfora i kalija u gnojivu (npr. NPK 15-15-15 = po 15 %). Kad gnojivo odaberete s popisa, udjeli se upišu sami. Ručno ih upisujete samo za gnojivo kojeg nema na popisu — tri broja s vreće. Ako ih ne znate, ostavite prazno; tada samo nema izračuna dušika.'],
                             ['Moram li upisati fenofazu (BBCH)?', 'Ministarstvov format je traži „kad je relevantna za kulturu i primjenu”. Preporučujemo da je upišete — za odabranu kulturu nude se faze s Ministarstvova popisa.'],
                             ['Što s evidencijom iz 2026.?', 'Primjene do 31. 12. 2026. ne moraju se prenositi u novi format, ali i za njih možete preuzeti Excel (Ministarstvo). AgroLog je već upisao vrstu uporabe „na otvorenom” i neekološku površinu za postojeće zapise — promijenite ih gdje treba.'],
-                            ['Mogu li koristiti AgroLog na mobitelu?', 'Da, stranice se prilagođavaju ekranu mobitela i tableta. Za veće tablice evidencije praktičnije je računalo ili tablet položeno.'],
+                            ['Mogu li koristiti AgroLog na mobitelu?', 'Da, stranice se prilagođavaju ekranu mobitela i tableta, a AgroLog možete dodati i na početni zaslon kao aplikaciju. Za veće tablice evidencije praktičnije je računalo ili tablet položeno.'],
+                            ['Zašto mi za novu kulturu ne nudi cijelu površinu parcele?', 'Nova kultura dobije samo površinu koja je na parceli još slobodna. Ako je parcela već cijela posađena, kulturu ne možete dodati dok jednu ne završite ili joj ne smanjite površinu.'],
                             ['Tko vidi moje podatke?', 'Samo vi. Detalje pročitajte u Politici privatnosti.'],
                         ] as [$pitanje, $odgovor])
                             <details class="group rounded-xl border border-gray-200 bg-white px-5 py-4 open:shadow-sm">

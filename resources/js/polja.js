@@ -19,7 +19,13 @@ export function poljaTraktori(opcije = {}) {
         init() {
             if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || ! this.$el.animate) return;
             this.slozi();
-            let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => this.slozi(), 500) });
+            // nova podjela kad se promijeni veličina sekcije (prozor ili "Prikaži sve" na naslovnoj)
+            let t, vel = this.$el.offsetWidth + 'x' + this.$el.offsetHeight;
+            new ResizeObserver(() => {
+                const v = this.$el.offsetWidth + 'x' + this.$el.offsetHeight;
+                if (v === vel) return;
+                vel = v; clearTimeout(t); t = setTimeout(() => this.slozi(), 500);
+            }).observe(this.$el);
             new IntersectionObserver(([u]) => u.isIntersecting ? this.nastavi() : this.pauziraj(), { threshold: 0.05 }).observe(this.$el);
             document.addEventListener('visibilitychange', () => document.hidden ? this.pauziraj() : this.nastavi());
         },

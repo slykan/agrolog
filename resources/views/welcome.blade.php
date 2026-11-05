@@ -154,6 +154,107 @@
         </div>
     </section>
 
+    {{-- NOVO U AGROLOGU: upravljanje gospodarstvom (FIS provjera, skladište, troškovi i dobit, mehanizacija, savjetnik, izvještaji) --}}
+    <section class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="max-w-3xl mb-12">
+                <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-green-700">
+                    <span class="w-2 h-2 rounded-full bg-[#86bc25]"></span> Novo u AgroLogu
+                </span>
+                <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Više od evidencije — cijelo gospodarstvo na jednom mjestu</h2>
+                <p class="mt-3 text-gray-600 text-lg">Provjera prskanja prema službenom registru, skladište koje se samo vodi, troškovi i dobit po hektaru, rokovi za strojeve i suradnja sa savjetnikom. Sve besplatno.</p>
+            </div>
+
+            <div class="grid gap-5 lg:grid-cols-3">
+                {{-- 1. FIS provjera (istaknuto) --}}
+                <div class="lg:col-span-2 relative overflow-hidden rounded-3xl bg-[#022a20] text-white p-8 md:p-10">
+                    <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-[#86bc25]/15 blur-3xl" aria-hidden="true"></div>
+                    <div class="relative grid gap-8 md:grid-cols-2 md:items-center">
+                        <div>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider bg-[#86bc25] text-[#022a20] rounded-full px-2.5 py-1">Pametna provjera</span>
+                            <h3 class="mt-4 text-2xl font-extrabold leading-tight">Prskanje provjereno prema registru FIS-a</h3>
+                            <p class="mt-3 text-white/80 leading-relaxed">Odaberete sredstvo i kulturu — AgroLog odmah javi je li sredstvo registrirano za tu kulturu, do kada traje karenca i koliko je tretmana dozvoljeno. Tako izbjegnete kaznu prije nego što se dogodi.</p>
+                        </div>
+                        {{-- mini prikaz provjere --}}
+                        <div class="rounded-2xl bg-white text-gray-800 p-4 shadow-2xl ring-1 ring-black/5 text-sm">
+                            <p class="text-[11px] font-semibold text-gray-500 mb-2">Provjera prema registru FIS-a</p>
+                            <p class="flex gap-2 text-green-800"><span>✓</span> Registriran za kulturu Pšenica.</p>
+                            <p class="flex gap-2 text-gray-700 mt-1"><span class="text-sky-600">ℹ</span> Karenca 35 dana: žetva ne prije 05.06.2026.</p>
+                            <p class="flex gap-2 text-amber-800 font-medium mt-1"><span>⚠</span> Ovo je 3. tretman, a dozvoljena su najviše 2.</p>
+                            <p class="mt-2 pt-2 border-t border-gray-100 text-[11px] text-green-700">▸ Doza i način primjene iz registracije</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- 2. Pristup savjetniku --}}
+                <div class="rounded-3xl bg-[#f3f7f1] ring-1 ring-black/5 p-7 flex flex-col">
+                    <div class="w-11 h-11 rounded-xl bg-[#022a20] flex items-center justify-center mb-4"><svg class="w-6 h-6 text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+                    <h3 class="text-lg font-bold text-gray-900">Pozovite savjetnika</h3>
+                    <p class="mt-2 text-sm text-gray-600 leading-relaxed">Agronom, savjetodavna služba ili zadruga vidi — ili vodi — vašu evidenciju. Svaka izmjena se bilježi, a pristup ukidate jednim klikom.</p>
+                    <div class="mt-auto pt-5 space-y-1.5 text-xs">
+                        <p class="flex justify-between rounded-lg bg-white px-3 py-2 ring-1 ring-black/5"><span class="font-semibold text-gray-800">Ana Kovač</span><span class="text-green-700">Pregled i unos</span></p>
+                        <p class="text-gray-500 px-1">05.11.2026. · Prskanje: novi zapis</p>
+                    </div>
+                </div>
+
+                {{-- 3. Skladište --}}
+                <div class="rounded-3xl bg-[#f3f7f1] ring-1 ring-black/5 p-7 flex flex-col">
+                    <div class="w-11 h-11 rounded-xl bg-[#022a20] flex items-center justify-center mb-4"><svg class="w-6 h-6 text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg></div>
+                    <h3 class="text-lg font-bold text-gray-900">Skladište koje se samo vodi</h3>
+                    <p class="mt-2 text-sm text-gray-600 leading-relaxed">Upišete nabavu, a potrošnju iz prskanja i gnojidbe AgroLog oduzima sam. Više skladišta, prijenos i inventura.</p>
+                    <div class="mt-auto pt-5 space-y-1.5 text-xs">
+                        <p class="flex justify-between rounded-lg bg-white px-3 py-2 ring-1 ring-black/5"><span class="text-gray-800">KAN 27% N</span><span class="font-semibold text-green-800">1.840 kg</span></p>
+                        <p class="flex justify-between rounded-lg bg-amber-50 px-3 py-2 ring-1 ring-amber-200"><span class="text-gray-800">Roundup</span><span class="font-semibold text-amber-800">4 L · pri kraju</span></p>
+                    </div>
+                </div>
+
+                {{-- 4. Troškovi i dobit --}}
+                <div class="rounded-3xl bg-[#f3f7f1] ring-1 ring-black/5 p-7 flex flex-col">
+                    <div class="w-11 h-11 rounded-xl bg-[#022a20] flex items-center justify-center mb-4"><svg class="w-6 h-6 text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg></div>
+                    <h3 class="text-lg font-bold text-gray-900">Troškovi i dobit po hektaru</h3>
+                    <p class="mt-2 text-sm text-gray-600 leading-relaxed">Koliko vas stoji hektar pšenice, a koliko donosi kukuruz? Prinos, cijena i potpore — dobit po parceli i kulturi.</p>
+                    <div class="mt-auto pt-5 space-y-2 text-xs">
+                        @foreach([['Kukuruz', 92, '+1.828'], ['Pšenica', 70, '+1.389'], ['Ječam', 6, '−104']] as [$k, $w, $d])
+                            <div class="grid grid-cols-[4.5rem_1fr_4rem] items-center gap-2">
+                                <span class="text-gray-700">{{ $k }}</span>
+                                <span class="h-2.5 rounded-full {{ str_starts_with($d, '−') ? 'bg-red-500' : 'bg-green-600' }}" style="width: {{ $w }}%"></span>
+                                <span class="text-right font-semibold {{ str_starts_with($d, '−') ? 'text-red-700' : 'text-green-800' }}">{{ $d }} €</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- 5. Mehanizacija --}}
+                <div class="rounded-3xl bg-[#f3f7f1] ring-1 ring-black/5 p-7 flex flex-col">
+                    <div class="w-11 h-11 rounded-xl bg-[#022a20] flex items-center justify-center mb-4"><svg class="w-6 h-6 text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 17a2 2 0 104 0 2 2 0 00-4 0zm10 0a2 2 0 104 0 2 2 0 00-4 0M5 17H3v-4l2-5h7l2 5h3a2 2 0 012 2v2h-2M9 17h6M12 8V5"/></svg></div>
+                    <h3 class="text-lg font-bold text-gray-900">Strojevi bez propuštenih rokova</h3>
+                    <p class="mt-2 text-sm text-gray-600 leading-relaxed">Registracija, osiguranje, servis i pregled prskalice — podsjetnik mailom prije isteka, obnova jednim klikom.</p>
+                    <div class="mt-auto pt-5 space-y-1.5 text-xs">
+                        <p class="flex justify-between rounded-lg bg-white px-3 py-2 ring-1 ring-black/5"><span class="text-gray-800">Traktor · Registracija</span><span class="font-semibold text-amber-800">za 18 d.</span></p>
+                        <p class="flex justify-between rounded-lg bg-white px-3 py-2 ring-1 ring-black/5"><span class="text-gray-800">Prskalica · Pregled</span><span class="font-semibold text-green-700">vrijedi</span></p>
+                    </div>
+                </div>
+
+                {{-- 6. Izvještaji i pregled (preko cijele širine, da ne ostane sama u redu) --}}
+                <div class="lg:col-span-3 rounded-3xl bg-[#f3f7f1] ring-1 ring-black/5 p-7 flex flex-col lg:grid lg:grid-cols-[auto_1fr_16rem] lg:items-center lg:gap-x-8">
+                    <div class="w-11 h-11 rounded-xl bg-[#022a20] flex items-center justify-center mb-4 lg:mb-0 lg:row-span-2"><svg class="w-6 h-6 text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+                    <h3 class="text-lg font-bold text-gray-900 lg:col-start-2 lg:self-end">Izvještaji i zvono s upozorenjima</h3>
+                    <p class="mt-2 text-sm text-gray-600 leading-relaxed lg:col-start-2 lg:row-start-2 lg:self-start">Pregled gospodarstva s grafom, izvještaji za bilo koje razdoblje (PDF, Excel, CSV) i zvono koje javi karence, rokove i što treba dopuniti.</p>
+                    <div class="mt-auto pt-5 lg:pt-0 lg:col-start-3 lg:row-start-1 lg:row-span-2 flex items-end gap-1.5 h-16" aria-hidden="true">
+                        @foreach([30, 55, 40, 90, 65, 35, 50] as $i => $v)
+                            <span class="flex-1 rounded-t {{ $i === 3 ? 'bg-green-600' : 'bg-green-300' }}" style="height: {{ $v }}%"></span>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10 flex flex-wrap items-center gap-4">
+                <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-[#86bc25] hover:bg-[#9ccf3e] text-[#022a20] font-bold px-6 py-3 rounded-xl transition">Isprobajte besplatno <span aria-hidden="true">→</span></a>
+                <a href="{{ route('novosti') }}" class="font-semibold text-green-700 hover:underline">Sve novosti &rarr;</a>
+            </div>
+        </div>
+    </section>
+
     {{-- FEATURES --}}
     <section class="relative overflow-hidden py-20 bg-[#f3f7f1]">
         {{-- pozadina: mozaik svijetlih parcela, više traktora polako obrađuje red po red (iza kartica; samo dok je vidljivo) --}}
@@ -167,23 +268,24 @@
             @php
                 // [naslov, opis, ikona (heroicons outline path), nova mogućnost]
                 $znacajke = [
-                    ['ARKOD parcela na karti', 'Upišete ARKOD broj, a AgroLog parcelu pronađe u ARKOD-u, pokaže na satelitskoj karti i preuzme službenu površinu.', 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7', true],
-                    ['Karta svih parcela', 'Sve vaše parcele na jednoj karti s ARKOD brojevima i kulturama — zumirajte, pomičite, kliknite parcelu.', 'M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z', true],
-                    ['Prognoza i dani za prskanje', 'Prognoza za 5 dana za područje vaših parcela, s oznakom koji su dani povoljni za prskanje: vjetar, kiša, mraz, temperatura.', 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', true],
-                    ['Sredstva iz registra FIS-a', 'Oko 900 registriranih sredstava za zaštitu bilja — odaberete naziv, registracijski broj upiše se sam.', 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z', true],
-                    ['Dušik u gnojidbi', 'Odaberete gnojivo s popisa, AgroLog izračuna kg N/ha i prati granicu od 170 kg N/ha iz stajskog gnoja.', 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', true],
-                    ['Spremni za 2027.', 'EPPO kod, fenofaza (BBCH) i vrsta uporabe — evidencija prskanja izvozi se izravno u Ministarstvovu Excel tablicu.', 'M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z', true],
+                    ['ARKOD parcela na karti', 'Upišete ARKOD broj, a AgroLog parcelu pronađe u ARKOD-u, pokaže na satelitskoj karti i preuzme službenu površinu.', 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7', false],
+                    ['Karta svih parcela', 'Sve vaše parcele na jednoj karti s ARKOD brojevima i kulturama — zumirajte, pomičite, kliknite parcelu.', 'M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z', false],
+                    ['Prognoza i dani za prskanje', 'Prognoza za 5 dana za područje vaših parcela, s oznakom koji su dani povoljni za prskanje: vjetar, kiša, mraz, temperatura.', 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z', false],
+                    ['Sredstva iz registra FIS-a', 'Oko 900 registriranih sredstava za zaštitu bilja — odaberete naziv, registracijski broj upiše se sam.', 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z', false],
+                    ['Dušik u gnojidbi', 'Odaberete gnojivo s popisa, AgroLog izračuna kg N/ha i prati granicu od 170 kg N/ha iz stajskog gnoja.', 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', false],
+                    ['Spremni za 2027.', 'EPPO kod, fenofaza (BBCH) i vrsta uporabe — evidencija prskanja izvozi se izravno u Ministarstvovu Excel tablicu.', 'M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z', false],
                     ['Evidencija prskanja', 'Sredstvo, registracijski broj, doza, površina, vrijeme, voda i fenofaza — za svaku primjenu, prema obrascu.', 'M12 3c3 4 6 7.5 6 11a6 6 0 01-12 0c0-3.5 3-7 6-11z', false],
                     ['Evidencija gnojidbe', 'Datum, gnojivo s udjelima N-P-K i količina po ha. Pretraga i filtriranje po parcelama i kulturama.', 'M12 21c-4-3-7-7-7-11a7 7 0 0114 0c0 4-3 8-7 11zm0-11v6m0-6c-1.5-2-3.5-2.5-5-2m5 2c1.5-2 3.5-2.5 5-2', false],
-                    ['Upozorenja za parcelu', 'Parcela u zoni zaštite izvorišta ili u području Natura 2000? AgroLog vas upozori već pri unosu.', 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z', true],
+                    ['Upozorenja za parcelu', 'Parcela u zoni zaštite izvorišta ili u području Natura 2000? AgroLog vas upozori već pri unosu.', 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z', false],
                     ['PDF za AGRONET', 'Službeni obrazac evidencije u jednom kliku — cijela tablica na A4 listu, spremna za ispis ili kontrolu.', 'M9 12h6m-6 4h4m4 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', false],
                     ['Izvoz u Excel i CSV', 'Evidencija u tablici za Excel — za savjetnika, zadrugu, kontrolu ili vlastitu arhivu.', 'M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3', false],
                     ['Povijest se čuva', 'Zamjena kulture na parceli bez gubitka starih zapisa — evidencija ostaje točna godinama.', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', false],
                 ];
             @endphp
+            <div x-data="{ sve: false }">
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" data-kartice>
-                @foreach ($znacajke as [$naslov, $opis, $ikona, $nova])
-                    <div class="group relative p-7 rounded-2xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                @foreach ($znacajke as $i => [$naslov, $opis, $ikona, $nova])
+                    <div @if($i >= 6) x-show="sve" x-cloak x-transition.opacity.duration.400ms @endif class="group relative p-7 rounded-2xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
                         @if($nova)
                             <span class="absolute top-5 right-5 text-[10px] font-extrabold uppercase tracking-wider bg-[#86bc25] text-[#022a20] rounded-full px-2 py-0.5">Novo</span>
                         @endif
@@ -194,6 +296,16 @@
                         <p class="text-gray-600 text-sm leading-relaxed">{{ $opis }}</p>
                     </div>
                 @endforeach
+            </div>
+            @if(count($znacajke) > 6)
+                <div class="mt-8 text-center">
+                    <button type="button" @click="sve = !sve; if (!sve) $el.closest('section').scrollIntoView({ behavior: 'smooth' })"
+                            class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 ring-1 ring-black/10 shadow-sm text-[#022a20] font-semibold px-5 py-2.5 rounded-xl transition">
+                        <span x-text="sve ? 'Prikaži manje' : 'Prikaži sve mogućnosti ({{ count($znacajke) }})'">Prikaži sve mogućnosti ({{ count($znacajke) }})</span>
+                        <svg class="w-4 h-4 transition-transform" :class="sve && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                </div>
+            @endif
             </div>
             <p class="mt-8 text-center text-sm text-gray-500">
                 Povezano sa službenim izvorima: ARKOD (Agencija za plaćanja), registar sredstava FIS-a i format evidencije Ministarstva poljoprivrede.
