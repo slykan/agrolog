@@ -203,7 +203,9 @@
     {{-- HOW IT WORKS --}}
     <section class="py-20 bg-[#06120a] text-white relative overflow-hidden">
         <div class="absolute inset-0 opacity-[0.07] bg-[linear-gradient(rgba(62,227,111,1)_1px,transparent_1px),linear-gradient(90deg,rgba(62,227,111,1)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true"></div>
-        <div class="relative max-w-5xl mx-auto px-6">
+        {{-- neonske točke na sjecištima mreže (kao parcele na karti); samo dok je sekcija vidljiva, bez animacije uz prefers-reduced-motion --}}
+        <div class="absolute inset-0 pointer-events-none" aria-hidden="true" x-data="neonMreza()"></div>
+        <div class="relative max-w-5xl mx-auto px-6" data-sadrzaj>
             <div class="text-center mb-14">
                 <span class="text-xs font-bold uppercase tracking-[0.3em] text-[#3ee36f]">Tri koraka</span>
                 <h2 class="mt-3 text-3xl md:text-4xl font-extrabold tracking-tight">Kako funkcionira?</h2>
@@ -334,5 +336,55 @@
     {{-- FOOTER --}}
     @include('partials.footer')
 
+    <script>
+        // Neonske točke na sjecištima mreže od 48 px: točka s valom, pribadača ili križić; ponekad svjetleća crta po mreži.
+        function neonMreza() {
+            const KORAK = 48, PIN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2a7 7 0 00-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>';
+            return {
+                timer: null, zivih: 0,
+                init() {
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                    new IntersectionObserver(([u]) => u.isIntersecting ? this.kreni() : this.stani(), { threshold: 0.15 }).observe(this.$el);
+                    document.addEventListener('visibilitychange', () => document.hidden ? this.stani() : null);
+                },
+                kreni() { if (! this.timer) this.timer = setInterval(() => this.nova(), 700) },
+                stani() { clearInterval(this.timer); this.timer = null },
+                mjesto() {
+                    const w = this.$el.clientWidth, h = this.$el.clientHeight;
+                    const s = this.$el.parentElement.querySelector('[data-sadrzaj]');
+                    const r = s ? s.getBoundingClientRect() : null, o = this.$el.getBoundingClientRect();
+                    for (let i = 0; i < 6; i++) {
+                        const x = KORAK * (1 + Math.floor(Math.random() * Math.max(1, Math.floor(w / KORAK) - 1)));
+                        const y = KORAK * (1 + Math.floor(Math.random() * Math.max(1, Math.floor(h / KORAK) - 1)));
+                        // uglavnom izvan teksta s koracima
+                        const preko = r && x > r.left - o.left - 24 && x < r.right - o.left + 24 && y > r.top - o.top && y < r.bottom - o.top;
+                        if (! preko || Math.random() < 0.12) return [x, y];
+                    }
+                    return null;
+                },
+                nova() {
+                    if (this.zivih >= 9) return;
+                    const m = this.mjesto(); if (! m) return;
+                    const [x, y] = m, n = Math.random();
+                    const el = document.createElement('span');
+                    el.className = n < 0.6 ? 'neon-tocka' : (n < 0.82 ? 'neon-pin' : 'neon-kriz');
+                    if (el.className === 'neon-pin') el.innerHTML = PIN;
+                    el.style.left = x + 'px'; el.style.top = y + 'px';
+                    this.dodaj(el, 4200);
+                    if (Math.random() < 0.35) this.crta(x, y);
+                },
+                crta(x, y) {
+                    const vod = Math.random() < 0.5, d = KORAK * (2 + Math.floor(Math.random() * 3)), smjer = Math.random() < 0.5 ? -1 : 1;
+                    const el = document.createElement('span');
+                    el.className = 'neon-crta ' + (vod ? 'neon-crta-v' : 'neon-crta-o');
+                    if (vod) { el.style.left = (smjer > 0 ? x : x - d) + 'px'; el.style.top = y + 'px'; el.style.width = d + 'px' }
+                    else { el.style.left = x + 'px'; el.style.top = (smjer > 0 ? y : y - d) + 'px'; el.style.height = d + 'px' }
+                    el.style.transformOrigin = vod ? (smjer > 0 ? 'left' : 'right') : (smjer > 0 ? 'top' : 'bottom');
+                    this.dodaj(el, 3000);
+                },
+                dodaj(el, ms) { this.zivih++; this.$el.appendChild(el); setTimeout(() => { el.remove(); this.zivih-- }, ms) },
+            };
+        }
+    </script>
 </body>
 </html>
