@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @include('partials.favicon')
     <title>{{ $vrsta === 'prskanje' ? 'Evidencija SZB' : 'Evidencija gnojidbe' }} {{ $od->format('d.m.Y.') }}–{{ $do->format('d.m.Y.') }}</title>
     <style>
         @page { size: A4 landscape; margin: 10mm; }

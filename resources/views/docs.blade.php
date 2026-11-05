@@ -6,8 +6,7 @@
     <title>Upute za korištenje – AgroLog</title>
     <meta name="description" content="Upute za korištenje AgroLoga: ARKOD parcele na karti, evidencija gnojidbe i prskanja, registar sredstava, izračun dušika, prognoza za prskanje i izvoz u Ministarstvov format za 2027.">
     <link rel="canonical" href="{{ route('docs') }}">
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    @include('partials.favicon')
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('docs') }}">
     <meta property="og:title" content="Upute za korištenje – AgroLog">

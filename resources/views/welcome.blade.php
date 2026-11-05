@@ -9,8 +9,7 @@
     <link rel="canonical" href="{{ route('home') }}">
     <meta name="google-adsense-account" content="ca-pub-3054841074530422">
     <meta name="theme-color" content="#06120a">
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    @include('partials.favicon')
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ route('home') }}">
