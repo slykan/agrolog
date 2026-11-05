@@ -70,7 +70,7 @@
     .mob-kartice tfoot { display: block; width: 100%; }
     /* troškovi po parceli: parcela + kultura u prvom redu, iznosi po tri u redu */
     .mob-troskovi tr { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .mob-troskovi td[data-label="Kultura"] { grid-column: span 2; }
+    .mob-troskovi td:nth-child(2) { grid-column: span 2; }
     .mob-stupci label { display: none; }
     .mob-stupci > span { display: none; }
     .mob-stupci > div { margin-left: 0; width: 100%; }

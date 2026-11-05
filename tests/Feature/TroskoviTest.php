@@ -55,9 +55,42 @@ class TroskoviTest extends TestCase
         $this->actingAs($u);
         Livewire::test(TroskoviPregled::class)
             ->assertViewHas('nabavaUkupno', 700.0)
-            ->assertSee('1515096')->assertSee('Trošak po parceli i kulturi')
+            ->assertSee('1515096')->assertSee('Trošak po parceli')
             ->call('postavi', 'prosla')->assertViewHas('nabavaUkupno', 90.0);
         $this->get('/troskovi')->assertOk()->assertSee('Nabava po mjesecima');
+    }
+
+    public function test_dvije_kulture_na_parceli_po_parceli_i_po_kulturi(): void
+    {
+        $this->travelTo('2026-11-05 10:00');
+        $u = User::factory()->create();
+        $p1 = Parcela::create(['user_id' => $u->id, 'arkod_broj' => '1111111', 'povrsina_ha' => 10]);
+        $p2 = Parcela::create(['user_id' => $u->id, 'arkod_broj' => '2222222', 'povrsina_ha' => 5]);
+        $psenica1 = Kultura::create(['user_id' => $u->id, 'parcela_id' => $p1->id, 'naziv' => 'Pšenica', 'posadjena_povrsina_ha' => 6, 'godina' => 2026]);
+        $kukuruz = Kultura::create(['user_id' => $u->id, 'parcela_id' => $p1->id, 'naziv' => 'Kukuruz', 'posadjena_povrsina_ha' => 4, 'godina' => 2026]);
+        $psenica2 = Kultura::create(['user_id' => $u->id, 'parcela_id' => $p2->id, 'naziv' => 'pšenica', 'posadjena_povrsina_ha' => 5, 'godina' => 2026]);
+        $s = SkladisteModel::create(['user_id' => $u->id, 'naziv' => 'Glavno', 'zadano' => true]);
+        SkladisteUlaz::create(['user_id' => $u->id, 'skladiste_id' => $s->id, 'vrsta' => 'szb', 'naziv' => 'Roundup', 'datum' => '2026-03-01', 'kolicina' => 100, 'jedinica' => 'L', 'cijena' => 1000]);   // 10 €/L
+        foreach ([[$psenica1, 1], [$kukuruz, 2], [$psenica2, 1]] as [$k, $doza]) {   // 6 L, 8 L, 5 L
+            Prskanje::create(['user_id' => $u->id, 'kultura_id' => $k->id, 'datum_tretiranja' => '2026-04-01', 'trgovacki_naziv_sredstva' => 'Roundup',
+                'kolicina_sredstva_l_ha' => $doza, 'vrsta_uporabe' => 'otvoreno', 'sustav_proizvodnje' => 'neekoloska']);
+        }
+        $this->actingAs($u);
+
+        Livewire::test(TroskoviPregled::class)
+            ->assertSet('grupa', 'parcela')
+            ->assertViewHas('grupe', function ($g) {
+                $p1 = $g->firstWhere('naziv', '1111111');   // obje kulture: 60 + 80 € na 10 ha parcele
+                return $g->count() === 2 && abs($p1['ukupno'] - 140) < 0.01 && abs($p1['po_ha'] - 14) < 0.01
+                    && str_contains($p1['opis'], 'Pšenica') && str_contains($p1['opis'], 'Kukuruz');
+            })
+            ->call('grupiraj', 'kultura')
+            ->assertViewHas('grupe', function ($g) {
+                $ps = $g->firstWhere('naziv', 'Pšenica');   // pšenica s obje parcele: 60 + 50 € na 11 ha
+                return $g->count() === 2 && abs($ps['ukupno'] - 110) < 0.01 && abs($ps['ha'] - 11) < 0.01 && abs($ps['po_ha'] - 10) < 0.01
+                    && str_contains($ps['opis'], '1111111') && str_contains($ps['opis'], '2222222');
+            })
+            ->assertSee('Trošak po kulturi');
     }
 
     public function test_bez_skladista_uputa(): void

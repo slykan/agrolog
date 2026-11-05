@@ -62,7 +62,8 @@ class Troskovi
             $ukupno = $t['szb'] + $t['gnojivo'];
 
             return [
-                'kultura_id' => $id, 'arkod' => $k?->parcela?->arkod_broj, 'kultura' => $k?->naziv, 'godina' => $k?->godina, 'ha' => $ha,
+                'kultura_id' => $id, 'parcela_id' => $k?->parcela_id, 'parcela_ha' => (float) ($k?->parcela?->povrsina_ha ?? 0),
+                'arkod' => $k?->parcela?->arkod_broj, 'kultura' => $k?->naziv, 'godina' => $k?->godina, 'ha' => $ha,
                 'szb' => round($t['szb'], 2), 'gnojivo' => round($t['gnojivo'], 2), 'ukupno' => round($ukupno, 2),
                 'po_ha' => $ha > 0 ? round($ukupno / $ha, 2) : null,
             ];

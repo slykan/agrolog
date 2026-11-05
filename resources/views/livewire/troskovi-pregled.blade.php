@@ -144,21 +144,36 @@
         </div>
     @endif
 
-    {{-- trošak po parceli i kulturi --}}
+    {{-- trošak po parceli ili po kulturi --}}
     <div class="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div class="px-4 pt-4 pb-2">
-            <h4 class="font-semibold text-gray-800">Trošak po parceli i kulturi</h4>
-            <p class="text-xs text-gray-500">Utrošena sredstva i gnojiva (doza × površina) po prosječnoj nabavnoj cijeni.</p>
+        <div class="px-4 pt-4 pb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+                <h4 class="font-semibold text-gray-800">Trošak po {{ $grupa === 'kultura' ? 'kulturi' : 'parceli' }}</h4>
+                <p class="text-xs text-gray-500">
+                    @if($grupa === 'kultura')
+                        Ista kultura sa svih parcela zajedno; € / ha na hektare te kulture.
+                    @else
+                        Sve kulture na parceli zajedno; € / ha na površinu parcele.
+                    @endif
+                    Utrošak = doza × površina po prosječnoj nabavnoj cijeni.
+                </p>
+            </div>
+            <div class="inline-flex shrink-0 rounded-lg border border-gray-200 bg-gray-50 p-0.5 text-sm" role="group" aria-label="Trošak po">
+                @foreach(['parcela' => 'Parcela', 'kultura' => 'Kultura'] as $k => $v)
+                    <button wire:click="grupiraj('{{ $k }}')" aria-pressed="{{ $grupa === $k ? 'true' : 'false' }}"
+                            class="px-4 py-1 rounded-md transition {{ $grupa === $k ? 'bg-green-700 text-white shadow-sm' : 'text-gray-600 hover:text-gray-900' }}">{{ $v }}</button>
+                @endforeach
+            </div>
         </div>
-        @if($redovi->isEmpty())
+        @if($grupe->isEmpty())
             <p class="text-sm text-gray-500 px-4 pb-6 pt-2">U ovom razdoblju nema utroška s poznatom cijenom.</p>
         @else
             <div class="overflow-x-auto">
             <table class="w-full text-sm mob-kartice mob-troskovi">
                 <thead>
                     <tr class="text-xs text-gray-500 uppercase bg-gray-50">
-                        <th class="px-4 py-2 text-left">Parcela</th>
-                        <th class="px-4 py-2 text-left">Kultura</th>
+                        <th class="px-4 py-2 text-left">{{ $grupa === 'kultura' ? 'Kultura' : 'Parcela' }}</th>
+                        <th class="px-4 py-2 text-left">{{ $grupa === 'kultura' ? 'Parcele' : 'Kulture' }}</th>
                         <th class="px-4 py-2 text-right">ha</th>
                         <th class="px-4 py-2 text-right">Zaštita bilja</th>
                         <th class="px-4 py-2 text-right">Gnojivo</th>
@@ -167,10 +182,10 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @foreach($redovi as $r)
+                    @foreach($grupe as $r)
                         <tr>
-                            <td data-label="Parcela" class="px-4 py-2 font-medium text-gray-800">{{ $r['arkod'] }}</td>
-                            <td data-label="Kultura" class="px-4 py-2 text-gray-700">{{ $r['kultura'] }} <span class="text-gray-400 text-xs">{{ $r['godina'] }}.</span></td>
+                            <td data-label="{{ $grupa === 'kultura' ? 'Kultura' : 'Parcela' }}" class="px-4 py-2 font-medium text-gray-800">{{ $r['naziv'] }}</td>
+                            <td data-label="{{ $grupa === 'kultura' ? 'Parcele' : 'Kulture' }}" class="px-4 py-2 text-gray-600">{{ $r['opis'] }}</td>
                             <td data-label="ha" class="px-4 py-2 text-right text-gray-600">{{ number_format($r['ha'], 2, ',', '.') }}</td>
                             <td data-label="Zaštita bilja" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['szb']) }}</td>
                             <td data-label="Gnojivo" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['gnojivo']) }}</td>
@@ -182,14 +197,46 @@
                 <tfoot>
                     <tr class="bg-gray-50 font-semibold text-gray-900">
                         <td class="mob-puna px-4 py-2" colspan="2">Ukupno</td>
-                        <td data-label="ha" class="px-4 py-2 text-right">{{ number_format($redovi->sum('ha'), 2, ',', '.') }}</td>
-                        <td data-label="Zaštita bilja" class="px-4 py-2 text-right">{{ $eur($redovi->sum('szb')) }}</td>
-                        <td data-label="Gnojivo" class="px-4 py-2 text-right">{{ $eur($redovi->sum('gnojivo')) }}</td>
+                        <td data-label="ha" class="px-4 py-2 text-right">{{ number_format($haGrupe, 2, ',', '.') }}</td>
+                        <td data-label="Zaštita bilja" class="px-4 py-2 text-right">{{ $eur($grupe->sum('szb')) }}</td>
+                        <td data-label="Gnojivo" class="px-4 py-2 text-right">{{ $eur($grupe->sum('gnojivo')) }}</td>
                         <td data-label="Trošak" class="px-4 py-2 text-right">{{ $eur($utroseno) }}</td>
-                        <td data-label="€ / ha" class="px-4 py-2 text-right">{{ $poHa !== null ? $eur($poHa) : '—' }}</td>
+                        <td data-label="€ / ha" class="px-4 py-2 text-right">{{ $poHaGrupe !== null ? $eur($poHaGrupe) : '—' }}</td>
                     </tr>
                 </tfoot>
             </table>
+            </div>
+
+            {{-- graf: trošak po parceli / kulturi, vodoravne trake (zaštita + gnojivo), € / ha na kraju --}}
+            @php
+                $najvise = max(0.01, (float) $grupe->max('ukupno'));
+            @endphp
+            <div class="px-4 pt-4 pb-4 border-t border-gray-100">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <h5 class="text-sm font-semibold text-gray-700">Trošak po {{ $grupa === 'kultura' ? 'kulturi' : 'parceli' }}</h5>
+                    <div class="flex items-center gap-4 text-xs text-gray-600" aria-hidden="true">
+                        <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm" style="background: {{ $boje['szb'] }}"></span>Zaštita bilja</span>
+                        <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm" style="background: {{ $boje['gnojivo'] }}"></span>Gnojivo</span>
+                    </div>
+                </div>
+                <div class="space-y-2" role="img" aria-label="Trošak po {{ $grupa === 'kultura' ? 'kulturi' : 'parceli' }}">
+                    @foreach($grupe as $r)
+                        <div class="group relative grid grid-cols-[6.5rem_1fr_auto] sm:grid-cols-[9rem_1fr_9rem] items-center gap-3 text-sm">
+                            <span class="truncate text-gray-800" title="{{ $r['opis'] }}">{{ $r['naziv'] }}</span>
+                            <div class="h-5 flex rounded-r overflow-hidden" style="width: {{ max(1, $r['ukupno'] / $najvise * 100) }}%">
+                                @if($r['szb'] > 0)<div class="h-full {{ $r['gnojivo'] > 0 ? 'border-r-2 border-white' : '' }}" style="flex: {{ $r['szb'] }} 1 0; background: {{ $boje['szb'] }}"></div>@endif
+                                @if($r['gnojivo'] > 0)<div class="h-full" style="flex: {{ $r['gnojivo'] }} 1 0; background: {{ $boje['gnojivo'] }}"></div>@endif
+                            </div>
+                            <span class="text-right whitespace-nowrap"><span class="font-medium text-gray-900">{{ $eur($r['ukupno'], 0) }}</span> <span class="text-xs text-gray-500">· {{ $r['po_ha'] !== null ? $eur($r['po_ha'], 0) . '/ha' : '—' }}</span></span>
+                            <div class="pointer-events-none absolute left-28 sm:left-40 bottom-full mb-1 z-10 hidden group-hover:block whitespace-nowrap rounded-lg bg-gray-900 text-white text-xs px-3 py-2 shadow-lg">
+                                <div class="font-semibold mb-1">{{ $r['naziv'] }} <span class="font-normal text-gray-300">{{ $r['opis'] }}</span></div>
+                                <div>Zaštita bilja: {{ $eur($r['szb']) }}</div>
+                                <div>Gnojivo: {{ $eur($r['gnojivo']) }}</div>
+                                <div class="text-gray-300 mt-1">{{ $eur($r['ukupno']) }} · {{ number_format($r['ha'], 2, ',', '.') }} ha · {{ $r['po_ha'] !== null ? $eur($r['po_ha']) . '/ha' : '—' }}</div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         @endif
         @if($bez_cijene)

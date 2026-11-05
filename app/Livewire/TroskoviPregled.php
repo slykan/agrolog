@@ -11,6 +11,37 @@ class TroskoviPregled extends Component
 {
     use Razdoblje;
 
+    /** Trošak po: parcela | kultura */
+    public string $grupa = 'parcela';
+
+    public function grupiraj(string $g): void
+    {
+        $this->grupa = in_array($g, ['parcela', 'kultura'], true) ? $g : 'parcela';
+    }
+
+    /** Redovi troška zbrojeni po parceli (€/ha na površinu parcele) ili po kulturi sa svih parcela (€/ha na hektare kulture). */
+    private function grupe($redovi)
+    {
+        $po = $this->grupa === 'kultura'
+            ? $redovi->groupBy(fn ($r) => mb_strtolower(trim((string) $r['kultura'])))
+            : $redovi->groupBy('parcela_id');
+
+        return $po->map(function ($g) {
+            $prvi = $g->first();
+            $ha = $this->grupa === 'kultura' ? (float) $g->sum('ha') : (float) $prvi['parcela_ha'];
+            $ukupno = (float) $g->sum('ukupno');
+
+            return [
+                'naziv' => $this->grupa === 'kultura' ? $prvi['kultura'] : $prvi['arkod'],
+                'opis' => $this->grupa === 'kultura'
+                    ? $g->pluck('arkod')->unique()->implode(', ')
+                    : $g->map(fn ($r) => $r['kultura'] . ' ' . $r['godina'] . '.')->unique()->implode(', '),
+                'ha' => $ha, 'szb' => round((float) $g->sum('szb'), 2), 'gnojivo' => round((float) $g->sum('gnojivo'), 2),
+                'ukupno' => round($ukupno, 2), 'po_ha' => $ha > 0 ? round($ukupno / $ha, 2) : null,
+            ];
+        })->sortByDesc('ukupno')->values();
+    }
+
     public function render()
     {
         [$od, $do] = $this->granice();
@@ -26,14 +57,17 @@ class TroskoviPregled extends Component
         $poVrsti = ['szb' => (float) $t['nabava']->where('vrsta', 'szb')->sum('cijena'), 'gnojivo' => (float) $t['nabava']->where('vrsta', 'gnojivo')->sum('cijena')];
         [$vrh, $korak] = $this->ljestvica(collect($mjeseci)->max(fn ($m) => $m['szb'] + $m['gnojivo']));
 
+        $grupe = $this->grupe($t['redovi']);
         $utroseno = (float) $t['redovi']->sum('ukupno');
-        $ha = (float) $t['redovi']->sum('ha');
+        $ha = (float) $t['redovi']->sum('ha');        // za karticu: hektari kultura s troškom
+        $haGrupe = (float) $grupe->sum('ha');
 
         return view('livewire.troskovi-pregled', $t + [
-            'odDatum' => $od, 'doDatum' => $do, 'oznaka' => $this->oznakaRazdoblja(),
+            'grupe' => $grupe, 'odDatum' => $od, 'doDatum' => $do, 'oznaka' => $this->oznakaRazdoblja(),
             'mjeseci' => array_values($mjeseci), 'vrh' => $vrh, 'korak' => $korak,
             'poVrsti' => $poVrsti, 'nabavaUkupno' => array_sum($poVrsti),
             'utroseno' => $utroseno, 'poHa' => $ha > 0 ? $utroseno / $ha : null,
+            'haGrupe' => $haGrupe, 'poHaGrupe' => $haGrupe > 0 ? $utroseno / $haGrupe : null,
         ]);
     }
 }
