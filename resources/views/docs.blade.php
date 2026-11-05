@@ -52,6 +52,7 @@
                     <a href="#viseredni-unos" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Višeredni unos</a>
                     <a href="#kopiranje" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kopiranje zapisa</a>
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
+                    <a href="#troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Troškovi</a>
                     <a href="#mehanizacija" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Mehanizacija</a>
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
@@ -281,6 +282,25 @@
                             <li><strong>Inventura:</strong> u detaljima artikla upišite stvarnu količinu i AgroLog doda ispravak za razliku.</li>
                         </ul>
                         <p>Ako uz nabavu upišete cijenu, vidi se prosječna cijena po L ili kg i vrijednost zalihe.</p>
+                    </div>
+                </section>
+
+                {{-- TROŠKOVI --}}
+                <section id="troskovi">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Troškovi po parceli i hektaru</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Stranica <strong class="text-gray-800">Troškovi</strong> računa koliko vas stoji zaštita bilja i gnojidba, iz <a href="#skladiste" class="text-green-700 hover:underline">skladišta</a> i evidencije:</p>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>Nabava</strong> su ulazi na skladište s upisanom cijenom, po mjesecima i po vrsti (zaštita bilja, gnojivo). Prijenosi između skladišta i inventure se ne broje.</li>
+                            <li><strong>Utrošak</strong> je doza × površina iz svakog zapisa prskanja i gnojidbe, pomnožena s prosječnom nabavnom cijenom tog sredstva ili gnojiva.</li>
+                            <li>Tablica <strong>Trošak po parceli i kulturi</strong> pokazuje iznos za zaštitu, gnojidbu, ukupno i po hektaru.</li>
+                        </ul>
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800">
+                            <strong>Savjet:</strong> brojke su točne samo ako uz nabavu upišete cijenu. Ako neko sredstvo nema cijenu, ispod tablice piše koliko zapisa nije uračunato.
+                        </div>
                     </div>
                 </section>
 

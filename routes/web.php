@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/parcele/{parcela}/arkod', ParcelaArkodController::class)->name('parcela.arkod');
     Route::get('/skladiste', fn() => view('skladiste'))->name('skladiste');
     Route::get('/mehanizacija', fn() => view('mehanizacija'))->name('mehanizacija');
+    Route::get('/troskovi', fn() => view('troskovi'))->name('troskovi');
     Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {

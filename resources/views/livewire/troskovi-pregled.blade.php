@@ -1,0 +1,217 @@
+<div class="space-y-5">
+    @php
+        $mj = ['sij', 'velj', 'ožu', 'tra', 'svi', 'lip', 'srp', 'kol', 'ruj', 'lis', 'stu', 'pro'];
+        $n = count($mjeseci);
+        $svaki = max(1, (int) ceil($n / 12));
+        $najveci = collect($mjeseci)->sortByDesc(fn ($m) => $m['szb'] + $m['gnojivo'])->keys()->first();
+        $boje = ['gnojivo' => '#008300', 'szb' => '#2a78d6'];   // iste boje kao na početnoj (gnojidba, prskanje)
+        $nazivi = ['szb' => 'Zaštita bilja', 'gnojivo' => 'Gnojivo'];
+        $eur = fn ($v, $d = 2) => number_format((float) $v, $d, ',', '.') . ' €';
+    @endphp
+
+    {{-- naslov i razdoblje --}}
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+            <p class="text-sm text-gray-600">Nabava iz skladišta i utrošak u prskanju i gnojidbi</p>
+            <p class="text-xs text-gray-500">{{ $odDatum->format('d.m.Y.') }} – {{ $doDatum->format('d.m.Y.') }}</p>
+        </div>
+        @include('partials.razdoblje')
+    </div>
+
+    @if(! $ima_skladiste || ! $ima_cijena)
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+            <p class="font-semibold mb-1">Troškovi se računaju iz cijena nabave na skladištu.</p>
+            <p>
+                @if(! $ima_skladiste)
+                    Dodajte skladište i upišite nabavu sredstava i gnojiva s cijenom.
+                @else
+                    Na skladištu još nema nabave s upisanom cijenom. Uz nabavu upišite "Cijena ukupno (€)".
+                @endif
+                AgroLog tada sam izračuna koliko vas po parceli i hektaru stoji zaštita i gnojidba.
+            </p>
+            <a href="{{ route('skladiste') }}" class="inline-block mt-3 btn-primary">Otvori skladište</a>
+        </div>
+    @endif
+
+    {{-- brojke --}}
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="rounded-xl border border-gray-200 p-4">
+            <p class="text-sm text-gray-500">Nabava {{ $oznaka }}</p>
+            <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $eur($nabavaUkupno, 0) }}</p>
+            <p class="text-xs text-gray-500">{{ $nabava->count() }} {{ $nabava->count() === 1 ? 'ulaz' : 'ulaza' }} s cijenom</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 p-4">
+            <p class="text-sm text-gray-500">Utrošeno na parcelama</p>
+            <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $eur($utroseno, 0) }}</p>
+            <p class="text-xs text-gray-500">vrijednost sredstava i gnojiva iz evidencije</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 p-4">
+            <p class="text-sm text-gray-500">Prosječno po hektaru</p>
+            <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $poHa !== null ? $eur($poHa, 0) : '—' }}</p>
+            <p class="text-xs text-gray-500">utrošeno / površina kultura s troškom</p>
+        </div>
+    </div>
+
+    {{-- nabava po mjesecima --}}
+    <div class="rounded-xl border border-gray-200 p-4 bg-white">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h4 class="font-semibold text-gray-800">Nabava po mjesecima</h4>
+            <div class="flex items-center gap-4 text-sm text-gray-600" aria-hidden="true">
+                @foreach(['gnojivo', 'szb'] as $v)
+                    <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm" style="background: {{ $boje[$v] }}"></span>{{ $nazivi[$v] }}</span>
+                @endforeach
+            </div>
+        </div>
+        @if($nabavaUkupno <= 0)
+            <p class="text-sm text-gray-500 py-10 text-center">U ovom razdoblju nema nabave s cijenom.</p>
+        @else
+            <div class="flex gap-2" role="img" aria-label="Nabava po mjesecima: zaštita bilja {{ $eur($poVrsti['szb'], 0) }}, gnojivo {{ $eur($poVrsti['gnojivo'], 0) }}">
+                <div class="relative w-14 h-44 text-[11px] text-gray-400 shrink-0">
+                    @for($v = 0; $v <= $vrh; $v += $korak)
+                        <span class="absolute right-0 translate-y-1/2 leading-none" style="bottom: {{ $v / $vrh * 100 }}%">{{ $eur($v, 0) }}</span>
+                    @endfor
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="relative h-44">
+                        @for($v = 0; $v <= $vrh; $v += $korak)
+                            <div class="absolute inset-x-0 border-t {{ $v === 0 ? 'border-gray-300' : 'border-gray-100' }}" style="bottom: {{ $v / $vrh * 100 }}%"></div>
+                        @endfor
+                        <div class="absolute inset-0 flex items-end">
+                            @foreach($mjeseci as $i => $m)
+                                @php $zbroj = $m['szb'] + $m['gnojivo']; @endphp
+                                <div class="group relative flex-1 h-full flex flex-col justify-end items-center">
+                                    @if($zbroj > 0)
+                                        @if($i === $najveci)<span class="text-[11px] font-semibold text-gray-700 mb-0.5 whitespace-nowrap">{{ $eur($zbroj, 0) }}</span>@endif
+                                        <div class="w-3/5 max-w-[28px] flex flex-col" style="height: {{ $zbroj / $vrh * 100 }}%">
+                                            @if($m['szb'] > 0)
+                                                <div class="w-full {{ $m['gnojivo'] > 0 ? 'border-b-2 border-white' : '' }} rounded-t" style="flex: {{ $m['szb'] }} 1 0; background: {{ $boje['szb'] }}"></div>
+                                            @endif
+                                            @if($m['gnojivo'] > 0)
+                                                <div class="w-full {{ $m['szb'] > 0 ? '' : 'rounded-t' }}" style="flex: {{ $m['gnojivo'] }} 1 0; background: {{ $boje['gnojivo'] }}"></div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                    <div class="pointer-events-none absolute bottom-full mb-1 left-1/2 -translate-x-1/2 z-10 hidden group-hover:block whitespace-nowrap rounded-lg bg-gray-900 text-white text-xs px-3 py-2 shadow-lg">
+                                        <div class="font-semibold mb-1">{{ $mj[$m['mjesec']->month - 1] }} {{ $m['mjesec']->format('Y.') }}</div>
+                                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm" style="background: {{ $boje['szb'] }}"></span>Zaštita bilja: {{ $eur($m['szb']) }}</div>
+                                        <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm" style="background: {{ $boje['gnojivo'] }}"></span>Gnojivo: {{ $eur($m['gnojivo']) }}</div>
+                                        <div class="text-gray-300 mt-1">Ukupno: {{ $eur($zbroj) }}</div>
+                                    </div>
+                                    <div class="absolute inset-0 group-hover:bg-gray-500/5 rounded"></div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="flex mt-1.5 text-[11px] text-gray-500">
+                        @foreach($mjeseci as $i => $m)
+                            <div class="flex-1 text-center truncate">
+                                @if($i % $svaki === 0){{ $mj[$m['mjesec']->month - 1] }}@if($i === 0 || $m['mjesec']->month === 1)<span class="hidden sm:inline"> {{ $m['mjesec']->format('y') }}</span>@endif @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <details class="mt-3 text-sm">
+                <summary class="cursor-pointer text-gray-500 hover:text-gray-700 text-xs">Prikaži kao tablicu</summary>
+                <table class="mt-2 w-full text-xs">
+                    <thead><tr class="text-gray-500 text-left"><th class="py-1">Mjesec</th><th class="text-right">Zaštita bilja</th><th class="text-right">Gnojivo</th><th class="text-right">Ukupno</th></tr></thead>
+                    <tbody class="text-gray-700">
+                        @foreach($mjeseci as $m)
+                            <tr class="border-t border-gray-100"><td class="py-1">{{ $mj[$m['mjesec']->month - 1] }} {{ $m['mjesec']->format('Y.') }}</td><td class="text-right">{{ $eur($m['szb']) }}</td><td class="text-right">{{ $eur($m['gnojivo']) }}</td><td class="text-right font-medium">{{ $eur($m['szb'] + $m['gnojivo']) }}</td></tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </details>
+        @endif
+    </div>
+
+    {{-- nabava po vrsti --}}
+    @if($nabavaUkupno > 0)
+        <div class="rounded-xl border border-gray-200 p-4 bg-white">
+            <h4 class="font-semibold text-gray-800 mb-4">Nabava po vrsti</h4>
+            <div class="space-y-4">
+                @foreach(collect($poVrsti)->sortDesc() as $v => $iznos)
+                    @php $udio = $nabavaUkupno > 0 ? $iznos / $nabavaUkupno * 100 : 0; @endphp
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-800">{{ $nazivi[$v] }}</span>
+                            <span class="text-gray-800">{{ $eur($iznos, 0) }} <span class="text-gray-400 ml-2">{{ round($udio) }} %</span></span>
+                        </div>
+                        <div class="h-2.5 rounded-full bg-gray-100 overflow-hidden"><div class="h-full rounded-full" style="width: {{ $udio }}%; background: {{ $boje[$v] }}"></div></div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    {{-- trošak po parceli i kulturi --}}
+    <div class="rounded-xl border border-gray-200 bg-white overflow-hidden">
+        <div class="px-4 pt-4 pb-2">
+            <h4 class="font-semibold text-gray-800">Trošak po parceli i kulturi</h4>
+            <p class="text-xs text-gray-500">Utrošena sredstva i gnojiva (doza × površina) po prosječnoj nabavnoj cijeni.</p>
+        </div>
+        @if($redovi->isEmpty())
+            <p class="text-sm text-gray-500 px-4 pb-6 pt-2">U ovom razdoblju nema utroška s poznatom cijenom.</p>
+        @else
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm mob-kartice mob-troskovi">
+                <thead>
+                    <tr class="text-xs text-gray-500 uppercase bg-gray-50">
+                        <th class="px-4 py-2 text-left">Parcela</th>
+                        <th class="px-4 py-2 text-left">Kultura</th>
+                        <th class="px-4 py-2 text-right">ha</th>
+                        <th class="px-4 py-2 text-right">Zaštita bilja</th>
+                        <th class="px-4 py-2 text-right">Gnojivo</th>
+                        <th class="px-4 py-2 text-right">Trošak</th>
+                        <th class="px-4 py-2 text-right">€ / ha</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($redovi as $r)
+                        <tr>
+                            <td data-label="Parcela" class="px-4 py-2 font-medium text-gray-800">{{ $r['arkod'] }}</td>
+                            <td data-label="Kultura" class="px-4 py-2 text-gray-700">{{ $r['kultura'] }} <span class="text-gray-400 text-xs">{{ $r['godina'] }}.</span></td>
+                            <td data-label="ha" class="px-4 py-2 text-right text-gray-600">{{ number_format($r['ha'], 2, ',', '.') }}</td>
+                            <td data-label="Zaštita bilja" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['szb']) }}</td>
+                            <td data-label="Gnojivo" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['gnojivo']) }}</td>
+                            <td data-label="Trošak" class="px-4 py-2 text-right text-gray-900">{{ $eur($r['ukupno']) }}</td>
+                            <td data-label="€ / ha" class="px-4 py-2 text-right font-semibold text-gray-900">{{ $r['po_ha'] !== null ? $eur($r['po_ha']) : '—' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-50 font-semibold text-gray-900">
+                        <td class="mob-puna px-4 py-2" colspan="2">Ukupno</td>
+                        <td data-label="ha" class="px-4 py-2 text-right">{{ number_format($redovi->sum('ha'), 2, ',', '.') }}</td>
+                        <td data-label="Zaštita bilja" class="px-4 py-2 text-right">{{ $eur($redovi->sum('szb')) }}</td>
+                        <td data-label="Gnojivo" class="px-4 py-2 text-right">{{ $eur($redovi->sum('gnojivo')) }}</td>
+                        <td data-label="Trošak" class="px-4 py-2 text-right">{{ $eur($utroseno) }}</td>
+                        <td data-label="€ / ha" class="px-4 py-2 text-right">{{ $poHa !== null ? $eur($poHa) : '—' }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            </div>
+        @endif
+        @if($bez_cijene)
+            <p class="text-xs text-amber-800 bg-amber-50 px-4 py-2 border-t border-amber-100">{{ $bez_cijene }} {{ $bez_cijene === 1 ? 'zapis troši artikl' : 'zapisa troše artikle' }} bez upisane cijene, pa {{ $bez_cijene === 1 ? 'nije uračunat' : 'nisu uračunati' }}. Cijenu dopunite uz nabavu na skladištu.</p>
+        @endif
+    </div>
+
+    {{-- utrošak po sredstvu / gnojivu --}}
+    @if($artikli->isNotEmpty())
+        <details class="rounded-xl border border-gray-200 bg-white p-4">
+            <summary class="cursor-pointer font-semibold text-gray-800">Utrošak po sredstvu i gnojivu</summary>
+            <table class="mt-3 w-full text-sm">
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($artikli as $a)
+                        <tr>
+                            <td class="py-1.5"><span class="inline-block w-2 h-2 rounded-sm mr-1.5" style="background: {{ $boje[$a['vrsta']] }}"></span>{{ $a['naziv'] }}</td>
+                            <td class="py-1.5 text-right text-gray-600">{{ \App\Support\Skladiste::broj($a['kolicina'], 2) }} {{ $a['jedinica'] }}</td>
+                            <td class="py-1.5 text-right font-medium">{{ $eur($a['iznos']) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </details>
+    @endif
+</div>
