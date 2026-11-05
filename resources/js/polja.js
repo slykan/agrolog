@@ -82,25 +82,25 @@ export function poljaTraktori(opcije = {}) {
                 p.el.appendChild(trag); tragovi.push(trag);
                 trag.animate(p.vert ? [{ height: '0px' }, { height: (duz - 12) + 'px' }] : [{ width: '0px' }, { width: (duz - 12) + 'px' }], { duration: trajanje, easing: 'linear', fill: 'forwards' });
                 const poz = s => p.vert ? `translate(${pos}px, ${s}px) rotate(90deg) scaleX(${smjer})` : `translate(${s}px, ${pos}px) scaleX(${smjer})`;
-                await cekaj(traktor.animate([{ transform: poz(a) }, { transform: poz(b) }], { duration: trajanje, easing: 'linear', fill: 'forwards' }));
                 if (r % 2 === 0 || redova <= 4) this.posadi(p, kultura, pos, a, b, biljke);
+                await cekaj(traktor.animate([{ transform: poz(a) }, { transform: poz(b) }], { duration: trajanje, easing: 'linear', fill: 'forwards' }));
             }
             await cekaj(traktor.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 800, fill: 'forwards' }));
             traktor.remove();
             this.ocisti(p, tragovi.concat(biljke));
         },
-        // biljke duž reda, rastu redom kojim je traktor prošao (od dna prema gore)
+        // biljke duž reda: svaka nikne čim traktor prođe preko nje (kašnjenje = put do nje / brzina), pa naraste
         posadi(p, kultura, pos, a, b, biljke) {
             const od = Math.min(a, b) + 8, do_ = Math.max(a, b) - 8, korak = 20;
             const mjesta = []; for (let s = od; s <= do_; s += korak) mjesta.push(s + (Math.random() * 6 - 3));
             if (a > b) mjesta.reverse();
-            mjesta.forEach((s, i) => {
+            mjesta.forEach((s) => {
                 const el = document.createElement('span');
                 el.className = 'biljka'; el.innerHTML = KULTURE[kultura];
                 Object.assign(el.style, p.vert ? { left: pos + 'px', top: s + 'px' } : { left: s + 'px', top: pos + 'px' });
                 p.el.appendChild(el); biljke.push(el);
                 el.animate([{ transform: 'scale(.2, 0)', opacity: 0 }, { transform: 'scale(.6, .5)', opacity: 1, offset: .35 }, { transform: 'scale(1, 1)', opacity: 1 }],
-                    { duration: 5000 + Math.random() * 3000, delay: 600 + i * 260, easing: 'ease-out', fill: 'both' });
+                    { duration: 4000 + Math.random() * 2500, delay: Math.abs(s - a) / BRZINA * 1000 + 250, easing: 'ease-out', fill: 'both' });
             });
         },
         // obrađeno i izraslo ostaje neko vrijeme, pa polako izblijedi; tek tada se parcela opet može obrađivati
