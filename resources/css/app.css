@@ -57,7 +57,7 @@
         font-size: 10px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #9ca3af;
     }
     .mob-kartice td.mob-puna { grid-column: 1 / -1; }
-    .mob-kartice td:has(input[type=time]) { grid-column: 1 / -1; }   /* vrijeme od–do: dva polja */
+    .mob-kartice td:has(input.vrijeme-24) { grid-column: 1 / -1; }   /* vrijeme od–do: dva polja */
     .mob-kartice td.mob-skrij { display: none; }
     .mob-kartice td.mob-akcije { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; padding-top: 6px !important; border-top: 1px solid #f3f4f6 !important; }
     .mob-kartice .form-input { width: 100%; font-size: 16px; }   /* 16px: iOS ne zumira pri unosu */

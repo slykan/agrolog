@@ -93,6 +93,28 @@ class TroskoviTest extends TestCase
             ->assertSee('Trošak po kulturi');
     }
 
+    public function test_troskovi_mehanizacije_i_sveukupno(): void
+    {
+        $this->travelTo('2026-11-05 10:00');
+        $u = User::factory()->create();
+        $t = \App\Models\Stroj::create(['user_id' => $u->id, 'vrsta' => 'traktor', 'naziv' => 'John Deere']);
+        \App\Models\StrojServis::create(['user_id' => $u->id, 'stroj_id' => $t->id, 'datum' => '2026-05-10', 'opis' => 'ulje', 'trosak' => 240]);
+        \App\Models\StrojServis::create(['user_id' => $u->id, 'stroj_id' => $t->id, 'datum' => '2025-05-10', 'opis' => 'staro', 'trosak' => 999]);
+        // registracija do 23.11.2027. → plaćena 23.11.2026. (ova godina); osiguranje do 01.03.2026. → plaćeno 2025.
+        \App\Models\StrojRok::create(['user_id' => $u->id, 'stroj_id' => $t->id, 'vrsta' => 'registracija', 'datum_isteka' => '2027-11-23', 'iznos' => 210]);
+        \App\Models\StrojRok::create(['user_id' => $u->id, 'stroj_id' => $t->id, 'vrsta' => 'osiguranje', 'datum_isteka' => '2026-03-01', 'iznos' => 95]);
+
+        $m = Troskovi::mehanizacija($u, now()->startOfYear(), now()->endOfYear());
+        $this->assertEqualsWithDelta(450, $m['ukupno'], 0.01);
+        $this->assertEqualsWithDelta(240, $m['po_stroju'][0]['servisi'], 0.01);
+        $this->assertEqualsWithDelta(210, $m['po_stroju'][0]['rokovi'], 0.01);
+
+        $this->actingAs($u);
+        Livewire::test(TroskoviPregled::class)
+            ->assertSee('Trošak mehanizacije')->assertSee('Sveukupni trošak')->assertSee('450 €')
+            ->assertSee('John Deere')->assertSee('vrijedi do 23.11.2027.');
+    }
+
     public function test_bez_skladista_uputa(): void
     {
         $this->actingAs(User::factory()->create())->get('/troskovi')->assertOk()->assertSee('Troškovi se računaju iz cijena nabave na skladištu');

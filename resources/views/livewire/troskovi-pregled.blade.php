@@ -34,7 +34,7 @@
     @endif
 
     {{-- brojke --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <div class="rounded-xl border border-gray-200 p-4">
             <p class="text-sm text-gray-500">Nabava {{ $oznaka }}</p>
             <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $eur($nabavaUkupno, 0) }}</p>
@@ -49,6 +49,16 @@
             <p class="text-sm text-gray-500">Prosječno po hektaru</p>
             <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $poHa !== null ? $eur($poHa, 0) : '—' }}</p>
             <p class="text-xs text-gray-500">utrošeno / površina kultura s troškom</p>
+        </div>
+        <a href="#mehanizacija-troskovi" class="rounded-xl border border-gray-200 p-4 hover:bg-gray-50 transition">
+            <p class="text-sm text-gray-500">Trošak mehanizacije</p>
+            <p class="text-3xl font-bold text-gray-900 leading-tight">{{ $eur($meh['ukupno'], 0) }}</p>
+            <p class="text-xs text-gray-500">servisi, registracije, osiguranja</p>
+        </a>
+        <div class="rounded-xl border border-green-200 bg-green-50 p-4 sm:col-span-2 lg:col-span-1">
+            <p class="text-sm font-medium text-green-800">Sveukupni trošak</p>
+            <p class="text-3xl font-bold text-green-900 leading-tight">{{ $eur($utroseno + $meh['ukupno'], 0) }}</p>
+            <p class="text-xs text-green-800/80">utrošeno na parcelama + mehanizacija</p>
         </div>
     </div>
 
@@ -261,4 +271,66 @@
             </table>
         </details>
     @endif
+{{-- mehanizacija: servisi i rokovi s iznosom --}}
+    <div id="mehanizacija-troskovi" class="rounded-xl border border-gray-200 bg-white overflow-hidden scroll-mt-4">
+        <div class="px-4 pt-4 pb-2 flex flex-wrap items-start justify-between gap-2">
+            <div>
+                <h4 class="font-semibold text-gray-800">Mehanizacija</h4>
+                <p class="text-xs text-gray-500">Servisi s troškom i iznosi uz rokove (registracija, osiguranje, tehnički, pregled), na datum plaćanja.</p>
+            </div>
+            <a href="{{ route('mehanizacija') }}" class="text-sm text-green-700 underline underline-offset-2 whitespace-nowrap">Otvori mehanizaciju →</a>
+        </div>
+        @if($meh['stavke']->isEmpty())
+            <p class="text-sm text-gray-500 px-4 pb-6 pt-2">
+                U ovom razdoblju nema troškova mehanizacije. Iznos upišite uz servis ("Trošak") ili uz rok ("Iznos") u
+                <a href="{{ route('mehanizacija') }}" class="text-green-700 underline">Mehanizaciji</a>.
+            </p>
+        @else
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm mob-kartice mob-troskovi">
+                <thead>
+                    <tr class="text-xs text-gray-500 uppercase bg-gray-50">
+                        <th class="px-4 py-2 text-left">Stroj / vozilo</th>
+                        <th class="px-4 py-2 text-right">Servisi</th>
+                        <th class="px-4 py-2 text-right">Registracija, osiguranje, pregledi</th>
+                        <th class="px-4 py-2 text-right">Ukupno</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($meh['po_stroju'] as $r)
+                        <tr>
+                            <td data-label="Stroj / vozilo" class="mob-puna px-4 py-2 font-medium text-gray-800">{{ $r['stroj'] }}</td>
+                            <td data-label="Servisi" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['servisi']) }}</td>
+                            <td data-label="Rokovi" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['rokovi']) }}</td>
+                            <td data-label="Ukupno" class="px-4 py-2 text-right font-semibold text-gray-900">{{ $eur($r['ukupno']) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-50 font-semibold text-gray-900">
+                        <td class="mob-puna px-4 py-2">Ukupno</td>
+                        <td data-label="Servisi" class="px-4 py-2 text-right">{{ $eur($meh['po_stroju']->sum('servisi')) }}</td>
+                        <td data-label="Rokovi" class="px-4 py-2 text-right">{{ $eur($meh['po_stroju']->sum('rokovi')) }}</td>
+                        <td data-label="Ukupno" class="px-4 py-2 text-right">{{ $eur($meh['ukupno']) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            </div>
+            <details class="border-t border-gray-100 px-4 py-3">
+                <summary class="cursor-pointer text-sm text-gray-600">Sve stavke ({{ $meh['stavke']->count() }})</summary>
+                <table class="mt-2 w-full text-sm">
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach($meh['stavke'] as $st)
+                            <tr>
+                                <td class="py-1.5 pr-3 text-gray-500 whitespace-nowrap">{{ $st['datum']->format('d.m.Y.') }}</td>
+                                <td class="py-1.5 pr-3 text-gray-800">{{ $st['stroj'] }}</td>
+                                <td class="py-1.5 pr-3 text-gray-600">{{ $st['opis'] }}</td>
+                                <td class="py-1.5 text-right font-medium whitespace-nowrap">{{ $eur($st['iznos']) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </details>
+        @endif
+    </div>
 </div>

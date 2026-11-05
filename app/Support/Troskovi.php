@@ -4,6 +4,8 @@ namespace App\Support;
 
 use App\Models\Kultura;
 use App\Models\SkladisteUlaz;
+use App\Models\StrojRok;
+use App\Models\StrojServis;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 
@@ -13,6 +15,45 @@ use Illuminate\Support\Carbon;
  */
 class Troskovi
 {
+    /**
+     * Troškovi mehanizacije u razdoblju: servisi (datum servisa) i iznosi uz rokove — registracija, osiguranje,
+     * tehnički, pregled… (datum plaćanja = početak valjanosti, tj. datum isteka minus razdoblje roka).
+     *
+     * @return array{stavke: \Illuminate\Support\Collection, po_stroju: \Illuminate\Support\Collection, ukupno: float}
+     */
+    public static function mehanizacija(User $user, Carbon $od, Carbon $do): array
+    {
+        $odS = $od->toDateString();
+        $doS = $do->copy()->addDay()->toDateString();
+        $stavke = collect();
+
+        foreach (StrojServis::with('stroj')->where('user_id', $user->id)->whereNotNull('trosak')->get() as $s) {
+            $d = $s->datum->toDateString();
+            if ($d >= $odS && $d < $doS) {
+                $stavke->push(['datum' => $s->datum, 'stroj_id' => $s->stroj_id, 'stroj' => $s->stroj?->naziv, 'vrsta' => 'servis',
+                    'opis' => 'Servis: ' . $s->opis, 'iznos' => (float) $s->trosak]);
+            }
+        }
+        foreach (StrojRok::with('stroj')->where('user_id', $user->id)->whereNotNull('iznos')->get() as $r) {
+            $placeno = $r->datum_isteka->copy()->subMonthsNoOverflow(Mehanizacija::ROKOVI[$r->vrsta][1] ?? 12);
+            $d = $placeno->toDateString();
+            if ($d >= $odS && $d < $doS) {
+                $stavke->push(['datum' => $placeno, 'stroj_id' => $r->stroj_id, 'stroj' => $r->stroj?->naziv, 'vrsta' => 'rok',
+                    'opis' => $r->opis . ' (vrijedi do ' . $r->datum_isteka->format('d.m.Y.') . ')', 'iznos' => (float) $r->iznos]);
+            }
+        }
+
+        $stavke = $stavke->sortBy(fn ($s) => $s['datum']->format('Y-m-d'))->values();
+        $poStroju = $stavke->groupBy('stroj_id')->map(fn ($g) => [
+            'stroj' => $g->first()['stroj'],
+            'servisi' => round($g->where('vrsta', 'servis')->sum('iznos'), 2),
+            'rokovi' => round($g->where('vrsta', 'rok')->sum('iznos'), 2),
+            'ukupno' => round($g->sum('iznos'), 2),
+        ])->sortByDesc('ukupno')->values();
+
+        return ['stavke' => $stavke, 'po_stroju' => $poStroju, 'ukupno' => round($stavke->sum('iznos'), 2)];
+    }
+
     public static function izracun(User $user, Carbon $od, Carbon $do): array
     {
         $odS = $od->toDateString();

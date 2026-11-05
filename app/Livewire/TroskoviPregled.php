@@ -63,6 +63,7 @@ class TroskoviPregled extends Component
         $haGrupe = (float) $grupe->sum('ha');
 
         return view('livewire.troskovi-pregled', $t + [
+            'meh' => Troskovi::mehanizacija(auth()->user(), $od, $do),
             'grupe' => $grupe, 'odDatum' => $od, 'doDatum' => $do, 'oznaka' => $this->oznakaRazdoblja(),
             'mjeseci' => array_values($mjeseci), 'vrh' => $vrh, 'korak' => $korak,
             'poVrsti' => $poVrsti, 'nabavaUkupno' => array_sum($poVrsti),

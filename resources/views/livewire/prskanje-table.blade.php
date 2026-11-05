@@ -175,9 +175,9 @@
                     @if(in_array('vrijeme', $visibleColumns))
                     <td data-label="Vrijeme" class="p-1 border border-gray-200">
                         <div class="flex gap-1 items-center">
-                            <input type="time" wire:model="form.vrijeme_od" class="form-input flex-1" placeholder="10:00">
+                            <x-vrijeme wire:model="form.vrijeme_od" class="flex-1 min-w-0" placeholder="10:00" />
                             <span class="text-gray-400 text-xs">-</span>
-                            <input type="time" wire:model="form.vrijeme_do" class="form-input flex-1" placeholder="16:00">
+                            <x-vrijeme wire:model="form.vrijeme_do" class="flex-1 min-w-0" placeholder="16:00" />
                         </div>
                     </td>
                     @endif
@@ -253,9 +253,9 @@
                         @if(in_array('vrijeme', $visibleColumns))
                         <td data-label="Vrijeme" class="p-1 border border-gray-200">
                             <div class="flex gap-1 items-center">
-                                <input type="time" wire:model="editForm.vrijeme_od" class="form-input flex-1">
+                                <x-vrijeme wire:model="editForm.vrijeme_od" class="flex-1 min-w-0" />
                                 <span>-</span>
-                                <input type="time" wire:model="editForm.vrijeme_do" class="form-input flex-1">
+                                <x-vrijeme wire:model="editForm.vrijeme_do" class="flex-1 min-w-0" />
                             </div>
                         </td>
                         @endif
