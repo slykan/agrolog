@@ -34,10 +34,10 @@
             <ul class="max-h-96 overflow-y-auto divide-y divide-gray-100">
                 @foreach($upozorenja as $u)
                     <li class="px-4 py-3 flex gap-3">
-                        <span class="mt-1.5 w-2 h-2 rounded-full shrink-0 {{ $u['razina'] === 'crveno' ? 'bg-red-600' : 'bg-amber-500' }}" aria-hidden="true"></span>
+                        <span class="mt-1.5 w-2 h-2 rounded-full shrink-0 {{ ['crveno' => 'bg-red-600', 'zuto' => 'bg-amber-500', 'info' => 'bg-sky-500'][$u['razina']] ?? 'bg-gray-400' }}" aria-hidden="true"></span>
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-medium text-gray-900 line-clamp-2">{{ $u['naslov'] }}</p>
-                            <p class="text-xs {{ $u['razina'] === 'crveno' ? 'text-red-700' : 'text-amber-800' }}">{{ $u['tekst'] }}</p>
+                            <p class="text-xs {{ ['crveno' => 'text-red-700', 'zuto' => 'text-amber-800', 'info' => 'text-sky-800'][$u['razina']] ?? 'text-gray-600' }}">{{ $u['tekst'] }}</p>
                         </div>
                         <a href="{{ $u['link'] }}" class="self-center shrink-0 text-xs font-semibold text-green-700 hover:text-green-800 whitespace-nowrap">Više →</a>
                     </li>

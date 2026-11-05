@@ -38,6 +38,17 @@ class Upozorenja
             ]);
         }
 
+        // karenca: berba/žetva ne prije (iz registracije u FIS-u, samo spremljeni detalji)
+        foreach (ProvjeraSzb::aktivneKarence($user) as $kar) {
+            $stavke->push([
+                'kljuc' => 'karenca-' . $kar['kultura']->id . '-' . $kar['do']->format('Ymd'),
+                'naslov' => 'Karenca: ' . $kar['kultura']->naziv . ' (' . $kar['kultura']->parcela?->arkod_broj . ')',
+                'tekst' => 'Berba/žetva ne prije ' . $kar['do']->format('d.m.Y.') . ' · ' . $kar['sredstvo'],
+                'link' => route('prskanje'),
+                'razina' => 'info',
+            ]);
+        }
+
         // evidencija 2027.: prskanja ove godine bez reg. broja ili fenofaze, aktivne kulture bez EPPO koda
         $bezPodataka = Prskanje::where('user_id', $user->id)->whereYear('datum_tretiranja', now()->year)
             ->where(fn ($q) => $q->whereNull('registracijski_broj')->orWhere('registracijski_broj', '')->orWhereNull('bbch')->orWhere('bbch', ''))
@@ -86,6 +97,6 @@ class Upozorenja
             }
         }
 
-        return $stavke->sortBy(fn ($s) => $s['razina'] === 'crveno' ? 0 : 1)->values();
+        return $stavke->sortBy(fn ($s) => ['crveno' => 0, 'zuto' => 1, 'info' => 2][$s['razina']] ?? 3)->values();
     }
 }

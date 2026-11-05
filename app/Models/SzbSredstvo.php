@@ -9,7 +9,7 @@ class SzbSredstvo extends Model
 {
     protected $table = 'szb_sredstva';
     protected $fillable = ['fis_id', 'naziv', 'registracijski_broj', 'nositelj', 'stari_naziv', 'aktivno'];
-    protected $casts = ['aktivno' => 'boolean'];
+    protected $casts = ['aktivno' => 'boolean', 'detalji' => 'array', 'detalji_at' => 'datetime'];
 
     /** Sredstvo po trgovačkom nazivu (bez obzira na velika/mala slova i razmake), ili po starom nazivu. */
     public static function poNazivu(?string $naziv): ?self

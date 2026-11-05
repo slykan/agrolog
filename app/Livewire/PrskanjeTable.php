@@ -102,6 +102,12 @@ class PrskanjeTable extends Component
         return $k ? SzbPopisi::bbchZaUsjev($k->eppo_naziv ?: $k->naziv) : [];
     }
 
+    /** Provjera prema registraciji u FIS-u (kultura, karenca, broj tretmana) za formu unosa ili uređivanja. */
+    public function provjeraFis(array $f, ?int $bez = null): ?array
+    {
+        return \App\Support\ProvjeraSzb::provjeri(auth()->user(), $f['kultura_id'] ?? null, $f['trgovacki_naziv_sredstva'] ?? null, $f['datum_tretiranja'] ?? null, null, $bez);
+    }
+
     public function getKultureProperty()
     {
         return Kultura::join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
