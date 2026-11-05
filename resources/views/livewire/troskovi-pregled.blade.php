@@ -254,6 +254,90 @@
         @endif
     </div>
 
+    {{-- prihod i dobit (prinos × cijena + potpore − trošak) --}}
+    <div class="rounded-xl border border-gray-200 bg-white overflow-hidden">
+        <div class="px-4 pt-4 pb-2 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+                <h4 class="font-semibold text-gray-800">Prihod i dobit po {{ $grupa === 'kultura' ? 'kulturi' : 'parceli' }}</h4>
+                <p class="text-xs text-gray-500">Prihod = prinos × površina × cijena + potpore. Trošak = sredstva i gnojiva iz evidencije + sjeme i ostali troškovi upisani uz kulturu.</p>
+            </div>
+            @php $ukDobit = $dobit->whereNotNull('dobit')->sum('dobit'); @endphp
+            @if($dobit->whereNotNull('dobit')->isNotEmpty())
+                <span class="shrink-0 text-sm font-semibold px-3 py-1 rounded-full {{ $ukDobit >= 0 ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-700' }}">Ukupno: {{ $ukDobit >= 0 ? '+' : '−' }}{{ $eur(abs($ukDobit), 0) }}</span>
+            @endif
+        </div>
+        @if($dobit->isEmpty() || $dobit->whereNotNull('prihod')->isEmpty())
+            <div class="px-4 pb-5 pt-2 text-sm text-gray-600">
+                Upišite prinos i cijenu uz kulturu: <a href="{{ route('parcele') }}" class="text-green-700 underline">Parcele &amp; Kulture</a> → gumb <strong>Prinos</strong> uz kulturu.
+                AgroLog onda izračuna prihod, dobit i dobit po hektaru.
+            </div>
+        @else
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm mob-kartice mob-troskovi">
+                <thead>
+                    <tr class="text-xs text-gray-500 uppercase bg-gray-50">
+                        <th class="px-4 py-2 text-left">{{ $grupa === 'kultura' ? 'Kultura' : 'Parcela' }}</th>
+                        <th class="px-4 py-2 text-left">{{ $grupa === 'kultura' ? 'Parcele' : 'Kulture' }}</th>
+                        <th class="px-4 py-2 text-right">ha</th>
+                        <th class="px-4 py-2 text-right">Prihod</th>
+                        <th class="px-4 py-2 text-right">Trošak</th>
+                        <th class="px-4 py-2 text-right">Dobit</th>
+                        <th class="px-4 py-2 text-right">Dobit / ha</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($dobit as $r)
+                        <tr>
+                            <td data-label="{{ $grupa === 'kultura' ? 'Kultura' : 'Parcela' }}" class="px-4 py-2 font-medium text-gray-800">{{ $r['naziv'] }}</td>
+                            <td data-label="{{ $grupa === 'kultura' ? 'Parcele' : 'Kulture' }}" class="px-4 py-2 text-gray-600">{{ $r['opis'] }}@if($r['bez_prihoda'] && $r['prihod'] !== null)<span class="text-xs text-amber-700"> · {{ $r['bez_prihoda'] }} bez prinosa</span>@endif</td>
+                            <td data-label="ha" class="px-4 py-2 text-right text-gray-600">{{ number_format($r['ha'], 2, ',', '.') }}</td>
+                            <td data-label="Prihod" class="px-4 py-2 text-right text-gray-700">{{ $r['prihod'] !== null ? $eur($r['prihod']) : '—' }}</td>
+                            <td data-label="Trošak" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['trosak']) }}</td>
+                            <td data-label="Dobit" class="px-4 py-2 text-right font-semibold {{ $r['dobit'] === null ? 'text-gray-400' : ($r['dobit'] >= 0 ? 'text-green-800' : 'text-red-700') }}">
+                                {{ $r['dobit'] === null ? 'upišite prinos' : ($r['dobit'] >= 0 ? '+' : '−') . $eur(abs($r['dobit'])) }}</td>
+                            <td data-label="Dobit / ha" class="px-4 py-2 text-right font-semibold {{ $r['dobit_ha'] === null ? 'text-gray-400' : ($r['dobit_ha'] >= 0 ? 'text-green-800' : 'text-red-700') }}">
+                                {{ $r['dobit_ha'] === null ? '—' : ($r['dobit_ha'] >= 0 ? '+' : '−') . $eur(abs($r['dobit_ha'])) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            </div>
+
+            {{-- graf: dobit po hektaru, trake lijevo (gubitak) i desno (dobit) od nule --}}
+            @php
+                $sDobiti = $dobit->whereNotNull('dobit_ha');
+                $najvise = max(1, (float) $sDobiti->max(fn ($r) => abs($r['dobit_ha'])));
+                $imaGubitak = $sDobiti->contains(fn ($r) => $r['dobit_ha'] < 0);
+            @endphp
+            @if($sDobiti->isNotEmpty())
+                <div class="px-4 pt-4 pb-4 border-t border-gray-100">
+                    <h5 class="text-sm font-semibold text-gray-700 mb-3">Dobit po hektaru</h5>
+                    <div class="space-y-2" role="img" aria-label="Dobit po hektaru po {{ $grupa === 'kultura' ? 'kulturi' : 'parceli' }}">
+                        @foreach($sDobiti as $r)
+                            @php $udio = abs($r['dobit_ha']) / $najvise * 100; @endphp
+                            <div class="grid grid-cols-[6.5rem_1fr_auto] sm:grid-cols-[9rem_1fr_7rem] items-center gap-3 text-sm">
+                                <span class="truncate text-gray-800" title="{{ $r['opis'] }}">{{ $r['naziv'] }}</span>
+                                <div class="flex h-5 {{ $imaGubitak ? '' : '' }}">
+                                    @if($imaGubitak)
+                                        <div class="w-1/2 flex justify-end border-r border-gray-300">
+                                            @if($r['dobit_ha'] < 0)<div class="h-full rounded-l bg-red-600/80" style="width: {{ max(1, $udio) }}%"></div>@endif
+                                        </div>
+                                        <div class="w-1/2">
+                                            @if($r['dobit_ha'] >= 0)<div class="h-full rounded-r bg-green-600" style="width: {{ max(1, $udio) }}%"></div>@endif
+                                        </div>
+                                    @else
+                                        <div class="h-full rounded-r bg-green-600" style="width: {{ max(1, $udio) }}%"></div>
+                                    @endif
+                                </div>
+                                <span class="text-right whitespace-nowrap font-medium {{ $r['dobit_ha'] >= 0 ? 'text-green-800' : 'text-red-700' }}">{{ $r['dobit_ha'] >= 0 ? '+' : '−' }}{{ $eur(abs($r['dobit_ha']), 0) }}/ha</span>
+                            </div>
+                        @endforeach
+                    </div>
+                    <p class="mt-3 text-xs text-gray-500">Mehanizacija (registracije, servisi) nije raspodijeljena po kulturama i nije uključena u dobit po hektaru.</p>
+                </div>
+            @endif
+        @endif
+    </div>
     {{-- utrošak po sredstvu / gnojivu --}}
     @if($artikli->isNotEmpty())
         <details class="rounded-xl border border-gray-200 bg-white p-4">

@@ -115,6 +115,35 @@ class TroskoviTest extends TestCase
             ->assertSee('John Deere')->assertSee('vrijedi do 23.11.2027.');
     }
 
+    public function test_prinos_i_dobit_po_hektaru(): void
+    {
+        $this->travelTo('2026-11-05 10:00');
+        $u = User::factory()->create();
+        $p = Parcela::create(['user_id' => $u->id, 'arkod_broj' => '3333333', 'povrsina_ha' => 10]);
+        $k = Kultura::create(['user_id' => $u->id, 'parcela_id' => $p->id, 'naziv' => 'Kukuruz', 'posadjena_povrsina_ha' => 10, 'godina' => 2026]);
+        $s = SkladisteModel::create(['user_id' => $u->id, 'naziv' => 'Glavno', 'zadano' => true]);
+        SkladisteUlaz::create(['user_id' => $u->id, 'skladiste_id' => $s->id, 'vrsta' => 'gnojivo', 'naziv' => 'UREA 46% N', 'datum' => '2026-03-01', 'kolicina' => 3000, 'jedinica' => 'kg', 'cijena' => 1500]);
+        Gnojidba::create(['user_id' => $u->id, 'kultura_id' => $k->id, 'datum' => '2026-04-01', 'tip_gnojiva' => 'UREA 46% N', 'kolicina_kg_ha' => 200]);   // 2000 kg × 0,5 = 1000 €
+        $this->actingAs($u);
+
+        // bez prinosa: dobit nije poznata
+        Livewire::test(TroskoviPregled::class)->assertViewHas('dobit', fn ($d) => $d->first()['dobit'] === null)->assertSee('Upišite prinos i cijenu');
+
+        // prinos 9 t/ha × 10 ha × 200 €/t + potpore 100 €/ha = 19.000 €; trošak 1000 + sjeme 2000 + ostalo 500
+        Livewire::test(\App\Livewire\ParcelaManager::class)
+            ->call('otvoriPrinos', $k->id)
+            ->set('prinosForm.prinos_t_ha', '9')->set('prinosForm.cijena_t', '200')->set('prinosForm.potpora_ha', '100')
+            ->set('prinosForm.trosak_sjeme', '2000')->set('prinosForm.trosak_ostalo', '500')
+            ->call('spremiPrinos')->assertHasNoErrors()
+            ->assertSee('9,00 t/ha · 200 €/t');
+
+        $this->assertSame(19000.0, $k->fresh()->prihod());
+        Livewire::test(TroskoviPregled::class)->assertViewHas('dobit', function ($d) {
+            $r = $d->first();
+            return abs($r['prihod'] - 19000) < 0.01 && abs($r['trosak'] - 3500) < 0.01 && abs($r['dobit'] - 15500) < 0.01 && abs($r['dobit_ha'] - 1550) < 0.01;
+        })->assertSee('Dobit po hektaru');
+    }
+
     public function test_bez_skladista_uputa(): void
     {
         $this->actingAs(User::factory()->create())->get('/troskovi')->assertOk()->assertSee('Troškovi se računaju iz cijena nabave na skladištu');

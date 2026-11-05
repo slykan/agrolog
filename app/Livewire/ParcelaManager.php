@@ -414,5 +414,45 @@ class ParcelaManager extends Component
         $k->delete();
     }
 
+    // ---- prinos (za dobit po hektaru) ----
+
+    public ?int $prinosId = null;
+    public array $prinosForm = [];
+
+    public function otvoriPrinos(int $id): void
+    {
+        $k = Kultura::where('user_id', auth()->id())->findOrFail($id);
+        $this->prinosId = $k->id;
+        $this->prinosForm = [
+            'zetva_datum' => $k->zetva_datum?->format('Y-m-d') ?? date('Y-m-d'),
+            'prinos_t_ha' => $k->prinos_t_ha, 'cijena_t' => $k->cijena_t, 'potpora_ha' => $k->potpora_ha,
+            'trosak_sjeme' => $k->trosak_sjeme, 'trosak_ostalo' => $k->trosak_ostalo,
+        ];
+        $this->resetErrorBag();
+    }
+
+    public function spremiPrinos(): void
+    {
+        $this->validate([
+            'prinosForm.zetva_datum' => 'nullable|date',
+            'prinosForm.prinos_t_ha' => 'nullable|numeric|min:0|max:500',
+            'prinosForm.cijena_t' => 'nullable|numeric|min:0|max:100000',
+            'prinosForm.potpora_ha' => 'nullable|numeric|min:0|max:100000',
+            'prinosForm.trosak_sjeme' => 'nullable|numeric|min:0|max:10000000',
+            'prinosForm.trosak_ostalo' => 'nullable|numeric|min:0|max:10000000',
+        ], [], ['prinosForm.prinos_t_ha' => 'prinos', 'prinosForm.cijena_t' => 'cijena', 'prinosForm.potpora_ha' => 'potpore']);
+        $podaci = array_map(fn ($v) => blank($v) ? null : $v, $this->prinosForm);
+        Kultura::where('user_id', auth()->id())->whereKey($this->prinosId)->update($podaci);
+        $this->prinosId = null;
+        $this->prinosForm = [];
+    }
+
+    public function odustaniPrinos(): void
+    {
+        $this->prinosId = null;
+        $this->prinosForm = [];
+        $this->resetErrorBag();
+    }
+
     public function render() { return view('livewire.parcela-manager'); }
 }

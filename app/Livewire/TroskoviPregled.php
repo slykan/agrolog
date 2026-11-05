@@ -20,6 +20,61 @@ class TroskoviPregled extends Component
     }
 
     /** Redovi troška zbrojeni po parceli (€/ha na površinu parcele) ili po kulturi sa svih parcela (€/ha na hektare kulture). */
+    /**
+     * Prihod i dobit po kulturi: kulture s utroškom u razdoblju, sa žetvom u razdoblju ili s upisanim prinosom/troškovima
+     * u godinama razdoblja. Trošak = utrošak iz evidencije + sjeme + ostali troškovi; prihod = prinos × ha × cijena + potpore.
+     */
+    private function dobitPoKulturi($redovi, $od, $do)
+    {
+        $utrosak = $redovi->keyBy('kultura_id');
+        $kulture = \App\Models\Kultura::with('parcela')->where('user_id', auth()->id())
+            ->where(function ($q) use ($utrosak, $od, $do) {
+                $q->whereIn('id', $utrosak->keys())
+                  ->orWhereBetween('zetva_datum', [$od->toDateString(), $do->toDateString()])
+                  ->orWhere(fn ($q) => $q->whereNull('zetva_datum')->whereBetween('godina', [$od->year, $do->year])
+                      ->where(fn ($q) => $q->whereNotNull('prinos_t_ha')->orWhereNotNull('trosak_sjeme')->orWhereNotNull('trosak_ostalo')->orWhereNotNull('potpora_ha')));
+            })->get();
+
+        return $kulture->map(function ($k) use ($utrosak) {
+            $u = $utrosak[$k->id] ?? null;
+            $trosak = (float) ($u['ukupno'] ?? 0) + $k->ostaliTroskovi();
+
+            return [
+                'kultura_id' => $k->id, 'parcela_id' => $k->parcela_id, 'parcela_ha' => (float) ($k->parcela?->povrsina_ha ?? 0),
+                'arkod' => $k->parcela?->arkod_broj, 'kultura' => $k->naziv, 'godina' => $k->godina, 'ha' => (float) $k->posadjena_povrsina_ha,
+                'trosak' => round($trosak, 2), 'prihod' => $k->prihod(),
+            ];
+        });
+    }
+
+    /** Dobit zbrojena po parceli ili kulturi (isti izbor kao trošak). */
+    private function grupeDobiti($redovi)
+    {
+        $po = $this->grupa === 'kultura'
+            ? $redovi->groupBy(fn ($r) => mb_strtolower(trim((string) $r['kultura'])))
+            : $redovi->groupBy('parcela_id');
+
+        return $po->map(function ($g) {
+            $prvi = $g->first();
+            $ha = $this->grupa === 'kultura' ? (float) $g->sum('ha') : (float) $prvi['parcela_ha'];
+            $imaPrihod = $g->contains(fn ($r) => $r['prihod'] !== null);
+            $prihod = (float) $g->sum(fn ($r) => $r['prihod'] ?? 0);
+            $trosak = (float) $g->sum('trosak');
+            $dobit = $imaPrihod ? $prihod - $trosak : null;
+
+            return [
+                'naziv' => $this->grupa === 'kultura' ? $prvi['kultura'] : $prvi['arkod'],
+                'opis' => $this->grupa === 'kultura'
+                    ? $g->pluck('arkod')->unique()->implode(', ')
+                    : $g->map(fn ($r) => $r['kultura'] . ' ' . $r['godina'] . '.')->unique()->implode(', '),
+                'ha' => $ha, 'trosak' => round($trosak, 2), 'prihod' => $imaPrihod ? round($prihod, 2) : null,
+                'dobit' => $dobit !== null ? round($dobit, 2) : null,
+                'dobit_ha' => $dobit !== null && $ha > 0 ? round($dobit / $ha, 2) : null,
+                'bez_prihoda' => $g->filter(fn ($r) => $r['prihod'] === null)->count(),
+            ];
+        })->sortByDesc(fn ($r) => $r['dobit'] ?? -INF)->values();
+    }
+
     private function grupe($redovi)
     {
         $po = $this->grupa === 'kultura'
@@ -64,6 +119,7 @@ class TroskoviPregled extends Component
 
         return view('livewire.troskovi-pregled', $t + [
             'meh' => Troskovi::mehanizacija(auth()->user(), $od, $do),
+            'dobit' => $this->grupeDobiti($this->dobitPoKulturi($t['redovi'], $od, $do)),
             'grupe' => $grupe, 'odDatum' => $od, 'doDatum' => $do, 'oznaka' => $this->oznakaRazdoblja(),
             'mjeseci' => array_values($mjeseci), 'vrh' => $vrh, 'korak' => $korak,
             'poVrsti' => $poVrsti, 'nabavaUkupno' => array_sum($poVrsti),

@@ -229,6 +229,9 @@
                             @if($kultura->zavrsena_at)
                                 <span class="ml-2 normal-case text-xs font-normal bg-gray-200 text-gray-600 rounded px-2 py-0.5">završena {{ $kultura->zavrsena_at->format('d.m.Y.') }}</span>
                             @endif
+                            @if($kultura->prinos_t_ha !== null)
+                                <span class="ml-2 normal-case text-xs font-normal bg-green-50 text-green-800 rounded px-2 py-0.5" title="Prinos{{ $kultura->zetva_datum ? ', žetva ' . $kultura->zetva_datum->format('d.m.Y.') : '' }}">{{ number_format($kultura->prinos_t_ha, 2, ',', '.') }} t/ha{{ $kultura->cijena_t !== null ? ' · ' . number_format($kultura->cijena_t, 0, ',', '.') . ' €/t' : '' }}</span>
+                            @endif
                         </td>
                         <td data-label="Hektara" class="px-4 py-2 text-right">{{ number_format($kultura->posadjena_povrsina_ha, 2) }}</td>
                         <td data-label="Godina" class="px-4 py-2 text-center">{{ $kultura->godina }}</td>
@@ -242,11 +245,52 @@
                                 <button wire:click="editKultura({{ $kultura->id }})" class="btn-xs-blue">Uredi</button>
                                 <button wire:click="zavrsiKulturu({{ $kultura->id }})" wire:confirm="Označiti {{ $kultura->naziv }} kao završenu (požnjevenu)? Zapisi ostaju u evidenciji." class="btn-xs-gray">Završi</button>
                             @endif
+                            <button wire:click="otvoriPrinos({{ $kultura->id }})" class="btn-xs-gray" title="Prinos, cijena i ostali troškovi — za dobit po hektaru (Troškovi)">Prinos</button>
                             @unless($imaZapise)
                                 <button wire:click="deleteKultura({{ $kultura->id }})" wire:confirm="Obrisati kulturu?" class="btn-xs-red">&#10005;</button>
                             @endunless
                         </td>
                     </tr>
+                    @if($prinosId === $kultura->id)
+                    <tr class="bg-green-50">
+                        <td colspan="6" class="mob-puna px-4 py-3">
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Prinos i prihod: {{ $kultura->naziv }} {{ $kultura->godina }}. ({{ number_format($kultura->posadjena_povrsina_ha, 2, ',', '.') }} ha)</p>
+                            <div class="flex flex-wrap gap-3 items-end">
+                                <label class="block text-xs text-gray-600">Datum žetve / berbe
+                                    <input type="date" wire:model="prinosForm.zetva_datum" class="form-input w-40 mt-1 block"></label>
+                                <label class="block text-xs text-gray-600">Prinos (t/ha)
+                                    <input type="number" step="0.01" wire:model.live.blur="prinosForm.prinos_t_ha" placeholder="npr. 7.2" class="form-input w-28 mt-1 block">
+                                    @error('prinosForm.prinos_t_ha')<span class="text-red-500">{{ $message }}</span>@enderror</label>
+                                <label class="block text-xs text-gray-600">Cijena (€/t)
+                                    <input type="number" step="0.01" wire:model.live.blur="prinosForm.cijena_t" placeholder="npr. 210" class="form-input w-28 mt-1 block"></label>
+                                <label class="block text-xs text-gray-600">Potpore (€/ha) <span class="text-gray-400">neob.</span>
+                                    <input type="number" step="0.01" wire:model.live.blur="prinosForm.potpora_ha" placeholder="npr. 150" class="form-input w-28 mt-1 block"></label>
+                                <label class="block text-xs text-gray-600">Sjeme (€ ukupno) <span class="text-gray-400">neob.</span>
+                                    <input type="number" step="0.01" wire:model="prinosForm.trosak_sjeme" class="form-input w-32 mt-1 block"></label>
+                                <label class="block text-xs text-gray-600">Ostali troškovi (€) <span class="text-gray-400">usluge, zakup…</span>
+                                    <input type="number" step="0.01" wire:model="prinosForm.trosak_ostalo" class="form-input w-32 mt-1 block"></label>
+                                <div class="flex gap-2">
+                                    <button wire:click="spremiPrinos" class="btn-xs-green">Spremi</button>
+                                    <button wire:click="odustaniPrinos" class="btn-xs-gray">Odustani</button>
+                                </div>
+                            </div>
+                            @php
+                                $ha = (float) $kultura->posadjena_povrsina_ha;
+                                $pr = is_numeric($prinosForm['prinos_t_ha'] ?? null) ? (float) $prinosForm['prinos_t_ha'] : null;
+                                $cj = is_numeric($prinosForm['cijena_t'] ?? null) ? (float) $prinosForm['cijena_t'] : null;
+                                $pt = is_numeric($prinosForm['potpora_ha'] ?? null) ? (float) $prinosForm['potpora_ha'] : 0;
+                            @endphp
+                            @if($pr !== null)
+                                <p class="mt-2 text-xs text-gray-600">
+                                    Ukupno {{ number_format($pr * $ha, 2, ',', '.') }} t
+                                    @if($cj !== null) · prodaja {{ number_format($pr * $ha * $cj, 2, ',', '.') }} € @endif
+                                    @if($pt) · potpore {{ number_format($pt * $ha, 2, ',', '.') }} € @endif
+                                    — dobit po hektaru vidi se na stranici <a href="{{ route('troskovi') }}" class="text-green-700 underline">Troškovi</a>.
+                                </p>
+                            @endif
+                        </td>
+                    </tr>
+                    @endif
                     @endif
                     @endforeach
                 </tbody>
