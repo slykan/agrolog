@@ -27,10 +27,37 @@
     {{-- NAV --}}
     @include('partials.nav')
 
-    {{-- HERO: tamno, fotografija polja s tabletom desno, jarko zeleni naglasci --}}
-    <section class="relative overflow-hidden bg-[#06120a] text-white">
-        <div class="absolute inset-0 lg:left-[40%]">
-            <img src="{{ asset('images/naslovna/hero-polje.jpg') }}" alt="Poljoprivrednik na polju drži tablet s AgroLog evidencijom gnojidbe" class="w-full h-full object-cover object-[30%_center]" fetchpriority="high">
+    {{-- HERO: tamno, slike koje se izmjenjuju desno (lijevo zatamnjeno), uz svaku sliku svoj tekst --}}
+    @php
+        $slajdovi = [
+            ['slika' => 'hero-polje.jpg', 'pozicija' => 'object-[30%_center]', 'alt' => 'Poljoprivrednik na polju drži tablet s AgroLog evidencijom gnojidbe',
+             'nadnaslov' => 'Digitalni alati za poljoprivrednike', 'naslov' => 'Službeni obrazac', 'istaknuto' => 'jednim klikom.',
+             'opis' => 'Vodite evidenciju gnojidbe i prskanja po ARKOD parcelama i ispišite PDF u skladu s AGRONET zahtjevima — brzo, jednostavno i bez gubitka podataka.'],
+            ['slika' => 'hero-karta.jpg', 'pozicija' => 'object-[80%_center] scale-[1.3] origin-[80%_100%]', 'alt' => 'AgroLog na laptopu i mobitelu: karta ARKOD parcela s prognozom za prskanje i pregled gospodarstva',
+             'nadnaslov' => 'Karta i prognoza', 'naslov' => 'Sve parcele', 'istaknuto' => 'na jednoj karti.',
+             'opis' => 'Upišite ARKOD broj i parcela se pojavi na satelitskoj karti sa službenom površinom. Iznad karte je prognoza za pet dana — odmah vidite koji je dan za prskanje.'],
+            ['slika' => 'hero-sve.jpg', 'pozicija' => 'object-[62%_center] scale-[1.35] origin-[62%_100%]', 'alt' => 'AgroLog na tabletu, laptopu i mobitelu: strojevi i vozila, karta parcela i pregled gospodarstva',
+             'nadnaslov' => 'Sve na jednom mjestu', 'naslov' => 'Parcele, strojevi', 'istaknuto' => 'i troškovi.',
+             'opis' => 'Registracije, osiguranja i servisi s podsjetnikom mailom, skladište koje samo oduzima potrošnju i trošak po hektaru svake kulture.'],
+            ['slika' => 'hero-polje-mobitel.jpg', 'pozicija' => 'object-[62%_center]', 'alt' => 'Poljoprivrednik u polju s mobitelom i laptopom na kojima je AgroLog pregled gospodarstva',
+             'nadnaslov' => 'Pregled gospodarstva', 'naslov' => 'Gospodarstvo', 'istaknuto' => 'na dlanu.',
+             'opis' => 'Aktivnosti po mjesecima, usporedba s prošlom godinom i popis onoga što treba dopuniti za evidenciju 2027. — na mobitelu, usred polja.'],
+        ];
+    @endphp
+    <section class="relative overflow-hidden bg-[#06120a] text-white"
+             x-data="{
+                 i: 0, n: {{ count($slajdovi) }}, timer: null,
+                 kreni() { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; this.stani(); this.timer = setInterval(() => this.i = (this.i + 1) % this.n, 7000) },
+                 stani() { clearInterval(this.timer) },
+                 idi(k) { this.i = (k + this.n) % this.n; this.kreni() },
+             }"
+             x-init="kreni()" @mouseenter="stani()" @mouseleave="kreni()">
+        <div class="absolute inset-0 lg:left-[40%] overflow-hidden">
+            @foreach($slajdovi as $k => $sl)
+                <img src="{{ asset('images/naslovna/' . $sl['slika']) }}" alt="{{ $sl['alt'] }}"
+                     class="absolute inset-0 w-full h-full object-cover {{ $sl['pozicija'] }} transition-opacity duration-1000" @if($k > 0) x-cloak @endif
+                     :class="i === {{ $k }} ? 'opacity-100' : 'opacity-0'" @if($k === 0) fetchpriority="high" @else loading="lazy" decoding="async" @endif>
+            @endforeach
         </div>
         {{-- zatamnjenje: na mobitelu preko cijele slike, na računalu prijelaz s lijeva --}}
         <div class="absolute inset-0 bg-[#06120a]/80 lg:bg-transparent lg:bg-gradient-to-r lg:from-[#06120a] lg:from-[40%] lg:via-[#06120a]/70 lg:via-[52%] lg:to-transparent lg:to-[75%]"></div>
@@ -49,17 +76,23 @@
                         <span class="flex-none text-[#3ee36f] group-hover:translate-x-0.5 transition" aria-hidden="true">→</span>
                     </a>
                 @endif
-                <p class="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.35em] text-white/80 mb-6">Digitalni alati za poljoprivrednike</p>
-                <h1 class="text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-[4.2rem] font-extrabold tracking-tight">
-                    Službeni obrazac<br>
-                    <span class="relative inline-block text-[#3ee36f]">
-                        jednim klikom.
-                        <svg class="absolute left-0 -bottom-3 w-[70%] h-4 text-[#3ee36f]" viewBox="0 0 300 16" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C70 4 170 2 297 6" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
-                    </span>
-                </h1>
-                <p class="mt-8 text-lg sm:text-xl text-white/85 leading-relaxed">
-                    Vodite evidenciju gnojidbe i prskanja po ARKOD parcelama i ispišite PDF u skladu s AGRONET zahtjevima — brzo, jednostavno i bez gubitka podataka.
-                </p>
+                <div class="grid">
+                    @foreach($slajdovi as $k => $sl)
+                        <div class="[grid-area:1/1] transition-all duration-700" @if($k > 0) x-cloak @endif
+                             :class="i === {{ $k }} ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'" :aria-hidden="i !== {{ $k }}"
+                             >
+                            <p class="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.35em] text-white/80 mb-6">{{ $sl['nadnaslov'] }}</p>
+                            {!! $k === 0 ? '<h1' : '<p' !!} class="text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-[4.2rem] font-extrabold tracking-tight">
+                                {{ $sl['naslov'] }}<br>
+                                <span class="relative inline-block text-[#3ee36f]">
+                                    {{ $sl['istaknuto'] }}
+                                    <svg class="absolute left-0 -bottom-3 w-[70%] h-4 text-[#3ee36f]" viewBox="0 0 300 16" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C70 4 170 2 297 6" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+                                </span>
+                            {!! $k === 0 ? '</h1>' : '</p>' !!}
+                            <p class="mt-8 text-lg sm:text-xl text-white/85 leading-relaxed">{{ $sl['opis'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
                 <div class="mt-9 flex flex-wrap gap-3">
                     <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-[#3ee36f] hover:bg-[#5cf088] text-[#06120a] font-bold px-7 py-4 rounded-xl transition shadow-[0_10px_40px_-10px_rgba(62,227,111,.7)]">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -91,6 +124,16 @@
                         <span class="leading-tight text-white/90">100% Made<br>in Croatia</span>
                     </li>
                 </ul>
+
+                <div class="mt-10 flex items-center gap-3" aria-label="Slike">
+                    <button type="button" @click="idi(i - 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#3ee36f] hover:text-[#3ee36f] flex items-center justify-center transition" aria-label="Prethodna slika">‹</button>
+                    @foreach($slajdovi as $k => $sl)
+                        <button type="button" @click="idi({{ $k }})" aria-label="{{ $sl['nadnaslov'] }}"
+                                class="h-2 rounded-full transition-all duration-500 {{ $k === 0 ? 'w-8 bg-[#3ee36f]' : 'w-2 bg-white/35' }}"
+                                :class="i === {{ $k }} ? 'w-8 bg-[#3ee36f]' : 'w-2 bg-white/35 hover:bg-white/60'"></button>
+                    @endforeach
+                    <button type="button" @click="idi(i + 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#3ee36f] hover:text-[#3ee36f] flex items-center justify-center transition" aria-label="Sljedeća slika">›</button>
+                </div>
             </div>
         </div>
     </section>
