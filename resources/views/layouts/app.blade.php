@@ -37,5 +37,6 @@
             </main>
             </div>
         </div>
+        @include('partials.instaliraj')
     </body>
 </html>

@@ -1,0 +1,25 @@
+{
+    "name": "agro-log.app — evidencija gnojidbe i prskanja",
+    "short_name": "AgroLog",
+    "description": "Evidencija gnojidbe i prskanja po ARKOD parcelama, skladište, mehanizacija i troškovi.",
+    "lang": "hr",
+    "id": "/dashboard",
+    "start_url": "/dashboard?izvor=aplikacija",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#f3f7f1",
+    "theme_color": "#033728",
+    "categories": ["business", "productivity", "utilities"],
+    "icons": [
+        { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "/images/logo/ikona-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "/images/logo/ikona-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+        { "src": "/images/logo/ikona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ],
+    "shortcuts": [
+        { "name": "Prskanje", "url": "/prskanje", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Gnojidba", "url": "/gnojidba", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Skladište", "url": "/skladiste", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+    ]
+}
