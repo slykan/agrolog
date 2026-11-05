@@ -86,10 +86,23 @@ Route::middleware('auth')->group(function () {
         Route::post('/obavijesti', [ObavijestController::class, 'posalji'])->name('obavijesti.posalji');
     });
 
+    // savjetnik: gospodarstvo poziva iz profila; savjetnik radi u "Klijenti"
+    Route::post('/savjetnici', [\App\Http\Controllers\PristupController::class, 'posalji'])->name('savjetnici.posalji');
+    Route::patch('/savjetnici/{pristup}', [\App\Http\Controllers\PristupController::class, 'prava'])->name('savjetnici.prava');
+    Route::post('/savjetnici/{pristup}/ponovno', [\App\Http\Controllers\PristupController::class, 'ponovno'])->name('savjetnici.ponovno');
+    Route::delete('/savjetnici/{pristup}', [\App\Http\Controllers\PristupController::class, 'ukini'])->name('savjetnici.ukini');
+    Route::post('/poziv-savjetnika/{token}', [\App\Http\Controllers\PristupController::class, 'prihvati'])->name('poziv.prihvati');
+    Route::get('/klijenti', [\App\Http\Controllers\PristupController::class, 'klijenti'])->name('klijenti');
+    Route::post('/klijenti/{pristup}/otvori', [\App\Http\Controllers\PristupController::class, 'otvori'])->name('klijenti.otvori');
+    Route::post('/klijenti/natrag', [\App\Http\Controllers\PristupController::class, 'zatvori'])->name('klijenti.zatvori');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// poveznica iz maila za savjetnika (radi i bez prijave: nudi prijavu ili registraciju)
+Route::get('/poziv-savjetnika/{token}', [\App\Http\Controllers\PristupController::class, 'poziv'])->name('poziv.savjetnik');
 
 // odjava od obavijesti iz maila (potpisani link; POST za jednoklik odjavu iz mail klijenta, bez CSRF-a)
 Route::match(['get', 'post'], '/obavijesti/odjava/{user}', [ObavijestController::class, 'odjava'])

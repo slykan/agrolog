@@ -375,6 +375,9 @@
                             <li>Naziv gospodarstva, MIPG broj, OIB</li>
                             <li>Ime i prezime, e-mail adresa, lozinka</li>
                         </ul>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Pristup savjetniku</h3>
+                        <p>U profilu, pod <strong>Pristup savjetniku</strong>, upišite e-mail savjetnika (agronom, savjetodavna služba, zadruga) i odaberite <strong>samo pregled</strong> ili <strong>pregled i unos</strong>. Savjetnik prihvati poziv iz maila i vaše gospodarstvo vidi pod <strong>Klijenti</strong>. Svaku njegovu izmjenu vidite u <strong>povijesti izmjena</strong>, a pristup možete promijeniti ili ukinuti u bilo kojem trenutku. Savjetnik ne vidi vaš profil ni lozinku.</p>
+
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Obavijesti mailom</h3>
                         <p>Povremeno šaljemo kratku obavijest o važnim novostima u AgroLogu i promjenama propisa o evidencijama. Ne želite ih primati? U dnu svakog takvog maila je poveznica <strong>Odjavite se jednim klikom</strong>. Odjava ne utječe na vaš račun ni na evidencije. Sve novosti su i na stranici <a href="{{ route('novosti') }}" class="text-green-700 hover:underline font-medium">Novosti</a>.</p>
                     </div>

@@ -22,6 +22,28 @@
             <div class="relative z-10">
             @include('layouts.navigation')
 
+            {{-- savjetnik radi u klijentovom gospodarstvu --}}
+            @if($kp = request()->attributes->get('pristup'))
+                @php $kv = $kp->vlasnik; @endphp
+                <div class="bg-[#86bc25] text-[#022a20]">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm">
+                        <p>
+                            <span class="font-semibold">Radite u gospodarstvu {{ $kv->naziv_gospodarstva ?: $kv->name }}</span>
+                            <span class="opacity-80"> · {{ \App\Models\Pristup::PRAVA[$kp->prava] }}{{ $kp->prava === 'unos' ? ' — izmjene se bilježe u povijest gospodarstva' : ' — izmjene nisu moguće' }}</span>
+                        </p>
+                        <div class="flex gap-2 shrink-0">
+                            <a href="{{ route('klijenti') }}" class="px-3 py-1 rounded-lg bg-white/40 hover:bg-white/60 font-medium">Klijenti</a>
+                            <form method="post" action="{{ route('klijenti.zatvori') }}">@csrf
+                                <button class="px-3 py-1 rounded-lg bg-[#022a20] text-white hover:bg-[#033b2c] font-semibold">← Natrag na svoje</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @if(session('status') && ! in_array(session('status'), ['profile-updated', 'password-updated', 'verification-link-sent', 'savjetnik-poslano', 'savjetnik-prava', 'savjetnik-ukinut'], true) && ! request()->routeIs('klijenti'))
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3"><p class="rounded-lg bg-amber-50 border border-amber-200 px-4 py-2 text-sm text-amber-900">{{ session('status') }}</p></div>
+            @endif
+
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">

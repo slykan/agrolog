@@ -82,6 +82,7 @@ class RegisteredUserController extends Controller
             report($e);
         }
 
-        return redirect(route('dashboard', absolute: false));
+        // nakon registracije s poveznice iz poziva savjetniku: natrag na poziv
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 }

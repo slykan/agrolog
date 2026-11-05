@@ -12,6 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('web', \App\Http\Middleware\ZabiljeziAktivnost::class);
+        // savjetnik u klijentovom gospodarstvu (mora biti nakon ZabiljeziAktivnost: aktivnost se bilježi savjetniku)
+        $middleware->appendToGroup('web', \App\Http\Middleware\GospodarstvoSavjetnika::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
