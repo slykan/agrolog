@@ -155,9 +155,11 @@
     </section>
 
     {{-- FEATURES --}}
-    <section class="py-20 bg-[#f3f7f1]">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center mb-14">
+    <section class="relative overflow-hidden py-20 bg-[#f3f7f1]">
+        {{-- zamišljena polja: parcela se ocrta, traktor je obrađuje red po red i ostavlja trag prskanja (iza kartica; samo dok je vidljivo) --}}
+        <div class="absolute inset-0 pointer-events-none" aria-hidden="true" x-data="poljaTraktori()"></div>
+        <div class="relative max-w-6xl mx-auto px-6">
+            <div class="text-center mb-14" data-zaglavlje>
                 <span class="text-xs font-bold uppercase tracking-[0.3em] text-green-700">Što sve dobivate</span>
                 <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Sve što vam treba za agro evidenciju</h2>
                 <p class="mt-3 text-gray-600 max-w-2xl mx-auto">Dizajnirano prema stvarnim potrebama poljoprivrednika i zahtjevima AGRONET sustava — s ARKOD kartom, registrom sredstava i prognozom za vaše parcele.</p>
@@ -179,7 +181,7 @@
                     ['Povijest se čuva', 'Zamjena kulture na parceli bez gubitka starih zapisa — evidencija ostaje točna godinama.', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', false],
                 ];
             @endphp
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" data-kartice>
                 @foreach ($znacajke as [$naslov, $opis, $ikona, $nova])
                     <div class="group relative p-7 rounded-2xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
                         @if($nova)
@@ -383,6 +385,72 @@
                     this.dodaj(el, 3000);
                 },
                 dodaj(el, ms) { this.zivih++; this.$el.appendChild(el); setTimeout(() => { el.remove(); this.zivih-- }, ms) },
+            };
+        }
+    </script>
+    <script>
+        // Zamišljena polja iza kartica: parcela se ocrta, traktor vozi red po red (naprijed-natrag) i ostavlja trag prskanja.
+        function poljaTraktori() {
+            const RED = 18, BRZINA = 60;   // razmak redova (px), brzina traktora (px/s)
+            const TRAKTOR = '<svg viewBox="0 0 26 18" width="26" height="18"><rect x="3" y="7" width="14" height="5" rx="1" fill="currentColor"/><rect x="11" y="2" width="6" height="6" rx="1" fill="currentColor" opacity=".85"/><rect x="12" y="3" width="4" height="3" fill="#f3f7f1" opacity=".7"/><rect x="18" y="8" width="5" height="3" rx="1" fill="currentColor"/><circle cx="7" cy="13" r="4.2" fill="#14532d"/><circle cx="7" cy="13" r="1.6" fill="#86efac"/><circle cx="20" cy="14.5" r="2.6" fill="#14532d"/><circle cx="20" cy="14.5" r="1" fill="#86efac"/></svg>';
+            const pauza = ms => new Promise(r => setTimeout(r, ms));
+            return {
+                timer: null, aktivnih: 0, vidljivo: false,
+                init() {
+                    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || ! this.$el.animate) return;
+                    new IntersectionObserver(([u]) => { this.vidljivo = u.isIntersecting; u.isIntersecting ? this.kreni() : this.stani() }, { threshold: 0.1 }).observe(this.$el);
+                    document.addEventListener('visibilitychange', () => document.hidden ? this.stani() : (this.vidljivo && this.kreni()));
+                },
+                kreni() { if (! this.timer) { setTimeout(() => this.polje(), 400); this.timer = setInterval(() => this.polje(), 4500) } },
+                stani() { clearInterval(this.timer); this.timer = null },
+                mjesto(fw, fh) {
+                    const w = this.$el.clientWidth, h = this.$el.clientHeight, o = this.$el.getBoundingClientRect();
+                    const rel = el => { if (! el) return null; const r = el.getBoundingClientRect(); return { l: r.left - o.left, t: r.top - o.top, r: r.right - o.left, b: r.bottom - o.top } };
+                    const zag = rel(this.$el.parentElement.querySelector('[data-zaglavlje]'));
+                    const kar = rel(this.$el.parentElement.querySelector('[data-kartice]'));
+                    const sijece = (a, x, y) => a && x < a.r && x + fw > a.l && y < a.b && y + fh > a.t;
+                    for (let i = 0; i < 12; i++) {
+                        const x = 16 + Math.random() * Math.max(1, w - fw - 32), y = 16 + Math.random() * Math.max(1, h - fh - 32);
+                        if (sijece(zag, x, y)) continue;
+                        // potpuno iza kartica nema smisla (ne vidi se); djelomično je u redu
+                        const iza = kar && x > kar.l && x + fw < kar.r && y > kar.t && y + fh < kar.b;
+                        if (iza && Math.random() < 0.85) continue;
+                        return [x, y];
+                    }
+                    return null;
+                },
+                async polje() {
+                    if (this.aktivnih >= 2 || document.hidden) return;
+                    const fw = 120 + Math.round(Math.random() * 110), redova = 3 + Math.floor(Math.random() * 3), fh = redova * RED + 8;
+                    const m = this.mjesto(fw, fh); if (! m) return;
+                    this.aktivnih++;
+                    const polje = document.createElement('div');
+                    polje.className = 'polje';
+                    Object.assign(polje.style, { left: m[0] + 'px', top: m[1] + 'px', width: fw + 'px', height: fh + 'px' });
+                    this.$el.appendChild(polje);
+                    await polje.animate([{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 700, easing: 'ease-out', fill: 'forwards' }).finished;
+                    const traktor = document.createElement('span');
+                    traktor.className = 'traktor'; traktor.innerHTML = TRAKTOR;
+                    polje.appendChild(traktor);
+                    const trajanje = (fw - 16) / BRZINA * 1000;
+                    for (let r = 0; r < redova; r++) {
+                        const y = 4 + r * RED + RED / 2, desno = r % 2 === 0;
+                        const trag = document.createElement('span');
+                        trag.className = 'polje-trag';
+                        Object.assign(trag.style, { top: (y - 5) + 'px', [desno ? 'left' : 'right']: '6px' });
+                        polje.appendChild(trag);
+                        trag.animate([{ width: '0px' }, { width: (fw - 12) + 'px' }], { duration: trajanje, easing: 'linear', fill: 'forwards' });
+                        const [x0, x1] = desno ? [8, fw - 8] : [fw - 8, 8], okret = desno ? 1 : -1;
+                        await traktor.animate([
+                            { transform: `translate(${x0}px, ${y}px) scaleX(${okret})` },
+                            { transform: `translate(${x1}px, ${y}px) scaleX(${okret})` },
+                        ], { duration: trajanje, easing: 'linear', fill: 'forwards' }).finished;
+                    }
+                    await traktor.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' }).finished;
+                    await pauza(1200);
+                    await polje.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1200, fill: 'forwards' }).finished;
+                    polje.remove(); this.aktivnih--;
+                },
             };
         }
     </script>

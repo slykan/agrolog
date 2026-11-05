@@ -24,6 +24,19 @@
 @keyframes neon-crta-o { 0% { transform: scaleY(0); opacity: 1; } 40% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .neon-tocka, .neon-pin, .neon-kriz, .neon-crta { display: none; } }
 
+/* naslovnica, "Što sve dobivate": zamišljena polja i traktor koji prska */
+.polje { position: absolute; border: 1.5px solid rgba(21, 128, 61, .55); border-radius: 6px; overflow: hidden;
+    background: repeating-linear-gradient(180deg, rgba(21, 128, 61, .18) 0 2px, rgba(21, 128, 61, .08) 2px 18px) 0 3px; box-shadow: 0 1px 6px rgba(21, 128, 61, .12); }
+.polje-trag { position: absolute; height: 10px; border-radius: 4px;
+    background: linear-gradient(90deg, rgba(21, 128, 61, .55), rgba(22, 163, 74, .40)); box-shadow: 0 0 6px rgba(62, 227, 111, .35); }
+.traktor { position: absolute; left: 0; top: 0; width: 32px; height: 22px; margin: -12px 0 0 -16px; color: #15803d; will-change: transform; }
+.traktor svg { display: block; width: 32px; height: 22px; }
+/* prskalica (krila) i oblačić prskanja iza traktora */
+.traktor::before { content: ""; position: absolute; left: -3px; top: -4px; width: 2px; height: 26px; border-radius: 1px; background: #166534; }
+.traktor::after { content: ""; position: absolute; right: 100%; top: -2px; width: 22px; height: 22px; border-radius: 50%;
+    background: radial-gradient(ellipse at right, rgba(62, 227, 111, .85), rgba(134, 239, 172, .35) 45%, rgba(62, 227, 111, 0) 72%); animation: prskanje .45s ease-in-out infinite alternate; }
+@keyframes prskanje { from { opacity: .6; transform: scale(.85, .8); } to { opacity: 1; transform: scale(1.1, 1.15); } }
+
 /* karta na početnoj preko cijelog zaslona */
 .karta-puni { position: fixed !important; inset: 0; height: auto !important; z-index: 1000; background: #111827; }
 .karta-puni > .leaflet-container { border-radius: 0; }
