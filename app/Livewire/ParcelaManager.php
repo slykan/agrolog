@@ -215,13 +215,52 @@ class ParcelaManager extends Component
         $parcela->delete();
     }
 
+    /** Slobodna površina parcele u godini: površina parcele minus aktivne (nezavršene) kulture te godine. */
+    private function slobodnoHa(int $parcelaId, $godina, array $bez = []): float
+    {
+        $parcela = Parcela::where('user_id', auth()->id())->find($parcelaId);
+        if (! $parcela) {
+            return 0.0;
+        }
+        $zauzeto = Kultura::where('parcela_id', $parcelaId)->where('godina', (int) $godina)->whereNull('zavrsena_at')
+            ->when($bez, fn ($q) => $q->whereNotIn('id', array_filter($bez)))
+            ->sum('posadjena_povrsina_ha');
+
+        return max(0.0, round((float) $parcela->povrsina_ha - (float) $zauzeto, 2));
+    }
+
+    /** Slobodno na parceli za formu kulture (bez kulture koja se uređuje ili mijenja). */
+    public function getSlobodnoProperty(): ?float
+    {
+        return $this->kulturaParcelaId
+            ? $this->slobodnoHa($this->kulturaParcelaId, $this->kulturaForm['godina'] ?: date('Y'), [$this->editKulturaId, $this->zamjenaZaId])
+            : null;
+    }
+
     public function openKulturaForm(int $parcelaId): void
     {
+        $slobodno = $this->slobodnoHa($parcelaId, date('Y'));
+        if ($slobodno < 0.01) {
+            $p = Parcela::where('user_id', auth()->id())->find($parcelaId);
+            $this->poruka = "Parcela {$p?->arkod_broj} je popunjena (" . number_format((float) $p?->povrsina_ha, 2, ',', '.') . ' ha) za ' . date('Y') . '. Za novu kulturu klikni „Zamijeni kulturu” ili „Završi” uz postojeću.';
+            $this->showKulturaForm = false;
+            return;
+        }
+        $this->poruka = '';
         $this->kulturaParcelaId = $parcelaId;
         $this->showKulturaForm = true;
         $this->editKulturaId = null;
         $this->zamjenaZaId = null;
-        $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => '', 'godina' => date('Y')];
+        $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => $slobodno, 'godina' => date('Y')];
+        $this->clearValidation();
+    }
+
+    /** Promjena godine u formi nove kulture: ponudi slobodnu površinu za tu godinu. */
+    public function updatedKulturaFormGodina($godina): void
+    {
+        if ($this->showKulturaForm && ! $this->editKulturaId && ! $this->zamjenaZaId && $this->kulturaParcelaId && (int) $godina >= 2000) {
+            $this->kulturaForm['posadjena_povrsina_ha'] = $this->slobodnoHa($this->kulturaParcelaId, $godina);
+        }
     }
 
     /** Nova kultura na istoj parceli umjesto postojeće (npr. ječam → kukuruz). Stara ostaje sa svim zapisima. */
@@ -348,13 +387,15 @@ class ParcelaManager extends Component
         $this->zamjenaZaId = null;
         $this->poruka = '';
         if ($nova) {
-            // Ostavlja formu otvorenom za unos sledeće kulture
-            $this->kulturaForm = [
-                'naziv' => '',
-                'eppo_naziv' => '',
-                'posadjena_povrsina_ha' => '',
-                'godina' => date('Y'),
-            ];
+            // Ostavlja formu otvorenom za sljedeću kulturu s preostalom površinom; ako je parcela puna, zatvori je
+            $godina = $this->kulturaForm['godina'];
+            $slobodno = $this->slobodnoHa($this->kulturaParcelaId, $godina);
+            if ($slobodno < 0.01) {
+                $this->showKulturaForm = false;
+                $this->poruka = 'Parcela je sada popunjena za ' . $godina . '.';
+            } else {
+                $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => $slobodno, 'godina' => $godina];
+            }
         } else {
             $this->showKulturaForm = false;
         }

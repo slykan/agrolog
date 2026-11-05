@@ -45,7 +45,9 @@
 
     {{-- Forma za novu kulturu / zamjenu --}}
     @if($showKulturaForm)
-    @php($stara = $zamjenaZaId ? \App\Models\Kultura::with('parcela')->find($zamjenaZaId) : null)
+    @php
+        $stara = $zamjenaZaId ? \App\Models\Kultura::with('parcela')->find($zamjenaZaId) : null;
+    @endphp
     <div class="bg-blue-50 border border-blue-200 rounded p-4 mb-4">
         @if($stara)
             <h3 class="font-semibold text-gray-700 mb-1">Zamijeni kulturu na parceli {{ $stara->parcela?->arkod_broj }}</h3>
@@ -78,12 +80,13 @@
             </div>
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Posađena površina (ha)</label>
-                <input type="number" wire:model="kulturaForm.posadjena_povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                <input type="number" wire:key="ha-{{ $kulturaForm['posadjena_povrsina_ha'] ?? '' }}" wire:model="kulturaForm.posadjena_povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                @if($this->slobodno !== null)<p class="text-[11px] text-gray-500 mt-1">slobodno {{ number_format($this->slobodno, 2, ',', '.') }} ha</p>@endif
                 @error('kulturaForm.posadjena_povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Godina</label>
-                <input type="number" wire:model="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
+                <input type="number" wire:model.live.blur="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
                 @error('kulturaForm.godina')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
             <div class="flex gap-2">
@@ -123,7 +126,14 @@
                     <span class="text-xs text-gray-400">{{ $parcela->kulture->whereNull('zavrsena_at')->count() }} aktivnih kultura</span>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button wire:click="openKulturaForm({{ $parcela->id }})" class="btn-xs-blue">+ Kultura</button>
+                    @php
+                        $slobodnoP = max(0, (float) $parcela->povrsina_ha - (float) $parcela->kulture->whereNull('zavrsena_at')->where('godina', (int) date('Y'))->sum('posadjena_povrsina_ha'));
+                    @endphp
+                    @if($slobodnoP < 0.01)
+                        <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-500 cursor-help" title="Kulture zauzimaju cijelu parcelu. Za novu kulturu koristi „Zamijeni kulturu” ili „Završi” uz postojeću.">Parcela popunjena</span>
+                    @else
+                        <button wire:click="openKulturaForm({{ $parcela->id }})" class="btn-xs-blue" title="Slobodno {{ number_format($slobodnoP, 2, ',', '.') }} ha">+ Kultura <span class="opacity-75">({{ number_format($slobodnoP, 2, ',', '.') }} ha)</span></button>
+                    @endif
                     <button wire:click="editParcela({{ $parcela->id }})" class="btn-xs-gray">Uredi</button>
                     <button wire:click="deleteParcela({{ $parcela->id }})" wire:confirm="Obrisati parcelu i sve kulture?" class="btn-xs-red">&#10005;</button>
                 </div>
@@ -188,12 +198,13 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Posađena površina (ha)</label>
-                                    <input type="number" wire:model="kulturaForm.posadjena_povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                                    <input type="number" wire:key="ha-{{ $kulturaForm['posadjena_povrsina_ha'] ?? '' }}" wire:model="kulturaForm.posadjena_povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
+                @if($this->slobodno !== null)<p class="text-[11px] text-gray-500 mt-1">slobodno {{ number_format($this->slobodno, 2, ',', '.') }} ha</p>@endif
                                     @error('kulturaForm.posadjena_povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </div>
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Godina</label>
-                                    <input type="number" wire:model="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
+                                    <input type="number" wire:model.live.blur="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
                                     @error('kulturaForm.godina')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </div>
                                 <div class="flex gap-2">
@@ -204,7 +215,9 @@
                         </td>
                     </tr>
                     @else
-                    @php($imaZapise = ($kultura->gnojidbe_count + $kultura->prskanja_count) > 0)
+                    @php
+                        $imaZapise = ($kultura->gnojidbe_count + $kultura->prskanja_count) > 0;
+                    @endphp
                     <tr class="border-t border-gray-100 hover:bg-gray-50 {{ $kultura->zavrsena_at ? 'text-gray-400 bg-gray-50/60' : '' }}">
                         <td class="mob-puna px-4 py-2 font-medium uppercase">
                             {{ $kultura->naziv }}
