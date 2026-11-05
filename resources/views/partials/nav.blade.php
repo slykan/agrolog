@@ -1,6 +1,6 @@
 @php $active = $active ?? ''; @endphp
 <header x-data="{ open: false }" class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="{{ ($siroko ?? false) ? 'px-6 sm:px-10 lg:px-14 xl:px-20' : 'max-w-6xl mx-auto px-6' }} py-4 flex items-center justify-between">
         <a href="/" class="flex items-center">
             <x-application-logo style="width:180px; height:45px;" />
         </a>

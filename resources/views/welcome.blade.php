@@ -25,7 +25,7 @@
 <body class="font-sans antialiased text-gray-800 bg-white">
 
     {{-- NAV --}}
-    @include('partials.nav')
+    @include('partials.nav', ['siroko' => true])
 
     {{-- HERO: tamno, slike koje se izmjenjuju desno (lijevo zatamnjeno), uz svaku sliku svoj tekst --}}
     @php
@@ -52,7 +52,7 @@
                  idi(k) { this.i = (k + this.n) % this.n; this.kreni() },
              }"
              x-init="kreni()" @mouseenter="stani()" @mouseleave="kreni()">
-        <div class="absolute inset-0 lg:left-[40%] overflow-hidden">
+        <div class="absolute inset-0 lg:left-[40%] 2xl:left-[34%] overflow-hidden">
             @foreach($slajdovi as $k => $sl)
                 <img src="{{ asset('images/naslovna/' . $sl['slika']) }}" alt="{{ $sl['alt'] }}"
                      class="absolute inset-0 w-full h-full object-cover {{ $sl['pozicija'] }} transition-opacity duration-1000" @if($k > 0) x-cloak @endif
@@ -60,10 +60,10 @@
             @endforeach
         </div>
         {{-- zatamnjenje: na mobitelu preko cijele slike, na računalu prijelaz s lijeva --}}
-        <div class="absolute inset-0 bg-[#06120a]/80 lg:bg-transparent lg:bg-gradient-to-r lg:from-[#06120a] lg:from-[40%] lg:via-[#06120a]/70 lg:via-[52%] lg:to-transparent lg:to-[75%]"></div>
+        <div class="absolute inset-0 bg-[#06120a]/80 lg:bg-transparent lg:bg-gradient-to-r lg:from-[#06120a] lg:from-[40%] lg:via-[#06120a]/70 lg:via-[52%] lg:to-transparent lg:to-[75%] 2xl:from-[34%] 2xl:via-[44%] 2xl:to-[66%]"></div>
         <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#06120a] to-transparent"></div>
 
-        <div class="relative max-w-6xl mx-auto px-6 pt-16 pb-14 lg:pt-24 lg:pb-20">
+        <div class="relative px-6 sm:px-10 lg:px-14 xl:px-20 pt-16 pb-14 lg:pt-24 lg:pb-20">
             <div class="max-w-xl">
                 {{-- istaknuta novost --}}
                 @php
@@ -129,8 +129,8 @@
                     <button type="button" @click="idi(i - 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#3ee36f] hover:text-[#3ee36f] flex items-center justify-center transition" aria-label="Prethodna slika">‹</button>
                     @foreach($slajdovi as $k => $sl)
                         <button type="button" @click="idi({{ $k }})" aria-label="{{ $sl['nadnaslov'] }}"
-                                class="h-2 rounded-full transition-all duration-500 {{ $k === 0 ? 'w-8 bg-[#3ee36f]' : 'w-2 bg-white/35' }}"
-                                :class="i === {{ $k }} ? 'w-8 bg-[#3ee36f]' : 'w-2 bg-white/35 hover:bg-white/60'"></button>
+                                class="h-2 w-2 rounded-full bg-white/35 transition-all duration-500"
+                                :class="i === {{ $k }} ? '!w-8 !bg-[#3ee36f]' : 'hover:bg-white/60'"></button>
                     @endforeach
                     <button type="button" @click="idi(i + 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#3ee36f] hover:text-[#3ee36f] flex items-center justify-center transition" aria-label="Sljedeća slika">›</button>
                 </div>
