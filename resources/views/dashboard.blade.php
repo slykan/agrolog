@@ -233,16 +233,6 @@
                 </div>
             @endif
 
-            {{-- Pozdrav --}}
-            <div class="bg-white shadow-sm rounded-xl p-8">
-                <h3 class="text-lg font-semibold text-green-700 mb-2">AgroLog &mdash; evidencija poljoprivrednih radova</h3>
-                <p class="text-gray-600 text-sm leading-relaxed">
-                    Ovdje vodite evidenciju gnojidbe i prskanja vaših parcela sukladno zakonskim obavezama.
-                    Unesite ARCOD parcele i kulture, a zatim dodajte zapise o gnojidbi i primjeni sredstava za zaštitu bilja.
-                    Svaku evidenciju možete filtrirati, urediti i ispisati kao službeni obrazac.
-                </p>
-            </div>
-
             {{-- Brze veze --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <a href="{{ route('parcele') }}" class="bg-white shadow-sm rounded-xl p-8 hover:shadow-md transition group border border-transparent hover:border-green-200">
