@@ -34,11 +34,11 @@
                     <x-nav-link :href="route('skladiste')" :active="request()->routeIs('skladiste')">
                         Skladište
                     </x-nav-link>
-                    <x-nav-link :href="route('troskovi')" :active="request()->routeIs('troskovi')">
-                        Troškovi
-                    </x-nav-link>
                     <x-nav-link :href="route('mehanizacija')" :active="request()->routeIs('mehanizacija')">
                         Mehanizacija
+                    </x-nav-link>
+                    <x-nav-link :href="route('troskovi')" :active="request()->routeIs('troskovi')">
+                        Troškovi
                     </x-nav-link>
                     <x-nav-link :href="route('izvjestaji')" :active="request()->routeIs('izvjestaji*')">
                         Izvještaji
@@ -46,8 +46,10 @@
                 </div>
             </div>
 
+            @include('partials.zvono')
+
             <!-- Settings Dropdown -->
-            <div class="hidden xl:flex xl:items-center xl:ms-6">
+            <div class="hidden xl:flex xl:items-center xl:ms-2">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -90,7 +92,7 @@
             </div>
 
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center xl:hidden">
+            <div class="-me-2 ms-1 flex items-center xl:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -111,8 +113,8 @@
             <x-responsive-nav-link :href="route('prskanje')" :active="request()->routeIs('prskanje')" class="ps-7">Prskanje</x-responsive-nav-link>
             <div class="border-t border-gray-100 my-1"></div>
             <x-responsive-nav-link :href="route('skladiste')" :active="request()->routeIs('skladiste')">Skladište</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('troskovi')" :active="request()->routeIs('troskovi')">Troškovi</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('mehanizacija')" :active="request()->routeIs('mehanizacija')">Mehanizacija</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('troskovi')" :active="request()->routeIs('troskovi')">Troškovi</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('izvjestaji')" :active="request()->routeIs('izvjestaji*')">Izvještaji</x-responsive-nav-link>
         </div>
 

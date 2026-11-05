@@ -78,7 +78,17 @@
                         </template>
                     </div>
                 </div>
-                <div x-ref="karta" class="h-[28rem] rounded-lg ring-1 ring-gray-200 bg-gray-100"></div>
+                {{-- okvir karte: gumb za cijeli zaslon (Fullscreen API; na iPhoneu karta prekrije stranicu) --}}
+                <div x-ref="okvir" :class="puni && 'karta-puni'" class="relative h-[28rem]"
+                     @keydown.escape.window="puni && cijeliZaslon()">
+                    <div x-ref="karta" class="h-full w-full rounded-lg ring-1 ring-gray-200 bg-gray-100"></div>
+                    <button type="button" @click="cijeliZaslon()" :title="puni ? 'Zatvori cijeli zaslon (Esc)' : 'Karta preko cijelog zaslona'"
+                            class="absolute top-3 right-3 z-[1001] inline-flex items-center gap-1.5 rounded-lg bg-white/95 px-3 py-2 text-sm font-medium text-gray-800 shadow ring-1 ring-black/10 hover:bg-white">
+                        <svg x-show="! puni" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+                        <svg x-show="puni" x-cloak class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+                        <span x-text="puni ? 'Zatvori' : 'Cijeli zaslon'"></span>
+                    </button>
+                </div>
                 <p class="mt-2 text-xs text-gray-400">Kotačićem miša ili gumbima +/− zumirate, povlačenjem pomičete kartu. Klik na parcelu prikazuje kulture. Prognoza: <a href="https://open-meteo.com/" target="_blank" rel="noopener" class="underline">Open-Meteo</a>.</p>
             </div>
             <script>
@@ -86,6 +96,21 @@
                     return {
                         status: '',
                         prognoza: [],
+                        puni: false,
+                        _map: null,
+
+                        cijeliZaslon() {
+                            this.puni = ! this.puni;
+                            const okvir = this.$refs.okvir;
+                            if (this.puni) {
+                                document.body.style.overflow = 'hidden';
+                                if (okvir.requestFullscreen) okvir.requestFullscreen().catch(() => {});
+                            } else {
+                                document.body.style.overflow = '';
+                                if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+                            }
+                            setTimeout(() => this._map && this._map.invalidateSize(), 200);
+                        },
                         zadnjeSrediste: null,
 
                         // WMO šifra vremena → ikona i opis
@@ -141,6 +166,11 @@
 
                         pokreni(el) {
                             const map = agroKarta.karta(el, { scrollWheelZoom: 'center' });
+                            this._map = map;
+                            // izlaz iz cijelog zaslona tipkom Esc (preglednik) vrati kartu na mjesto
+                            document.addEventListener('fullscreenchange', () => {
+                                if (! document.fullscreenElement && this.puni) { this.puni = false; document.body.style.overflow = ''; setTimeout(() => map.invalidateSize(), 200); }
+                            });
                             map.setView([45.1, 16.4], 7);   // Hrvatska dok se parcele ne učitaju
                             const sloj = L.featureGroup().addTo(map);
                             const crtaj = (p) => {
