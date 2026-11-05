@@ -179,6 +179,11 @@
                 </a>
             @endif
 
+            {{-- Pregled gospodarstva: aktivnosti po mjesecima za razdoblje --}}
+            @if($parcele->isNotEmpty())
+                <livewire:dash-pregled />
+            @endif
+
             {{-- Skladište: što je pri kraju ili u minusu (samo ako korisnik koristi skladište) --}}
             @if(auth()->user()->skladista()->exists())
                 @php
