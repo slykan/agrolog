@@ -67,11 +67,11 @@
                 <div class="rounded-lg bg-[#f3f7f1] p-4">
                     <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Pregled maila</p>
                     <div class="rounded-xl bg-white overflow-hidden shadow-sm">
-                        <div class="bg-gradient-to-br from-[#06120a] via-[#0f2a17] to-[#14532d] px-6 py-5">
-                            <div class="flex items-center justify-between"><x-application-logo bijeli class="h-7" /><span class="text-[10px] font-bold uppercase tracking-widest bg-[#3ee36f] text-[#06120a] rounded-full px-2 py-0.5">Obavijest</span></div>
+                        <div class="bg-gradient-to-br from-[#022a20] via-[#033b2c] to-[#033b2c] px-6 py-5">
+                            <div class="flex items-center justify-between"><x-application-logo bijeli class="h-7" /><span class="text-[10px] font-bold uppercase tracking-widest bg-[#86bc25] text-[#022a20] rounded-full px-2 py-0.5">Obavijest</span></div>
                             <h4 class="mt-4 text-xl font-extrabold text-white" x-text="naslov || 'Naslov obavijesti'"></h4>
                         </div>
-                        <div class="h-1 bg-[#3ee36f]"></div>
+                        <div class="h-1 bg-[#86bc25]"></div>
                         <div class="px-6 py-5 text-[15px] leading-relaxed text-gray-800">
                             <p class="text-xs text-gray-400 mb-3">Predmet: <span x-text="predmet || '—'"></span></p>
                             <p class="mb-3">Pozdrav, <b>{{ auth()->user()->naziv_gospodarstva ?: auth()->user()->name }}</b>!</p>

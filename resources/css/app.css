@@ -6,17 +6,17 @@
 
 /* naslovnica, "Kako funkcionira": neonske točke na sjecištima mreže */
 .neon-tocka, .neon-pin, .neon-kriz, .neon-crta { position: absolute; pointer-events: none; }
-.neon-tocka { width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 9999px; background: #3ee36f;
-    box-shadow: 0 0 10px 2px rgba(62, 227, 111, .75); animation: neon-zivot 4.2s ease-out forwards; }
-.neon-tocka::after { content: ''; position: absolute; inset: -4px; border-radius: 9999px; border: 1.5px solid #3ee36f; animation: neon-val 1.4s ease-out 3; }
-.neon-pin { width: 18px; height: 18px; margin: -18px 0 0 -9px; color: #3ee36f; filter: drop-shadow(0 0 6px rgba(62, 227, 111, .8)); animation: neon-pin 4.2s ease-out forwards; }
+.neon-tocka { width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 9999px; background: #86bc25;
+    box-shadow: 0 0 10px 2px rgba(134, 188, 37, .75); animation: neon-zivot 4.2s ease-out forwards; }
+.neon-tocka::after { content: ''; position: absolute; inset: -4px; border-radius: 9999px; border: 1.5px solid #86bc25; animation: neon-val 1.4s ease-out 3; }
+.neon-pin { width: 18px; height: 18px; margin: -18px 0 0 -9px; color: #86bc25; filter: drop-shadow(0 0 6px rgba(134, 188, 37, .8)); animation: neon-pin 4.2s ease-out forwards; }
 .neon-kriz { width: 12px; height: 12px; margin: -6px 0 0 -6px; animation: neon-zivot 4.2s ease-out forwards; }
-.neon-kriz::before, .neon-kriz::after { content: ''; position: absolute; background: #3ee36f; box-shadow: 0 0 6px rgba(62, 227, 111, .9); }
+.neon-kriz::before, .neon-kriz::after { content: ''; position: absolute; background: #86bc25; box-shadow: 0 0 6px rgba(134, 188, 37, .9); }
 .neon-kriz::before { left: 5px; top: 0; width: 2px; height: 12px; }
 .neon-kriz::after { top: 5px; left: 0; height: 2px; width: 12px; }
-.neon-crta { background: linear-gradient(90deg, rgba(62, 227, 111, 0), rgba(62, 227, 111, .85), rgba(62, 227, 111, 0)); box-shadow: 0 0 6px rgba(62, 227, 111, .6); }
+.neon-crta { background: linear-gradient(90deg, rgba(134, 188, 37, 0), rgba(134, 188, 37, .85), rgba(134, 188, 37, 0)); box-shadow: 0 0 6px rgba(134, 188, 37, .6); }
 .neon-crta-v { height: 1.5px; margin-top: -.75px; animation: neon-crta-v 3s ease-out forwards; }
-.neon-crta-o { width: 1.5px; margin-left: -.75px; background: linear-gradient(180deg, rgba(62, 227, 111, 0), rgba(62, 227, 111, .85), rgba(62, 227, 111, 0)); animation: neon-crta-o 3s ease-out forwards; }
+.neon-crta-o { width: 1.5px; margin-left: -.75px; background: linear-gradient(180deg, rgba(134, 188, 37, 0), rgba(134, 188, 37, .85), rgba(134, 188, 37, 0)); animation: neon-crta-o 3s ease-out forwards; }
 @keyframes neon-zivot { 0% { opacity: 0; transform: scale(.3); } 12% { opacity: 1; transform: scale(1); } 75% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes neon-val { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(3.4); opacity: 0; } }
 @keyframes neon-pin { 0% { opacity: 0; transform: translateY(-10px); } 14% { opacity: 1; transform: translateY(0); } 75% { opacity: 1; } 100% { opacity: 0; } }
@@ -25,16 +25,16 @@
 @media (prefers-reduced-motion: reduce) { .neon-tocka, .neon-pin, .neon-kriz, .neon-crta { display: none; } }
 
 /* naslovnica, "Što sve dobivate": zamišljena polja i traktor koji prska */
-.polje { position: absolute; border: 1px solid rgba(21, 128, 61, .10); border-radius: 4px; overflow: hidden;
-    background: repeating-linear-gradient(180deg, rgba(21, 128, 61, calc(var(--t, .03) * 1.8)) 0 1px, rgba(21, 128, 61, var(--t, .03)) 1px 14px) 0 3px; }
-.polje-v { background: repeating-linear-gradient(90deg, rgba(21, 128, 61, calc(var(--t, .03) * 1.8)) 0 1px, rgba(21, 128, 61, var(--t, .03)) 1px 14px) 3px 0; }
-.polje-trag { position: absolute; border-radius: 3px; background: rgba(22, 163, 74, .12); }
-.traktor { position: absolute; left: 0; top: 0; width: 26px; height: 18px; margin: -9px 0 0 -13px; color: #16a34a; opacity: .55; will-change: transform; }
+.polje { position: absolute; border: 1px solid rgba(25, 101, 58, .10); border-radius: 4px; overflow: hidden;
+    background: repeating-linear-gradient(180deg, rgba(25, 101, 58, calc(var(--t, .03) * 1.8)) 0 1px, rgba(25, 101, 58, var(--t, .03)) 1px 14px) 0 3px; }
+.polje-v { background: repeating-linear-gradient(90deg, rgba(25, 101, 58, calc(var(--t, .03) * 1.8)) 0 1px, rgba(25, 101, 58, var(--t, .03)) 1px 14px) 3px 0; }
+.polje-trag { position: absolute; border-radius: 3px; background: rgba(43, 125, 59, .12); }
+.traktor { position: absolute; left: 0; top: 0; width: 26px; height: 18px; margin: -9px 0 0 -13px; color: #2b7d3b; opacity: .55; will-change: transform; }
 .traktor svg { display: block; width: 26px; height: 18px; }
 /* prskalica (krila) i oblačić prskanja iza traktora */
-.traktor::before { content: ""; position: absolute; left: -3px; top: -3px; width: 2px; height: 24px; border-radius: 1px; background: #15803d; }
+.traktor::before { content: ""; position: absolute; left: -3px; top: -3px; width: 2px; height: 24px; border-radius: 1px; background: #19653a; }
 .traktor::after { content: ""; position: absolute; right: 100%; top: -1px; width: 18px; height: 20px; border-radius: 50%;
-    background: radial-gradient(ellipse at right, rgba(62, 227, 111, .6), rgba(134, 239, 172, .25) 45%, rgba(62, 227, 111, 0) 72%); animation: prskanje .6s ease-in-out infinite alternate; }
+    background: radial-gradient(ellipse at right, rgba(134, 188, 37, .6), rgba(134, 239, 172, .25) 45%, rgba(134, 188, 37, 0) 72%); animation: prskanje .6s ease-in-out infinite alternate; }
 .biljka { position: absolute; width: 12px; height: 16px; margin: -14px 0 0 -6px; transform-origin: 50% 100%; opacity: .5; pointer-events: none; }
 .biljka svg { display: block; width: 12px; height: 16px; }
 @keyframes prskanje { from { opacity: .5; transform: scale(.85, .8); } to { opacity: .9; transform: scale(1.1, 1.15); } }

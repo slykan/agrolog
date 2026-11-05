@@ -8,7 +8,7 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ route('home') }}">
     <meta name="google-adsense-account" content="ca-pub-3054841074530422">
-    <meta name="theme-color" content="#06120a">
+    <meta name="theme-color" content="#022a20">
     @include('partials.favicon')
     {{-- Open Graph --}}
     <meta property="og:type" content="website">
@@ -44,7 +44,7 @@
              'opis' => 'Aktivnosti po mjesecima, usporedba s prošlom godinom i popis onoga što treba dopuniti za evidenciju 2027. — na mobitelu, usred polja.'],
         ];
     @endphp
-    <section class="relative overflow-hidden bg-[#06120a] text-white"
+    <section class="relative overflow-hidden bg-[#022a20] text-white"
              x-data="{
                  i: 0, n: {{ count($slajdovi) }}, timer: null,
                  kreni() { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; this.stani(); this.timer = setInterval(() => this.i = (this.i + 1) % this.n, 7000) },
@@ -60,8 +60,8 @@
             @endforeach
         </div>
         {{-- zatamnjenje: na mobitelu preko cijele slike, na računalu prijelaz s lijeva --}}
-        <div class="absolute inset-0 bg-[#06120a]/80 lg:bg-transparent lg:bg-gradient-to-r lg:from-[#06120a] lg:from-[40%] lg:via-[#06120a]/70 lg:via-[52%] lg:to-transparent lg:to-[75%] 2xl:from-[34%] 2xl:via-[44%] 2xl:to-[66%]"></div>
-        <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#06120a] to-transparent"></div>
+        <div class="absolute inset-0 bg-[#022a20]/80 lg:bg-transparent lg:bg-gradient-to-r lg:from-[#022a20] lg:from-[40%] lg:via-[#022a20]/70 lg:via-[52%] lg:to-transparent lg:to-[75%] 2xl:from-[34%] 2xl:via-[44%] 2xl:to-[66%]"></div>
+        <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#022a20] to-transparent"></div>
 
         <div class="relative px-6 sm:px-10 lg:px-14 xl:px-20 pt-16 pb-14 lg:pt-24 lg:pb-20">
             <div class="max-w-xl">
@@ -70,10 +70,10 @@
                     $istaknuta = \App\Http\Controllers\SadrzajController::novosti()[0] ?? null;
                 @endphp
                 @if($istaknuta)
-                    <a href="{{ route('novost', $istaknuta['slug']) }}" class="group inline-flex items-center gap-2 mb-7 max-w-full rounded-full bg-white/10 hover:bg-white/15 ring-1 ring-[#3ee36f]/50 pl-1.5 pr-4 py-1.5 text-sm transition">
-                        <span class="flex-none rounded-full bg-[#3ee36f] text-[#06120a] text-[11px] font-extrabold uppercase tracking-wide px-2.5 py-0.5">Novo</span>
+                    <a href="{{ route('novost', $istaknuta['slug']) }}" class="group inline-flex items-center gap-2 mb-7 max-w-full rounded-full bg-white/10 hover:bg-white/15 ring-1 ring-[#86bc25]/50 pl-1.5 pr-4 py-1.5 text-sm transition">
+                        <span class="flex-none rounded-full bg-[#86bc25] text-[#022a20] text-[11px] font-extrabold uppercase tracking-wide px-2.5 py-0.5">Novo</span>
                         <span class="truncate text-white/90">{{ $istaknuta['kratko'] }}</span>
-                        <span class="flex-none text-[#3ee36f] group-hover:translate-x-0.5 transition" aria-hidden="true">→</span>
+                        <span class="flex-none text-[#86bc25] group-hover:translate-x-0.5 transition" aria-hidden="true">→</span>
                     </a>
                 @endif
                 <div class="grid">
@@ -84,9 +84,9 @@
                             <p class="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.35em] text-white/80 mb-6">{{ $sl['nadnaslov'] }}</p>
                             {!! $k === 0 ? '<h1' : '<p' !!} class="text-[2.6rem] leading-[1.05] sm:text-6xl lg:text-[4.2rem] font-extrabold tracking-tight">
                                 {{ $sl['naslov'] }}<br>
-                                <span class="relative inline-block text-[#3ee36f]">
+                                <span class="relative inline-block text-[#86bc25]">
                                     {{ $sl['istaknuto'] }}
-                                    <svg class="absolute left-0 -bottom-3 w-[70%] h-4 text-[#3ee36f]" viewBox="0 0 300 16" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C70 4 170 2 297 6" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
+                                    <svg class="absolute left-0 -bottom-3 w-[70%] h-4 text-[#86bc25]" viewBox="0 0 300 16" fill="none" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12C70 4 170 2 297 6" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>
                                 </span>
                             {!! $k === 0 ? '</h1>' : '</p>' !!}
                             <p class="mt-8 text-lg sm:text-xl text-white/85 leading-relaxed">{{ $sl['opis'] }}</p>
@@ -94,56 +94,56 @@
                     @endforeach
                 </div>
                 <div class="mt-9 flex flex-wrap gap-3">
-                    <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-[#3ee36f] hover:bg-[#5cf088] text-[#06120a] font-bold px-7 py-4 rounded-xl transition shadow-[0_10px_40px_-10px_rgba(62,227,111,.7)]">
+                    <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-[#86bc25] hover:bg-[#9ccf3e] text-[#022a20] font-bold px-7 py-4 rounded-xl transition shadow-[0_10px_40px_-10px_rgba(134,188,37,.7)]">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         Isprobaj besplatno
                         <span aria-hidden="true">→</span>
                     </a>
                     @auth
-                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 border-2 border-[#3ee36f]/70 hover:border-[#3ee36f] hover:bg-[#3ee36f]/10 text-white font-semibold px-7 py-[14px] rounded-xl transition">Moj račun <span aria-hidden="true">→</span></a>
+                        <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 border-2 border-[#86bc25]/70 hover:border-[#86bc25] hover:bg-[#86bc25]/10 text-white font-semibold px-7 py-[14px] rounded-xl transition">Moj račun <span aria-hidden="true">→</span></a>
                     @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 border-2 border-[#3ee36f]/70 hover:border-[#3ee36f] hover:bg-[#3ee36f]/10 text-white font-semibold px-7 py-[14px] rounded-xl transition">Već imam račun <span aria-hidden="true">→</span></a>
+                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 border-2 border-[#86bc25]/70 hover:border-[#86bc25] hover:bg-[#86bc25]/10 text-white font-semibold px-7 py-[14px] rounded-xl transition">Već imam račun <span aria-hidden="true">→</span></a>
                     @endauth
                 </div>
 
                 <ul class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-y-5 sm:divide-x sm:divide-white/15 text-sm">
                     <li class="flex items-center gap-2.5 sm:pr-4">
-                        <svg class="w-8 h-8 flex-none text-[#3ee36f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M5 21c0-9 5-15 15-17-1 10-6 15-15 17zm0 0l7-7"/></svg>
+                        <svg class="w-8 h-8 flex-none text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M5 21c0-9 5-15 15-17-1 10-6 15-15 17zm0 0l7-7"/></svg>
                         <span class="leading-tight text-white/90">Potpuno<br>besplatno</span>
                     </li>
                     <li class="flex items-center gap-2.5 sm:px-4">
-                        <svg class="w-8 h-8 flex-none text-[#3ee36f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h4m4 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <svg class="w-8 h-8 flex-none text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h4m4 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         <span class="leading-tight text-white/90">PDF za<br>AGRONET</span>
                     </li>
                     <li class="flex items-center gap-2.5 sm:px-4">
-                        <svg class="w-8 h-8 flex-none text-[#3ee36f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        <svg class="w-8 h-8 flex-none text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         <span class="leading-tight text-white/90 whitespace-nowrap">SZB prema<br>EU 2023/564</span>
                     </li>
                     <li class="flex items-center gap-2.5 sm:pl-4">
-                        <svg class="w-8 h-8 flex-none text-[#3ee36f]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                        <svg class="w-8 h-8 flex-none text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
                         <span class="leading-tight text-white/90">100% Made<br>in Croatia</span>
                     </li>
                 </ul>
 
                 <div class="mt-10 flex items-center gap-3" aria-label="Slike">
-                    <button type="button" @click="idi(i - 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#3ee36f] hover:text-[#3ee36f] flex items-center justify-center transition" aria-label="Prethodna slika">‹</button>
+                    <button type="button" @click="idi(i - 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#86bc25] hover:text-[#86bc25] flex items-center justify-center transition" aria-label="Prethodna slika">‹</button>
                     @foreach($slajdovi as $k => $sl)
                         <button type="button" @click="idi({{ $k }})" aria-label="{{ $sl['nadnaslov'] }}"
                                 class="h-2 w-2 rounded-full bg-white/35 transition-all duration-500"
-                                :class="i === {{ $k }} ? '!w-8 !bg-[#3ee36f]' : 'hover:bg-white/60'"></button>
+                                :class="i === {{ $k }} ? '!w-8 !bg-[#86bc25]' : 'hover:bg-white/60'"></button>
                     @endforeach
-                    <button type="button" @click="idi(i + 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#3ee36f] hover:text-[#3ee36f] flex items-center justify-center transition" aria-label="Sljedeća slika">›</button>
+                    <button type="button" @click="idi(i + 1)" class="w-9 h-9 rounded-full ring-1 ring-white/25 hover:ring-[#86bc25] hover:text-[#86bc25] flex items-center justify-center transition" aria-label="Sljedeća slika">›</button>
                 </div>
             </div>
         </div>
     </section>
 
     {{-- ZAŠTO BESPLATNO --}}
-    <section class="bg-[#06120a] pb-16">
+    <section class="bg-[#022a20] pb-16">
         <div class="max-w-6xl mx-auto px-6">
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#14532d] to-[#166534] px-8 py-8 md:px-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left ring-1 ring-[#3ee36f]/30">
-                <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-[#3ee36f]/20 blur-3xl" aria-hidden="true"></div>
-                <span class="relative flex-shrink-0 bg-[#3ee36f] text-[#06120a] text-sm font-extrabold uppercase tracking-widest px-5 py-2.5 rounded-xl whitespace-nowrap">0 € — zauvijek</span>
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#033b2c] to-[#0d4f34] px-8 py-8 md:px-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left ring-1 ring-[#86bc25]/30">
+                <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-[#86bc25]/20 blur-3xl" aria-hidden="true"></div>
+                <span class="relative flex-shrink-0 bg-[#86bc25] text-[#022a20] text-sm font-extrabold uppercase tracking-widest px-5 py-2.5 rounded-xl whitespace-nowrap">0 € — zauvijek</span>
                 <div class="relative">
                     <p class="text-white font-bold text-lg mb-1">Zašto besplatno?</p>
                     <p class="text-green-100/90 leading-relaxed text-sm md:text-base">
@@ -185,10 +185,10 @@
                 @foreach ($znacajke as [$naslov, $opis, $ikona, $nova])
                     <div class="group relative p-7 rounded-2xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300">
                         @if($nova)
-                            <span class="absolute top-5 right-5 text-[10px] font-extrabold uppercase tracking-wider bg-[#3ee36f] text-[#06120a] rounded-full px-2 py-0.5">Novo</span>
+                            <span class="absolute top-5 right-5 text-[10px] font-extrabold uppercase tracking-wider bg-[#86bc25] text-[#022a20] rounded-full px-2 py-0.5">Novo</span>
                         @endif
-                        <div class="w-12 h-12 rounded-xl bg-[#06120a] flex items-center justify-center mb-5 shadow-[0_8px_24px_-8px_rgba(6,18,10,.6)] group-hover:bg-[#3ee36f] transition">
-                            <svg class="w-6 h-6 text-[#3ee36f] group-hover:text-[#06120a] transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $ikona }}"/></svg>
+                        <div class="w-12 h-12 rounded-xl bg-[#022a20] flex items-center justify-center mb-5 shadow-[0_8px_24px_-8px_rgba(6,18,10,.6)] group-hover:bg-[#86bc25] transition">
+                            <svg class="w-6 h-6 text-[#86bc25] group-hover:text-[#022a20] transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $ikona }}"/></svg>
                         </div>
                         <h3 class="text-lg font-bold text-gray-900 mb-2">{{ $naslov }}</h3>
                         <p class="text-gray-600 text-sm leading-relaxed">{{ $opis }}</p>
@@ -203,20 +203,20 @@
     </section>
 
     {{-- HOW IT WORKS --}}
-    <section class="py-20 bg-[#06120a] text-white relative overflow-hidden">
-        <div class="absolute inset-0 opacity-[0.07] bg-[linear-gradient(rgba(62,227,111,1)_1px,transparent_1px),linear-gradient(90deg,rgba(62,227,111,1)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true"></div>
+    <section class="py-20 bg-[#022a20] text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.07] bg-[linear-gradient(rgba(134,188,37,1)_1px,transparent_1px),linear-gradient(90deg,rgba(134,188,37,1)_1px,transparent_1px)] bg-[size:48px_48px]" aria-hidden="true"></div>
         {{-- neonske točke na sjecištima mreže (kao parcele na karti); samo dok je sekcija vidljiva, bez animacije uz prefers-reduced-motion --}}
         <div class="absolute inset-0 pointer-events-none" aria-hidden="true" x-data="neonMreza()"></div>
         <div class="relative max-w-5xl mx-auto px-6" data-sadrzaj>
             <div class="text-center mb-14">
-                <span class="text-xs font-bold uppercase tracking-[0.3em] text-[#3ee36f]">Tri koraka</span>
+                <span class="text-xs font-bold uppercase tracking-[0.3em] text-[#86bc25]">Tri koraka</span>
                 <h2 class="mt-3 text-3xl md:text-4xl font-extrabold tracking-tight">Kako funkcionira?</h2>
             </div>
             <div class="relative grid md:grid-cols-3 gap-10">
-                <div class="hidden md:block absolute top-7 left-[16%] right-[16%] h-px bg-gradient-to-r from-[#3ee36f]/0 via-[#3ee36f]/60 to-[#3ee36f]/0" aria-hidden="true"></div>
+                <div class="hidden md:block absolute top-7 left-[16%] right-[16%] h-px bg-gradient-to-r from-[#86bc25]/0 via-[#86bc25]/60 to-[#86bc25]/0" aria-hidden="true"></div>
                 @foreach ([['Registrirajte se', 'Naziv gospodarstva, MIPG i OIB. Registracija traje manje od minute.'], ['Dodajte parcele', 'Upišite ARKOD broj — parcela se pokaže na karti sa službenom površinom. Dodajte kulture koje uzgajate.'], ['Vodite evidenciju', 'Bilježite gnojidbu i prskanje uz prognozu za vaše parcele, ispišite PDF ili izvezite u Excel.']] as $i => [$naslov, $opis])
                     <div class="relative text-center">
-                        <div class="w-14 h-14 mx-auto mb-5 rounded-full bg-[#06120a] ring-2 ring-[#3ee36f] text-[#3ee36f] flex items-center justify-center text-xl font-extrabold shadow-[0_0_30px_-4px_rgba(62,227,111,.6)]">{{ $i + 1 }}</div>
+                        <div class="w-14 h-14 mx-auto mb-5 rounded-full bg-[#022a20] ring-2 ring-[#86bc25] text-[#86bc25] flex items-center justify-center text-xl font-extrabold shadow-[0_0_30px_-4px_rgba(134,188,37,.6)]">{{ $i + 1 }}</div>
                         <h3 class="font-bold text-lg mb-2">{{ $naslov }}</h3>
                         <p class="text-sm text-white/65 leading-relaxed max-w-xs mx-auto">{{ $opis }}</p>
                     </div>
@@ -239,8 +239,8 @@
                 <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-2 tracking-tight">Već koriste AgroLog</h2>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="text-center p-6 rounded-2xl bg-[#06120a] text-white flex flex-col items-center justify-center">
-                    <div class="text-4xl font-extrabold text-[#3ee36f] mb-1">{{ $statsKorisnici }}+</div>
+                <div class="text-center p-6 rounded-2xl bg-[#022a20] text-white flex flex-col items-center justify-center">
+                    <div class="text-4xl font-extrabold text-[#86bc25] mb-1">{{ $statsKorisnici }}+</div>
                     <div class="text-xs text-white/60 font-semibold uppercase tracking-wider">Korisnika</div>
                 </div>
                 <div class="text-center p-6 rounded-2xl bg-[#f3f7f1] ring-1 ring-green-900/10 flex flex-col items-center justify-center">
@@ -262,15 +262,15 @@
     {{-- ALATI I VODIČI --}}
     <section class="pb-16 bg-white">
         <div class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-5">
-            <a href="{{ route('alati') }}" class="group flex items-center gap-5 p-6 rounded-2xl ring-1 ring-black/5 bg-white hover:ring-[#3ee36f] hover:shadow-lg transition">
-                <span class="w-12 h-12 flex-none rounded-xl bg-[#3ee36f]/15 text-green-700 flex items-center justify-center">
+            <a href="{{ route('alati') }}" class="group flex items-center gap-5 p-6 rounded-2xl ring-1 ring-black/5 bg-white hover:ring-[#86bc25] hover:shadow-lg transition">
+                <span class="w-12 h-12 flex-none rounded-xl bg-[#86bc25]/15 text-green-700 flex items-center justify-center">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 </span>
                 <span class="flex-1"><b class="block text-gray-900">Besplatni alati</b><span class="text-sm text-gray-600">Kalkulator škropiva, gnojiva i karence, pretvornik površina.</span></span>
                 <span class="text-green-700 text-xl group-hover:translate-x-1 transition" aria-hidden="true">→</span>
             </a>
-            <a href="{{ route('vodici') }}" class="group flex items-center gap-5 p-6 rounded-2xl ring-1 ring-black/5 bg-white hover:ring-[#3ee36f] hover:shadow-lg transition">
-                <span class="w-12 h-12 flex-none rounded-xl bg-[#3ee36f]/15 text-green-700 flex items-center justify-center">
+            <a href="{{ route('vodici') }}" class="group flex items-center gap-5 p-6 rounded-2xl ring-1 ring-black/5 bg-white hover:ring-[#86bc25] hover:shadow-lg transition">
+                <span class="w-12 h-12 flex-none rounded-xl bg-[#86bc25]/15 text-green-700 flex items-center justify-center">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 </span>
                 <span class="flex-1"><b class="block text-gray-900">Vodiči za evidenciju</b><span class="text-sm text-gray-600">Elektronička evidencija SZB, karenca, gnojidba dušikom i više.</span></span>
@@ -323,13 +323,13 @@
     </section>
 
     {{-- CTA: polja u zalasku sunca (-mb-8 poništava razmak iznad zajedničkog podnožja) --}}
-    <section class="relative overflow-hidden bg-[#06120a] -mb-8">
+    <section class="relative overflow-hidden bg-[#022a20] -mb-8">
         <img src="{{ asset('images/naslovna/polja-zalazak.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
-        <div class="absolute inset-0 bg-gradient-to-b from-[#06120a]/70 via-[#06120a]/75 to-[#06120a]/95"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#022a20]/70 via-[#022a20]/75 to-[#022a20]/95"></div>
         <div class="relative max-w-2xl mx-auto px-6 py-24 text-center text-white">
-            <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">Počnite danas — <span class="text-[#3ee36f]">besplatno</span></h2>
+            <h2 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">Počnite danas — <span class="text-[#86bc25]">besplatno</span></h2>
             <p class="text-white/85 mb-9 text-lg">Digitalizirajte svoje agro zapise i uvijek imajte pregled nad parcelama.</p>
-            <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-[#3ee36f] hover:bg-[#5cf088] text-[#06120a] font-extrabold px-9 py-4 rounded-xl transition text-lg shadow-[0_10px_40px_-10px_rgba(62,227,111,.8)]">
+            <a href="{{ route('register') }}" class="inline-flex items-center gap-2 bg-[#86bc25] hover:bg-[#9ccf3e] text-[#022a20] font-extrabold px-9 py-4 rounded-xl transition text-lg shadow-[0_10px_40px_-10px_rgba(134,188,37,.8)]">
                 Kreirajte račun <span aria-hidden="true">→</span>
             </a>
         </div>

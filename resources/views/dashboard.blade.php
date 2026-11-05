@@ -5,8 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-10">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="py-3 sm:py-8 lg:py-10">
+        <div class="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
 
             {{-- Što je novo: najnovija novost, može se zatvoriti (pamti se u pregledniku po novosti) --}}
             @php
@@ -175,7 +175,7 @@
                             const sloj = L.featureGroup().addTo(map);
                             const crtaj = (p) => {
                                 if (!p.poligon) return;
-                                L.polygon(p.poligon, { color: '#3ee36f', weight: 2.5, fillOpacity: 0.3 })
+                                L.polygon(p.poligon, { color: '#86bc25', weight: 2.5, fillOpacity: 0.3 })
                                     .bindTooltip(String(p.arkod), { permanent: true, direction: 'center', className: 'agro-oznaka' })
                                     .bindPopup(`<b>ARKOD ${p.arkod}</b><br>${p.ha.toFixed(2).replace('.', ',')} ha<br>${p.kulture || 'bez aktivnih kultura'}<br><a href="{{ route('parcele') }}">Parcele &amp; Kulture →</a>`)
                                     .addTo(sloj);

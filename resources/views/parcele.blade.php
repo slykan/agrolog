@@ -2,7 +2,7 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Parcele &amp; Kulture</h2>
     </x-slot>
-    <div class="py-6">
+    <div class="py-3 sm:py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @include('partials.karta')
             <div class="bg-white shadow rounded-lg p-6">

@@ -16,14 +16,14 @@
 
                 {{-- zaglavlje --}}
                 <tr>
-                    <td style="background:#06120a; background-image:linear-gradient(135deg, #06120a 0%, #0f2a17 60%, #14532d 100%); border-radius:18px 18px 0 0; padding:28px 34px 26px;">
+                    <td style="background:#022a20; background-image:linear-gradient(135deg, #022a20 0%, #033b2c 60%, #033b2c 100%); border-radius:18px 18px 0 0; padding:28px 34px 26px;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td>
                                     <img src="{{ asset('images/logo/agro-log-bijeli.png') }}" alt="agro-log.app" width="155" height="34" style="display:block; height:34px; width:155px; border:0;">
                                 </td>
                                 <td align="right">
-                                    <span style="display:inline-block; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#06120a; background:#3ee36f; border-radius:999px; padding:4px 10px;">Obavijest</span>
+                                    <span style="display:inline-block; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#022a20; background:#86bc25; border-radius:999px; padding:4px 10px;">Obavijest</span>
                                 </td>
                             </tr>
                         </table>
@@ -31,7 +31,7 @@
                     </td>
                 </tr>
                 {{-- zeleni naglasak --}}
-                <tr><td style="height:4px; background:#3ee36f; line-height:4px; font-size:0;">&nbsp;</td></tr>
+                <tr><td style="height:4px; background:#86bc25; line-height:4px; font-size:0;">&nbsp;</td></tr>
 
                 {{-- sadržaj --}}
                 <tr>
@@ -44,7 +44,7 @@
                         @if($obavijest->gumb_tekst && $obavijest->gumb_url)
                             <table role="presentation" cellpadding="0" cellspacing="0" style="margin:26px 0 12px;">
                                 <tr>
-                                    <td style="background:#16a34a; border-radius:12px; box-shadow:0 6px 18px rgba(22,163,74,.35);">
+                                    <td style="background:#2b7d3b; border-radius:12px; box-shadow:0 6px 18px rgba(22,163,74,.35);">
                                         <a href="{{ $obavijest->gumb_url }}" style="display:inline-block; padding:14px 28px; color:#ffffff; font-weight:700; font-size:16px; text-decoration:none; border-radius:12px;">{{ $obavijest->gumb_tekst }} &nbsp;&rarr;</a>
                                     </td>
                                 </tr>
@@ -60,8 +60,8 @@
                             <tr>
                                 <td style="padding-top:18px; font-size:14px; line-height:1.6; color:#4b5563;">
                                     Lijep pozdrav,<br>
-                                    <strong style="color:#14532d;">Tim AgroLog</strong><br>
-                                    <span style="color:#6b7280;">Pitanja i prijedlozi: <a href="mailto:info@on-click.hr" style="color:#15803d; text-decoration:none;">info@on-click.hr</a> — ili samo odgovorite na ovaj mail.</span>
+                                    <strong style="color:#033b2c;">Tim AgroLog</strong><br>
+                                    <span style="color:#6b7280;">Pitanja i prijedlozi: <a href="mailto:info@on-click.hr" style="color:#19653a; text-decoration:none;">info@on-click.hr</a> — ili samo odgovorite na ovaj mail.</span>
                                 </td>
                             </tr>
                         </table>
@@ -71,7 +71,7 @@
                 {{-- podnožje --}}
                 <tr>
                     <td style="background:#f8faf7; border-radius:0 0 18px 18px; padding:20px 34px; font-size:12px; line-height:1.6; color:#9ca3af; text-align:center;">
-                        <a href="{{ url('/') }}" style="color:#15803d; text-decoration:none; font-weight:600;">agro-log.app</a>
+                        <a href="{{ url('/') }}" style="color:#19653a; text-decoration:none; font-weight:600;">agro-log.app</a>
                         &nbsp;·&nbsp; <a href="{{ route('novosti') }}" style="color:#6b7280; text-decoration:none;">Novosti</a>
                         &nbsp;·&nbsp; <a href="{{ route('docs') }}" style="color:#6b7280; text-decoration:none;">Upute</a>
                         &nbsp;·&nbsp; <a href="{{ route('alati') }}" style="color:#6b7280; text-decoration:none;">Besplatni alati</a>

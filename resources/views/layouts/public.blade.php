@@ -27,27 +27,27 @@
     <style>
         .prose-agro { color: #374151; font-size: 1.05rem; line-height: 1.75; }
         .prose-agro h2 { font-size: 1.45rem; font-weight: 700; color: #111827; margin: 2.2rem 0 .8rem; }
-        .prose-agro h3 { font-size: 1.15rem; font-weight: 700; color: #15803d; margin: 1.6rem 0 .5rem; }
+        .prose-agro h3 { font-size: 1.15rem; font-weight: 700; color: #19653a; margin: 1.6rem 0 .5rem; }
         .prose-agro p { margin-bottom: 1rem; }
         .prose-agro ul, .prose-agro ol { margin: 0 0 1rem 1.4rem; }
         .prose-agro ul { list-style: disc; }
         .prose-agro ol { list-style: decimal; }
         .prose-agro li { margin-bottom: .4rem; }
-        .prose-agro a { color: #15803d; font-weight: 600; text-decoration: underline; }
+        .prose-agro a { color: #19653a; font-weight: 600; text-decoration: underline; }
         .prose-agro strong { color: #111827; }
         .tbl { width: 100%; border-collapse: collapse; margin: .5rem 0 1.25rem; font-size: .97rem; }
         .tbl th, .tbl td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid #e5e7eb; }
-        .tbl th { background: #f0fdf4; color: #166534; font-weight: 700; }
+        .tbl th { background: #f3f8ed; color: #0d4f34; font-weight: 700; }
         .tbl td.num, .tbl th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-        .box-note { background: #f0fdf4; border-left: 4px solid #16a34a; border-radius: .75rem; padding: 1rem 1.25rem; margin: 1.25rem 0; color: #14532d; }
+        .box-note { background: #f3f8ed; border-left: 4px solid #2b7d3b; border-radius: .75rem; padding: 1rem 1.25rem; margin: 1.25rem 0; color: #033b2c; }
         .box-warn { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: .75rem; padding: 1rem 1.25rem; margin: 1.25rem 0; color: #78350f; }
         .fld label { display: block; font-size: .85rem; font-weight: 600; color: #4b5563; margin-bottom: .35rem; }
         .fld input, .fld select { width: 100%; border: 1.5px solid #d1d5db; border-radius: .6rem; padding: .65rem .8rem; font-size: 1rem; background: #fff; }
-        .fld input:focus, .fld select:focus { outline: none; border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.15); }
+        .fld input:focus, .fld select:focus { outline: none; border-color: #2b7d3b; box-shadow: 0 0 0 3px rgba(22,163,74,.15); }
         .fld .hint { font-size: .8rem; color: #6b7280; margin-top: .3rem; }
-        .result { background: #f0fdf4; border-radius: 1rem; padding: 1.25rem 1.5rem; margin-top: 1.25rem; }
-        .result .big { font-size: 1.9rem; font-weight: 800; color: #15803d; }
-        .result .lbl { font-size: .85rem; color: #166534; font-weight: 600; }
+        .result { background: #f3f8ed; border-radius: 1rem; padding: 1.25rem 1.5rem; margin-top: 1.25rem; }
+        .result .big { font-size: 1.9rem; font-weight: 800; color: #19653a; }
+        .result .lbl { font-size: .85rem; color: #0d4f34; font-weight: 600; }
         @media print { header, footer, .no-print { display: none !important; } }
     </style>
 </head>

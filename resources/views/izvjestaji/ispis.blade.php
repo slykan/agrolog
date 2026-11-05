@@ -25,7 +25,7 @@
         .podnozje { margin-top: 10px; display: flex; justify-content: space-between; font-size: 9px; color: #555; }
         .potpis { margin-top: 24px; font-size: 10px; }
         .alati { max-width: 297mm; margin: 16px auto 0; display: flex; gap: 8px; align-items: center; font-size: 13px; }
-        .alati button { background: #15803d; color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
+        .alati button { background: #19653a; color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
         .prazno { padding: 30px; text-align: center; color: #666; font-size: 12px; }
         @media print { body { background: #fff; } .list { box-shadow: none; margin: 0; padding: 0; max-width: none; } .alati { display: none; } }
     </style>

@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8"></head>
 <body style="font-family: sans-serif; color: #333; max-width: 500px; margin: 0 auto; padding: 20px;">
-    <h2 style="color: #16a34a;">AgroLog — novi korisnik</h2>
+    <h2 style="color: #2b7d3b;">AgroLog — novi korisnik</h2>
     <table style="width:100%; border-collapse: collapse; font-size: 14px;">
         <tr>
             <td style="padding: 6px 0; color: #666; width: 160px;">Naziv gospodarstva</td>

@@ -11,7 +11,7 @@
         <td align="center">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px; background:#ffffff; border-radius:16px; overflow:hidden;">
                 <tr>
-                    <td style="background:#06120a; padding:24px 32px;">
+                    <td style="background:#022a20; padding:24px 32px;">
                         <img src="{{ asset('images/logo/agro-log-bijeli.png') }}" alt="agro-log.app" width="137" height="30" style="display:block; height:30px; width:137px; border:0;">
                         <div style="color:#ffffffcc; font-size:13px; margin-top:6px;">Podsjetnik za mehanizaciju</div>
                     </td>
@@ -44,7 +44,7 @@
 
                         <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0 8px;">
                             <tr>
-                                <td style="background:#16a34a; border-radius:10px;">
+                                <td style="background:#2b7d3b; border-radius:10px;">
                                     <a href="{{ route('mehanizacija') }}" style="display:inline-block; padding:12px 24px; color:#ffffff; font-weight:bold; font-size:15px; text-decoration:none;">Otvori mehanizaciju &rarr;</a>
                                 </td>
                             </tr>

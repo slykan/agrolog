@@ -26,7 +26,7 @@
         // jedna parcela (pregled pri unosu, popup)
         nacrtaj(el, poligon) {
             const map = this.karta(el);
-            const p = L.polygon(poligon, { color: '#3ee36f', weight: 3, fillOpacity: 0.25 }).addTo(map);
+            const p = L.polygon(poligon, { color: '#86bc25', weight: 3, fillOpacity: 0.25 }).addTo(map);
             map.fitBounds(p.getBounds(), { padding: [24, 24], maxZoom: 17 });
             setTimeout(() => map.fitBounds(p.getBounds(), { padding: [24, 24], maxZoom: 17 }), 200);
             return map;
