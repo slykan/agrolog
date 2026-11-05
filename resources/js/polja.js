@@ -4,6 +4,14 @@
 export function poljaTraktori(opcije = {}) {
     const RED = 14, BRZINA = 13;   // razmak redova (px), brzina traktora (px/s)
     const TRAKTOR = '<svg viewBox="0 0 26 18"><rect x="3" y="7" width="14" height="5" rx="1" fill="currentColor"/><rect x="11" y="2" width="6" height="6" rx="1" fill="currentColor" opacity=".85"/><rect x="12" y="3" width="4" height="3" fill="#f3f7f1" opacity=".7"/><rect x="18" y="8" width="5" height="3" rx="1" fill="currentColor"/><circle cx="7" cy="13" r="4.2" fill="#14532d"/><circle cx="7" cy="13" r="1.6" fill="#bbf7d0"/><circle cx="20" cy="14.5" r="2.6" fill="#14532d"/><circle cx="20" cy="14.5" r="1" fill="#bbf7d0"/></svg>';
+    // kulture koje izrastu iza traktora (nasumično po parceli)
+    const KULTURE = {
+        klice: '<svg viewBox="0 0 12 16"><path d="M6 16V9" stroke="#16a34a" stroke-width="1.2"/><path d="M6 10C3 10 1.5 8 1.5 6c2.5 0 4.5 1.5 4.5 4zM6 9c0-2.5 2-4 4.5-4C10.5 7 9 9 6 9z" fill="#4ade80"/></svg>',
+        psenica: '<svg viewBox="0 0 12 16"><path d="M6 16V5" stroke="#65a30d" stroke-width="1"/><path d="M6 13c-2-.5-3-2-3-3.5M6 12c2-.5 3-2 3-3.5" stroke="#84cc16" stroke-width=".9" fill="none"/><ellipse cx="6" cy="3.6" rx="1.7" ry="3.4" fill="#eab308" opacity=".85"/><path d="M6 .2v1.2" stroke="#ca8a04" stroke-width=".7"/></svg>',
+        kukuruz: '<svg viewBox="0 0 12 16"><path d="M6 16V2" stroke="#15803d" stroke-width="1.3"/><path d="M6 12C3 11 1.5 9 1 7M6 9c3-1 4.5-3 5-5M6 6C4 5 3 3.5 3 2" stroke="#22c55e" stroke-width="1.2" fill="none" stroke-linecap="round"/><rect x="6.4" y="8.5" width="2" height="4" rx="1" fill="#facc15" opacity=".9"/></svg>',
+        suncokret: '<svg viewBox="0 0 12 16"><path d="M6 16V6" stroke="#16a34a" stroke-width="1.2"/><path d="M6 12c-2 0-3.5-1-4-2.5 2 0 3.5.8 4 2.5zM6 10c2 0 3.5-1 4-2.5-2 0-3.5.8-4 2.5z" fill="#4ade80"/><circle cx="6" cy="4" r="3.4" fill="#facc15"/><circle cx="6" cy="4" r="1.5" fill="#a16207"/></svg>',
+        soja: '<svg viewBox="0 0 12 16"><path d="M6 16V6" stroke="#16a34a" stroke-width="1"/><circle cx="3.6" cy="8" r="2.3" fill="#4ade80"/><circle cx="8.4" cy="7" r="2.3" fill="#22c55e"/><circle cx="6" cy="4.2" r="2.3" fill="#86efac"/></svg>',
+    };
     const pauza = ms => new Promise(r => setTimeout(r, ms));
     const cekaj = a => a.finished.catch(() => {});
     return {
@@ -53,7 +61,6 @@ export function poljaTraktori(opcije = {}) {
                 const p = slobodne[Math.floor(Math.random() * slobodne.length)];
                 p.zauzeta = true;
                 await this.obradi(p, v);
-                p.zauzeta = false;
                 await pauza(1500 + Math.random() * 3000);
             }
         },
@@ -63,7 +70,8 @@ export function poljaTraktori(opcije = {}) {
             traktor.className = 'traktor'; traktor.innerHTML = TRAKTOR;
             p.el.appendChild(traktor);
             await cekaj(traktor.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 800, fill: 'forwards' }));
-            const tragovi = [], trajanje = (duz - 12) / BRZINA * 1000;
+            const tragovi = [], biljke = [], trajanje = (duz - 12) / BRZINA * 1000;
+            const vrste = Object.keys(KULTURE), kultura = vrste[Math.floor(Math.random() * vrste.length)];
             for (let r = 0; r < redova && v === this.verzija; r++) {
                 const pos = 3 + r * RED + RED / 2, smjer = r % 2 === 0 ? 1 : -1;
                 const [a, b] = smjer > 0 ? [6, duz - 6] : [duz - 6, 6];
@@ -75,11 +83,32 @@ export function poljaTraktori(opcije = {}) {
                 trag.animate(p.vert ? [{ height: '0px' }, { height: (duz - 12) + 'px' }] : [{ width: '0px' }, { width: (duz - 12) + 'px' }], { duration: trajanje, easing: 'linear', fill: 'forwards' });
                 const poz = s => p.vert ? `translate(${pos}px, ${s}px) rotate(90deg) scaleX(${smjer})` : `translate(${s}px, ${pos}px) scaleX(${smjer})`;
                 await cekaj(traktor.animate([{ transform: poz(a) }, { transform: poz(b) }], { duration: trajanje, easing: 'linear', fill: 'forwards' }));
+                if (r % 2 === 0 || redova <= 4) this.posadi(p, kultura, pos, a, b, biljke);
             }
             await cekaj(traktor.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 800, fill: 'forwards' }));
             traktor.remove();
-            // obrađeno ostaje neko vrijeme, pa polako izblijedi
-            setTimeout(() => tragovi.forEach(t => cekaj(t.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 6000, fill: 'forwards' })).then(() => t.remove())), 15000 + Math.random() * 20000);
+            this.ocisti(p, tragovi.concat(biljke));
+        },
+        // biljke duž reda, rastu redom kojim je traktor prošao (od dna prema gore)
+        posadi(p, kultura, pos, a, b, biljke) {
+            const od = Math.min(a, b) + 8, do_ = Math.max(a, b) - 8, korak = 20;
+            const mjesta = []; for (let s = od; s <= do_; s += korak) mjesta.push(s + (Math.random() * 6 - 3));
+            if (a > b) mjesta.reverse();
+            mjesta.forEach((s, i) => {
+                const el = document.createElement('span');
+                el.className = 'biljka'; el.innerHTML = KULTURE[kultura];
+                Object.assign(el.style, p.vert ? { left: pos + 'px', top: s + 'px' } : { left: s + 'px', top: pos + 'px' });
+                p.el.appendChild(el); biljke.push(el);
+                el.animate([{ transform: 'scale(.2, 0)', opacity: 0 }, { transform: 'scale(.6, .5)', opacity: 1, offset: .35 }, { transform: 'scale(1, 1)', opacity: 1 }],
+                    { duration: 5000 + Math.random() * 3000, delay: 600 + i * 260, easing: 'ease-out', fill: 'both' });
+            });
+        },
+        // obrađeno i izraslo ostaje neko vrijeme, pa polako izblijedi; tek tada se parcela opet može obrađivati
+        async ocisti(p, elementi) {
+            await pauza(25000 + Math.random() * 25000);
+            await Promise.all(elementi.map(el => cekaj(el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 6000, fill: 'forwards' }))));
+            elementi.forEach(el => el.remove());
+            p.zauzeta = false;
         },
     };
 }

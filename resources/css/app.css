@@ -35,6 +35,8 @@
 .traktor::before { content: ""; position: absolute; left: -3px; top: -3px; width: 2px; height: 24px; border-radius: 1px; background: #15803d; }
 .traktor::after { content: ""; position: absolute; right: 100%; top: -1px; width: 18px; height: 20px; border-radius: 50%;
     background: radial-gradient(ellipse at right, rgba(62, 227, 111, .6), rgba(134, 239, 172, .25) 45%, rgba(62, 227, 111, 0) 72%); animation: prskanje .6s ease-in-out infinite alternate; }
+.biljka { position: absolute; width: 12px; height: 16px; margin: -14px 0 0 -6px; transform-origin: 50% 100%; opacity: .5; pointer-events: none; }
+.biljka svg { display: block; width: 12px; height: 16px; }
 @keyframes prskanje { from { opacity: .5; transform: scale(.85, .8); } to { opacity: .9; transform: scale(1.1, 1.15); } }
 
 /* karta na početnoj preko cijelog zaslona */
