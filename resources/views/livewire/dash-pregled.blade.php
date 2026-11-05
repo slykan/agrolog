@@ -12,7 +12,7 @@
     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-5">
         <div>
             <h3 class="text-lg font-semibold text-gray-900">Pregled gospodarstva</h3>
-            <p class="text-xs text-gray-500">{{ $odDatum->format('j. n. Y.') }} – {{ $doDatum->format('j. n. Y.') }}</p>
+            <p class="text-xs text-gray-500">{{ $odDatum->format('d.m.Y.') }} – {{ $doDatum->format('d.m.Y.') }}</p>
         </div>
         <div class="flex flex-col items-start sm:items-end gap-2">
             <div class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-0.5 text-sm" role="group" aria-label="Razdoblje">

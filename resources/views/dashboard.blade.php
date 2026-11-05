@@ -225,7 +225,7 @@
                             <li class="flex justify-between gap-3">
                                 <span class="text-gray-800">{{ $r->stroj->naziv }} <span class="text-gray-500">· {{ $r->opis }}</span></span>
                                 <span class="font-semibold whitespace-nowrap {{ $r->status === 'istekao' ? 'text-red-700' : 'text-amber-800' }}">
-                                    {{ $r->dana < 0 ? 'isteklo ' . $r->datum_isteka->format('d.m.') : ($r->dana === 0 ? 'danas' : 'za ' . $r->dana . ' d. (' . $r->datum_isteka->format('d.m.') . ')') }}
+                                    {{ $r->dana < 0 ? 'isteklo ' . $r->datum_isteka->format('d.m.Y.') : ($r->dana === 0 ? 'danas' : 'za ' . $r->dana . ' d. (' . $r->datum_isteka->format('d.m.Y.') . ')') }}
                                 </span>
                             </li>
                         @endforeach
