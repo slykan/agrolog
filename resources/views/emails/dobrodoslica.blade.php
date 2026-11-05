@@ -13,7 +13,7 @@
                 {{-- zaglavlje --}}
                 <tr>
                     <td style="background:#06120a; padding:28px 32px;">
-                        <span style="font-size:24px; font-weight:bold; color:#3ee36f;">Agro</span><span style="font-size:24px; color:#ffffff;"> Log</span>
+                        <img src="{{ asset('images/logo/agro-log-bijeli.png') }}" alt="agro-log.app" width="155" height="34" style="display:block; height:34px; width:155px; border:0;">
                         <div style="color:#ffffffcc; font-size:13px; margin-top:6px;">Evidencija gnojidbe i prskanja po ARKOD parcelama</div>
                     </td>
                 </tr>

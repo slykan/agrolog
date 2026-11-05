@@ -2,6 +2,7 @@
 
 <footer class="bg-gray-900 text-gray-400 py-8 mt-8">
     <div class="max-w-6xl mx-auto px-6 flex flex-col items-center gap-4 text-sm">
+        <a href="{{ url('/') }}" aria-label="agro-log.app — naslovnica"><x-application-logo bijeli class="h-9" /></a>
         <div class="flex flex-wrap justify-center gap-x-6 gap-y-2">
             <a href="{{ route('alati') }}" class="hover:text-white transition">Alati</a>
             <a href="{{ route('novosti') }}" class="hover:text-white transition">Novosti</a>

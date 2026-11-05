@@ -12,7 +12,7 @@
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px; background:#ffffff; border-radius:16px; overflow:hidden;">
                 <tr>
                     <td style="background:#06120a; padding:24px 32px;">
-                        <span style="font-size:22px; font-weight:bold; color:#3ee36f;">Agro</span><span style="font-size:22px; color:#ffffff;"> Log</span>
+                        <img src="{{ asset('images/logo/agro-log-bijeli.png') }}" alt="agro-log.app" width="137" height="30" style="display:block; height:30px; width:137px; border:0;">
                         <div style="color:#ffffffcc; font-size:13px; margin-top:6px;">Podsjetnik za mehanizaciju</div>
                     </td>
                 </tr>

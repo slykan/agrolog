@@ -20,7 +20,7 @@
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                             <tr>
                                 <td>
-                                    <span style="font-size:24px; font-weight:800; letter-spacing:-0.3px; color:#3ee36f;">Agro</span><span style="font-size:24px; font-weight:400; color:#ffffff;"> Log</span>
+                                    <img src="{{ asset('images/logo/agro-log-bijeli.png') }}" alt="agro-log.app" width="155" height="34" style="display:block; height:34px; width:155px; border:0;">
                                 </td>
                                 <td align="right">
                                     <span style="display:inline-block; font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#06120a; background:#3ee36f; border-radius:999px; padding:4px 10px;">Obavijest</span>

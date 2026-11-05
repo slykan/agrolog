@@ -68,7 +68,7 @@
                     <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Pregled maila</p>
                     <div class="rounded-xl bg-white overflow-hidden shadow-sm">
                         <div class="bg-gradient-to-br from-[#06120a] via-[#0f2a17] to-[#14532d] px-6 py-5">
-                            <div class="flex items-center justify-between"><span><span class="text-lg font-extrabold text-[#3ee36f]">Agro</span><span class="text-lg text-white"> Log</span></span><span class="text-[10px] font-bold uppercase tracking-widest bg-[#3ee36f] text-[#06120a] rounded-full px-2 py-0.5">Obavijest</span></div>
+                            <div class="flex items-center justify-between"><x-application-logo bijeli class="h-7" /><span class="text-[10px] font-bold uppercase tracking-widest bg-[#3ee36f] text-[#06120a] rounded-full px-2 py-0.5">Obavijest</span></div>
                             <h4 class="mt-4 text-xl font-extrabold text-white" x-text="naslov || 'Naslov obavijesti'"></h4>
                         </div>
                         <div class="h-1 bg-[#3ee36f]"></div>
