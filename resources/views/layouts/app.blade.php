@@ -31,7 +31,26 @@
                             <span class="font-semibold">Radite u gospodarstvu {{ $kv->naziv_gospodarstva ?: $kv->name }}</span>
                             <span class="opacity-80"> · {{ \App\Models\Pristup::PRAVA[$kp->prava] }}{{ $kp->prava === 'unos' ? ' — izmjene se bilježe u povijest gospodarstva' : ' — izmjene nisu moguće' }}</span>
                         </p>
-                        <div class="flex gap-2 shrink-0">
+                        @php
+                            $drugi = \App\Models\Pristup::aktivni()->with('vlasnik:id,name,naziv_gospodarstva')
+                                ->where('savjetnik_id', $kp->savjetnik_id)->whereKeyNot($kp->id)->get()
+                                ->filter(fn ($p) => $p->vlasnik)->sortBy(fn ($p) => mb_strtolower($p->vlasnik->naziv_gospodarstva ?: $p->vlasnik->name));
+                        @endphp
+                        <div class="flex flex-wrap gap-2 shrink-0">
+                            @if($drugi->isNotEmpty())
+                                {{-- izravno u drugo gospodarstvo, na istoj stranici --}}
+                                <form method="post" x-data x-ref="f" data-akcija="{{ route('klijenti.otvori', '__ID__') }}">@csrf
+                                    <input type="hidden" name="natrag" value="{{ '/' . ltrim(request()->path(), '/') }}">
+                                    <select aria-label="Prebaci na drugo gospodarstvo"
+                                            @change="if ($event.target.value) { $refs.f.action = $refs.f.dataset.akcija.replace('__ID__', $event.target.value); $refs.f.submit() }"
+                                            class="py-1 pl-3 pr-8 rounded-lg border-0 bg-white/60 hover:bg-white/80 text-sm font-medium text-[#022a20] focus:ring-2 focus:ring-[#022a20]">
+                                        <option value="">Prebaci na…</option>
+                                        @foreach($drugi as $d)
+                                            <option value="{{ $d->id }}">{{ $d->vlasnik->naziv_gospodarstva ?: $d->vlasnik->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            @endif
                             <a href="{{ route('klijenti') }}" class="px-3 py-1 rounded-lg bg-white/40 hover:bg-white/60 font-medium">Klijenti</a>
                             <form method="post" action="{{ route('klijenti.zatvori') }}">@csrf
                                 <button class="px-3 py-1 rounded-lg bg-[#022a20] text-white hover:bg-[#033b2c] font-semibold">← Natrag na svoje</button>

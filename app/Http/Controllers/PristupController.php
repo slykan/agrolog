@@ -143,6 +143,12 @@ class PristupController extends Controller
         abort_unless($pristup->status === 'prihvaceno' && $pristup->savjetnik_id === $this->ja($request)->id, 404);
         $request->session()->put(['klijent_pristup_id' => $pristup->id, 'klijent_savjetnik_id' => $this->ja($request)->id]);
 
+        // prebacivanje iz trake: ostaje na istoj stranici (samo lokalna putanja, bez profila/admina)
+        $natrag = (string) $request->input('natrag', '');
+        if (preg_match('#^/(?!/)[\w\-/]*$#', $natrag) && ! preg_match('#^/(profile|admin|savjetnici|klijenti)#', $natrag) && $natrag !== '/') {
+            return redirect($natrag);
+        }
+
         return redirect()->route('dashboard');
     }
 

@@ -133,6 +133,33 @@ class SavjetnikTest extends TestCase
         $this->actingAs($savjetnik)->get('/parcele')->assertDontSee('1515096')->assertDontSee('Radite u gospodarstvu');
     }
 
+    public function test_prebacivanje_izmedju_klijenata_iz_trake(): void
+    {
+        [$vlasnik, $savjetnik, $pristup] = $this->vlasnikISavjetnik();
+        $drugi = User::factory()->create(['naziv_gospodarstva' => 'OPG Kovač']);
+        $p2 = Pristup::create(['vlasnik_id' => $drugi->id, 'email' => $savjetnik->email, 'savjetnik_id' => $savjetnik->id,
+            'prava' => 'pregled', 'token' => Pristup::noviToken(), 'status' => 'prihvaceno']);
+        Parcela::create(['user_id' => $vlasnik->id, 'arkod_broj' => '1111111', 'povrsina_ha' => 1]);
+        Parcela::create(['user_id' => $drugi->id, 'arkod_broj' => '2222222', 'povrsina_ha' => 1]);
+
+        $this->actingAs($savjetnik)->post(route('klijenti.otvori', $pristup));
+        $this->get('/parcele')->assertSee('1111111')->assertSee('Prebaci na')->assertSee('OPG Kovač');
+
+        // iz trake u drugo gospodarstvo, ostaje na istoj stranici
+        $this->post(route('klijenti.otvori', $p2), ['natrag' => '/parcele'])->assertRedirect('/parcele');
+        $this->actingAs($savjetnik);   // u testu ostaje postavljen prethodni vlasnik; na serveru svaki zahtjev kreće od savjetnika
+        $this->get('/parcele')->assertSee('2222222')->assertDontSee('1111111')->assertSee('Radite u gospodarstvu OPG Kovač');
+
+        // vanjska ili zabranjena putanja ide na početnu
+        $this->actingAs($savjetnik)->post(route('klijenti.otvori', $pristup), ['natrag' => '//evil.com'])->assertRedirect(route('dashboard'));
+        $this->actingAs($savjetnik)->post(route('klijenti.otvori', $pristup), ['natrag' => '/profile'])->assertRedirect(route('dashboard'));
+
+        // tuđeg klijenta ni iz trake
+        $tudji = Pristup::create(['vlasnik_id' => $drugi->id, 'email' => 'x@y.hr', 'savjetnik_id' => User::factory()->create()->id,
+            'prava' => 'unos', 'token' => Pristup::noviToken(), 'status' => 'prihvaceno']);
+        $this->actingAs($savjetnik)->post(route('klijenti.otvori', $tudji))->assertNotFound();
+    }
+
     public function test_savjetnik_u_klijentu_nikad_nije_admin(): void
     {
         $admin = User::factory()->create(['email' => 'slynetwork@gmail.com', 'naziv_gospodarstva' => 'Admin OPG']);
