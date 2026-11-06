@@ -68,6 +68,8 @@
             <x-input-error :messages="$errors->get('cf-turnstile-response')" class="mt-2" />
         </div>
 
+        <p class="mt-4 text-xs text-gray-600">Registracijom, i Google računom, prihvaćate <a href="{{ route('uvjeti') }}" target="_blank" class="underline hover:text-gray-900">Uvjete korištenja</a>. Kako obrađujemo podatke, piše u <a href="{{ route('privacy') }}" target="_blank" class="underline hover:text-gray-900">Pravilima privatnosti</a>.</p>
+
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500" href="{{ route('login') }}">
                 {{ __('Already registered?') }}

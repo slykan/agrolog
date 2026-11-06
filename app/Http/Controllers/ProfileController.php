@@ -54,11 +54,22 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
+
+        // račun otvoren Googleom ima nasumičnu lozinku koju korisnik ne zna: potvrda upisom vlastitog maila
+        if ($user->google_id && $request->has('potvrda_email')) {
+            $request->validateWithBag('userDeletion', [
+                'potvrda_email' => ['required', 'string', function ($polje, $v, $greska) use ($user) {
+                    if (mb_strtolower(trim((string) $v)) !== mb_strtolower($user->email)) {
+                        $greska('Upisana adresa nije e-mail vašeg računa.');
+                    }
+                }],
+            ]);
+        } else {
+            $request->validateWithBag('userDeletion', [
+                'password' => ['required', 'current_password'],
+            ]);
+        }
 
         Auth::logout();
 

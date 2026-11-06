@@ -1,140 +1,100 @@
-<!DOCTYPE html>
-<html lang="hr">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Politika privatnosti – AgroLog</title>
-    <meta name="description" content="Politika privatnosti AgroLog aplikacije. Saznajte kako prikupljamo, koristimo i štitimo vaše osobne podatke.">
-    <link rel="canonical" href="{{ route('privacy') }}">
-    @include('partials.favicon')
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ route('privacy') }}">
-    <meta property="og:title" content="Politika privatnosti – AgroLog">
-    <meta property="og:description" content="Politika privatnosti AgroLog aplikacije. Saznajte kako prikupljamo, koristimo i štitimo vaše osobne podatke.">
-    <meta property="og:locale" content="hr_HR">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="font-sans antialiased text-gray-800 bg-white">
+@extends('layouts.pravno')
+@section('naslov', 'Pravila privatnosti')
+@section('opis', 'Koje osobne podatke AgroLog obrađuje, zašto, s kime ih dijeli, koliko ih čuva i koja su vaša prava.')
 
-    {{-- NAV --}}
-    @include('partials.nav')
+@section('sadrzaj')
+    @php
+        $n = 'text-xl font-semibold text-gray-800 mb-3';
+        $lista = 'list-disc pl-6 space-y-2';
+        $a = 'text-green-700 hover:underline';
+    @endphp
 
-    <main class="max-w-3xl mx-auto px-6 py-16">
+    <section>
+        <h2 class="{{ $n }}">1. Voditelj obrade</h2>
+        <p>Voditelj obrade vaših osobnih podataka je Alan Fadljević. Za sva pitanja o privatnosti pišite na <a href="mailto:info@agro-log.app" class="{{ $a }}">info@agro-log.app</a>. Ova pravila vrijede za stranicu agro-log.app i aplikaciju AgroLog, u skladu s Uredbom (EU) 2016/679 (GDPR).</p>
+    </section>
 
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Politika privatnosti</h1>
-        <p class="text-sm text-gray-400 mb-10">Zadnja izmjena: {{ date('d.m.Y') }}</p>
+    <section>
+        <h2 class="{{ $n }}">2. Koje podatke obrađujemo</h2>
+        <ul class="{{ $lista }}">
+            <li><strong>Račun:</strong> ime i prezime, e-mail, lozinka (samo u šifriranom obliku), naziv gospodarstva, MIPG i OIB. Kod prijave Google računom i Googleov ID te slika profila.</li>
+            <li><strong>Parcele i kulture:</strong> ARKOD brojevi, površine, oblik parcele, kulture, sorte, broj stabala.</li>
+            <li><strong>Evidencija:</strong> zapisi o prskanju, gnojidbi i berbi, uključujući količine, cijene i kupce koje upišete.</li>
+            <li><strong>Skladište, mehanizacija i troškovi:</strong> nabave i zalihe, strojevi, registracijske oznake, rokovi, servisi, prinosi, potpore i iznosi.</li>
+            <li><strong>Pristup savjetniku:</strong> e-mail pozvane osobe, prava pristupa i povijest izmjena, uključujući ime savjetnika.</li>
+            <li><strong>Obavijesti:</strong> vaši odabiri za mail i push te tehnički podaci o pretplati uređaja na push.</li>
+            <li><strong>Tehnički podaci:</strong> IP adresa, vrsta preglednika, podaci o sesiji i vrijeme zadnje aktivnosti.</li>
+            <li><strong>Upiti:</strong> ono što nam pošaljete mailom.</li>
+        </ul>
+    </section>
 
-        <div class="prose prose-gray max-w-none space-y-8 text-gray-600 leading-relaxed">
+    <section>
+        <h2 class="{{ $n }}">3. Zašto ih obrađujemo i na kojoj osnovi</h2>
+        <ul class="{{ $lista }}">
+            <li><strong>Pružanje usluge</strong>, uključujući evidenciju, izvještaje, podsjetnike na rokove i pristup savjetniku: izvršenje ugovora (čl. 6. st. 1. b GDPR-a).</li>
+            <li><strong>Sigurnost, sprječavanje zlouporabe i tehnička podrška:</strong> legitimni interes (čl. 6. st. 1. f).</li>
+            <li><strong>Novosti o AgroLogu mailom i pushem:</strong> legitimni interes da korisnike obavijestimo o usluzi koju koriste. Možete ih ugasiti u svakom trenutku.</li>
+            <li><strong>Oglasni kolačići:</strong> vaša privola (čl. 6. st. 1. a), koju možete povući. Vidi <a href="{{ route('kolacici') }}" class="{{ $a }}">Pravila o kolačićima</a>.</li>
+            <li><strong>Zakonske obveze</strong>, ako nas na to obvezuje propis ili nadležno tijelo (čl. 6. st. 1. c).</li>
+        </ul>
+        <p class="mt-3">Ne donosimo odluke o vama isključivo automatiziranom obradom koje bi imale pravne učinke na vas. Upozorenja u aplikaciji, npr. o karenci, samo su pomoć pri radu.</p>
+    </section>
 
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">1. Uvod</h2>
-                <p>
-                    AgroLog ("mi", "naša aplikacija") posvećen je zaštiti osobnih podataka korisnika. Ovom politikom privatnosti pojašnjavamo koje podatke prikupljamo, kako ih koristimo i na koji način ih štitimo, u skladu s Uredbom (EU) 2016/679 (GDPR) i važećim zakonodavstvom Republike Hrvatske.
-                </p>
-            </section>
+    <section>
+        <h2 class="{{ $n }}">4. S kime dijelimo podatke</h2>
+        <p class="mb-3">Vaše podatke ne prodajemo. Mogu ih vidjeti ili primiti:</p>
+        <ul class="{{ $lista }}">
+            <li><strong>Savjetnik kojeg sami pozovete</strong> vidi, a uz vaše dopuštenje i mijenja, evidenciju vašeg gospodarstva. Pristup možete ukinuti u svakom trenutku.</li>
+            <li><strong>Ovlaštene osobe voditelja obrade,</strong> radi podrške i održavanja.</li>
+            <li><strong>Pružatelji hostinga i slanja e-pošte,</strong> radi rada usluge.</li>
+            <li><strong>Agencija za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju (ARKOD):</strong> ARKOD broj, radi dohvata parcele i prikaza slojeva karte.</li>
+            <li><strong>Esri (satelitska karta) i Open-Meteo (prognoza):</strong> vaš preglednik im se obraća izravno, pa vide IP adresu i područje na karti koje gledate.</li>
+            <li><strong>Google:</strong> ako se prijavljujete Google računom, ako prihvatite oglasne kolačiće i ako push obavijesti na vašem uređaju idu preko Googlea.</li>
+            <li><strong>Push servisi preglednika</strong> (Google, Apple, Microsoft, Mozilla): dostavljaju obavijest na uređaj. Sadržaj je šifriran, a vide adresu pretplate i vrijeme slanja.</li>
+            <li><strong>Bunny.net (fontovi) i unpkg (biblioteka za kartu):</strong> preglednik ih dohvaća izravno, pa vide IP adresu.</li>
+            <li><strong>Nadležna tijela,</strong> ako to zahtijeva zakon.</li>
+        </ul>
+        <p class="mt-3">Registar FIS-a Ministarstva poljoprivrede koristimo za podatke o sredstvima, a pritom mu ne šaljemo vaše osobne podatke.</p>
+    </section>
 
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">2. Voditelj obrade</h2>
-                <p>
-                    Voditelj obrade osobnih podataka je Alan Fadljević, dostupan putem e-mail adrese:
-                    <a href="mailto:info@agro-log.app" class="text-green-700 hover:underline font-medium">info@agro-log.app</a>.
-                </p>
-            </section>
+    <section>
+        <h2 class="{{ $n }}">5. Prijenos izvan EU-a</h2>
+        <p>Neki od navedenih pružatelja, npr. Google, Apple, Microsoft i Esri, imaju sjedište ili obrađuju podatke u SAD-u. Takav se prijenos oslanja na mehanizme iz poglavlja V. GDPR-a koje ti pružatelji navode u svojim uvjetima. Podaci vaše evidencije ostaju na našem poslužitelju.</p>
+    </section>
 
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">3. Koje podatke prikupljamo</h2>
-                <ul class="list-disc pl-5 space-y-1">
-                    <li><strong>Podaci o računu:</strong> ime, e-mail adresa, lozinka (pohranjena u hashiranom obliku), naziv gospodarstva, MIPG broj i OIB.</li>
-                    <li><strong>Podaci o parcelama:</strong> ARKOD brojevi, površine i kulture koje unosite.</li>
-                    <li><strong>Evidencija radova:</strong> zapisi o gnojidbi i prskanju koje unosite u aplikaciju.</li>
-                    <li><strong>Tehnički podaci:</strong> IP adresa, vrsta preglednika i podaci o sesiji, koji se automatski bilježe radi sigurnosti i stabilnosti usluge.</li>
-                </ul>
-            </section>
+    <section>
+        <h2 class="{{ $n }}">6. Koliko čuvamo podatke</h2>
+        <ul class="{{ $lista }}">
+            <li>Podatke računa i evidencije čuvamo dok je račun aktivan.</li>
+            <li>Nakon <a href="{{ route('brisanje') }}" class="{{ $a }}">brisanja računa</a> podaci se odmah brišu iz aplikacije, a preostali tragovi, npr. u sigurnosnim kopijama i zapisima poslužitelja, najkasnije u roku od 30 dana, osim ako zakon nalaže dulje čuvanje.</li>
+            <li>Vi ste dužni čuvati svoju evidenciju koliko propisi traže, za sredstva za zaštitu bilja najmanje tri godine. Zato je preuzmite prije brisanja računa.</li>
+        </ul>
+    </section>
 
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">4. Svrha i pravna osnova obrade</h2>
-                <ul class="list-disc pl-5 space-y-1">
-                    <li><strong>Pružanje usluge:</strong> obrada je nužna za izvršenje ugovora (čl. 6. st. 1. b) GDPR-a) — bez ovih podataka aplikacija ne može funkcionirati.</li>
-                    <li><strong>Sigurnost i prevencija zlouporabe:</strong> legitimni interes voditelja obrade (čl. 6. st. 1. f) GDPR-a).</li>
-                    <li><strong>Zakonske obveze:</strong> ako nas na to obvezuje propis ili tijelo javne vlasti (čl. 6. st. 1. c) GDPR-a).</li>
-                </ul>
-            </section>
+    <section>
+        <h2 class="{{ $n }}">7. Sigurnost</h2>
+        <p>Koristimo HTTPS, lozinke čuvamo šifrirane, a pristup podacima je ograničen. Nijedan sustav nije potpuno siguran. Ako dođe do povrede podataka koja vas ugrožava, obavijestit ćemo vas i nadležno tijelo kako propisi nalažu.</p>
+    </section>
 
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">5. Dijeljenje podataka s trećim stranama</h2>
-                <p>
-                    Vaše podatke ne prodajemo niti ustupamo trećim stranama u komercijalne svrhe. Podaci se mogu proslijediti isključivo:
-                </p>
-                <ul class="list-disc pl-5 space-y-1 mt-2">
-                    <li>pružateljima infrastrukture (hosting, poslužitelji) koji obrađuju podatke isključivo prema našim uputama i u svrhu pružanja usluge,</li>
-                    <li>nadležnim tijelima, ako to zahtijeva zakon.</li>
-                </ul>
-            </section>
+    <section>
+        <h2 class="{{ $n }}">8. Vaša prava</h2>
+        <p class="mb-3">Imate pravo na pristup, ispravak, brisanje, ograničenje obrade, prenosivost podataka, prigovor na obradu temeljem legitimnog interesa i povlačenje privole. Velik dio možete sami:</p>
+        <ul class="{{ $lista }}">
+            <li>ispraviti podatke u <strong>Profilu</strong>,</li>
+            <li>preuzeti evidenciju pod <strong>Izvještaji</strong> (PDF, Excel, CSV),</li>
+            <li>ugasiti obavijesti u <strong>Profil → Obavijesti</strong>,</li>
+            <li>obrisati račun u <strong>Profilu</strong>.</li>
+        </ul>
+        <p class="mt-3">Za ostalo pišite na <a href="mailto:info@agro-log.app" class="{{ $a }}">info@agro-log.app</a>, a odgovorit ćemo u roku od mjesec dana. Možete podnijeti i pritužbu Agenciji za zaštitu osobnih podataka (AZOP, azop.hr).</p>
+    </section>
 
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">6. Pohrana i sigurnost podataka</h2>
-                <p>
-                    Podaci se pohranjuju na sigurnim poslužiteljima unutar Europskog gospodarskog prostora. Primjenjujemo tehničke i organizacijske mjere zaštite: enkripciju lozinki, HTTPS komunikaciju i ograničen pristup podacima. Unatoč tome, nijedan sustav nije 100% siguran pa vas molimo da sami zaštitite pristupne podatke svog računa.
-                </p>
-            </section>
+    <section>
+        <h2 class="{{ $n }}">9. Maloljetnici</h2>
+        <p>AgroLog je namijenjen osobama koje vode ili rade na poljoprivrednom gospodarstvu i nije namijenjen djeci mlađoj od 16 godina.</p>
+    </section>
 
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">7. Rok čuvanja podataka</h2>
-                <p>
-                    Podatke čuvamo dok je vaš korisnički račun aktivan. Nakon brisanja računa, osobni podaci se trajno brišu u roku od 30 dana, osim ako zakon ne nalaže dulje čuvanje.
-                </p>
-            </section>
-
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">8. Vaša prava</h2>
-                <p>U skladu s GDPR-om imate pravo:</p>
-                <ul class="list-disc pl-5 space-y-1 mt-2">
-                    <li><strong>Pristupa</strong> — zatražiti uvid u podatke koje obrađujemo o vama,</li>
-                    <li><strong>Ispravka</strong> — zahtijevati ispravak netočnih podataka,</li>
-                    <li><strong>Brisanja</strong> — zatražiti brisanje podataka ("pravo na zaborav"),</li>
-                    <li><strong>Ograničenja obrade</strong> — privremeno ograničiti obradu vaših podataka,</li>
-                    <li><strong>Prenosivosti</strong> — primiti kopiju podataka u strojno čitljivom obliku,</li>
-                    <li><strong>Prigovora</strong> — prigovoriti obradi temeljnoj na legitimnom interesu.</li>
-                </ul>
-                <p class="mt-3">
-                    Zahtjeve možete poslati na: <a href="mailto:info@agro-log.app" class="text-green-700 hover:underline font-medium">info@agro-log.app</a>. Odgovorit ćemo u roku od 30 dana. Imate i pravo podnijeti pritužbu Agenciji za zaštitu osobnih podataka (AZOP).
-                </p>
-            </section>
-
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">9. Kolačići (Cookies)</h2>
-                <p>
-                    AgroLog koristi isključivo tehničke kolačiće nužne za rad aplikacije (autentifikacija, CSRF zaštita). Ne koristimo kolačiće za praćenje ili oglašavanje.
-                </p>
-            </section>
-
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">10. Izmjene politike privatnosti</h2>
-                <p>
-                    Zadržavamo pravo izmjene ove politike. O značajnim promjenama obavijestit ćemo vas putem e-maila ili obavijesti u aplikaciji. Nastavak korištenja aplikacije nakon izmjena smatra se prihvaćanjem nove politike.
-                </p>
-            </section>
-
-            <section>
-                <h2 class="text-lg font-semibold text-gray-800 mb-2">11. Kontakt</h2>
-                <p>
-                    Za sva pitanja vezana uz zaštitu osobnih podataka obratite se na:
-                    <a href="mailto:info@agro-log.app" class="text-green-700 hover:underline font-medium">info@agro-log.app</a>
-                </p>
-            </section>
-
-        </div>
-
-        <div class="mt-12 pt-8 border-t border-gray-100">
-            <a href="/" class="text-sm text-green-700 hover:underline">&larr; Natrag na početnu</a>
-        </div>
-
-    </main>
-
-    {{-- FOOTER --}}
-    @include('partials.footer')
-
-</body>
-</html>
+    <section>
+        <h2 class="{{ $n }}">10. Izmjene</h2>
+        <p>Ako bitno promijenimo ova pravila, obavijestit ćemo vas u aplikaciji ili mailom. Datum zadnje izmjene je na vrhu stranice.</p>
+    </section>
+@endsection

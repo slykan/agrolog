@@ -12,7 +12,13 @@
             <a href="{{ route('contact') }}" class="hover:text-white transition">Kontakt</a>
             <a href="{{ route('login') }}" class="hover:text-white transition">Prijava</a>
             <a href="{{ route('register') }}" class="hover:text-white transition">Registracija</a>
-            <a href="{{ route('privacy') }}" class="hover:text-white transition">Politika privatnosti</a>
+        </div>
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+            <a href="{{ route('uvjeti') }}" class="hover:text-white transition">Uvjeti korištenja</a>
+            <a href="{{ route('privacy') }}" class="hover:text-white transition">Pravila privatnosti</a>
+            <a href="{{ route('kolacici') }}" class="hover:text-white transition">Pravila o kolačićima</a>
+            <a href="{{ route('brisanje') }}" class="hover:text-white transition">Brisanje računa</a>
+            <button type="button" onclick="window.dispatchEvent(new CustomEvent('agro-kolacici'))" class="hover:text-white transition">Postavke kolačića</button>
         </div>
         <span class="text-gray-500 text-center">© {{ date('Y') }} AgroLog. Sva prava pridržana. Izradio <a href="https://on-click.hr" target="_blank" class="hover:text-white transition">@on-click.hr</a></span>
     </div>

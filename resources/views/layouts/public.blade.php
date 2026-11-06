@@ -15,8 +15,18 @@
     <meta property="og:locale" content="hr_HR">
     <meta name="google-adsense-account" content="ca-pub-3054841074530422">
     @if ($ads ?? false)
-        {{-- Oglasi samo na sadržajnim stranicama (alati, vodiči) --}}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3054841074530422" crossorigin="anonymous"></script>
+        {{-- Oglasi samo na sadržajnim stranicama (alati, vodiči) i tek uz privolu za kolačiće (partials/cookie-consent) --}}
+        <script>
+            window.agroOglasi = function () {
+                if (window.agroOglasiUcitani) return;
+                window.agroOglasiUcitani = true;
+                var s = document.createElement('script');
+                s.async = true; s.crossOrigin = 'anonymous';
+                s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3054841074530422';
+                document.head.appendChild(s);
+            };
+            try { if (localStorage.getItem('cookie_consent') === 'accepted') window.agroOglasi(); } catch (e) {}
+        </script>
     @endif
     @isset($jsonLd)
         <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>

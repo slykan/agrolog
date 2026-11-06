@@ -15,6 +15,9 @@ Route::get('/', function () {
 Route::get('/politika-privatnosti', function () {
     return view('privacy');
 })->name('privacy');
+Route::view('/uvjeti-koristenja', 'pravno.uvjeti')->name('uvjeti');
+Route::view('/kolacici', 'pravno.kolacici')->name('kolacici');
+Route::view('/brisanje-racuna', 'pravno.brisanje')->name('brisanje');
 
 Route::get('/o-nama', function () {
     return view('about');
@@ -42,6 +45,9 @@ Route::get('/sitemap.xml', function () {
         ['loc' => route('contact'), 'priority' => '0.6', 'changefreq' => 'monthly'],
         ['loc' => route('docs'),    'priority' => '0.8', 'changefreq' => 'monthly'],
         ['loc' => route('privacy'), 'priority' => '0.3', 'changefreq' => 'yearly'],
+        ['loc' => route('uvjeti'), 'priority' => '0.3', 'changefreq' => 'yearly'],
+        ['loc' => route('kolacici'), 'priority' => '0.3', 'changefreq' => 'yearly'],
+        ['loc' => route('brisanje'), 'priority' => '0.3', 'changefreq' => 'yearly'],
     ];
     $urls[] = ['loc' => route('alati'), 'priority' => '0.9', 'changefreq' => 'monthly'];
     foreach (array_keys(SadrzajController::ALATI) as $s) {
