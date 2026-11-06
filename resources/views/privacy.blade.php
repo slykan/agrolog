@@ -25,6 +25,7 @@
             <li><strong>Obavijesti:</strong> vaši odabiri za mail i push te tehnički podaci o pretplati uređaja na push.</li>
             <li><strong>Tehnički podaci:</strong> IP adresa, vrsta preglednika, podaci o sesiji i vrijeme zadnje aktivnosti.</li>
             <li><strong>Upiti:</strong> ono što nam pošaljete mailom.</li>
+            <li><strong>Oglasi:</strong> prikaze i klikove na naš oglasni banner brojimo samo zbirno, po danu i mjestu na stranici, bez podataka o osobi.</li>
         </ul>
     </section>
 

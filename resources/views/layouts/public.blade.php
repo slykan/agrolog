@@ -66,6 +66,9 @@
     @include('partials.nav', ['active' => $active ?? ''])
 
     <main class="max-w-4xl mx-auto px-6 py-12">
+        @if(! empty($oglasMjesto))
+            @include('partials.oglas', ['mjesto' => $oglasMjesto, 'klasa' => 'mb-8'])
+        @endif
         @yield('content')
     </main>
 

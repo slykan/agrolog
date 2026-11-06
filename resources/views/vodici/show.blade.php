@@ -3,6 +3,7 @@
     'description' => $v['excerpt'],
     'active' => 'vodici',
     'ads' => true,
+    'oglasMjesto' => 'vodici',
     'ogType' => 'article',
     'jsonLd' => [
         '@context' => 'https://schema.org',

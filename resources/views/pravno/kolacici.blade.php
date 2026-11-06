@@ -41,17 +41,22 @@
 
     <section>
         <h2 class="{{ $n }}">4. Oglasni kolačići (samo uz vašu privolu)</h2>
-        <p>Na javnim stranicama s vodičima, alatima i novostima mogu se prikazivati Googleovi oglasi (Google AdSense). Googleova skripta učitava se <strong>samo ako kliknete Prihvaćam</strong>. Tada Google i njegovi partneri mogu koristiti kolačiće za prikaz i mjerenje oglasa. Ako kliknete Odbijam, skripta se ne učitava. Oglasa nema unutar aplikacije nakon prijave.</p>
+        <p>Na javnim stranicama s vodičima, alatima i novostima mogu se prikazivati Googleovi oglasi (Google AdSense). Googleova skripta učitava se <strong>samo ako kliknete Prihvaćam</strong>. Tada Google i njegovi partneri mogu koristiti kolačiće za prikaz i mjerenje oglasa. Ako kliknete Odbijam, skripta se ne učitava. Googleovih oglasa nema unutar aplikacije nakon prijave.</p>
         <p class="mt-3">Više o tome kako Google koristi podatke: <a href="https://policies.google.com/technologies/partner-sites?hl=hr" target="_blank" rel="noopener" class="text-green-700 hover:underline">policies.google.com</a>.</p>
     </section>
 
     <section>
-        <h2 class="{{ $n }}">5. Vanjski servisi</h2>
+        <h2 class="{{ $n }}">5. Naši oglasi</h2>
+        <p>Na naslovnoj stranici, početnoj stranici aplikacije te vodičima i novostima prikazujemo i oglasne bannere koje sami objavljujemo, označene s „Oglas”. Oni ne koriste kolačiće za praćenje i nije potrebna privola. Brojimo samo koliko su puta prikazani i kliknuti, zbirno po danu i mjestu na stranici, bez podataka o tome tko ih je vidio. Klik na oglas može vas odvesti na stranicu oglašivača, na koju se primjenjuju njegova pravila.</p>
+    </section>
+
+    <section>
+        <h2 class="{{ $n }}">6. Vanjski servisi</h2>
         <p>Karta, prognoza, fontovi i prijava Googleom dohvaćaju se od vanjskih pružatelja, koji pritom vide vašu IP adresu. Vidi <a href="{{ route('privacy') }}" class="text-green-700 hover:underline">Pravila privatnosti</a>.</p>
     </section>
 
     <section>
-        <h2 class="{{ $n }}">6. Kako promijeniti odabir</h2>
+        <h2 class="{{ $n }}">7. Kako promijeniti odabir</h2>
         <p class="mb-3">Odabir možete promijeniti u svakom trenutku, a povlačenje privole ne utječe na ranije korištenje:</p>
         <button type="button" onclick="window.dispatchEvent(new CustomEvent('agro-kolacici'))" class="inline-flex rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Postavke kolačića</button>
         <p class="mt-3">Već spremljene kolačiće možete obrisati u postavkama preglednika. Ako obrišete nužne kolačiće, bit ćete odjavljeni.</p>

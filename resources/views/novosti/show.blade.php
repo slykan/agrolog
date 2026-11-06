@@ -3,6 +3,7 @@
     'description' => $n['excerpt'],
     'active' => 'novosti',
     'ads' => true,
+    'oglasMjesto' => 'novosti',
     'ogType' => 'article',
     'jsonLd' => [
         '@context' => 'https://schema.org',

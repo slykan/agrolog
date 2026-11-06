@@ -263,6 +263,8 @@
                 </a>
             @endif
 
+            @include('partials.oglas', ['mjesto' => 'dashboard'])
+
             {{-- Pregled gospodarstva: aktivnosti po mjesecima za razdoblje --}}
             @if($parcele->isNotEmpty())
                 <livewire:dash-pregled />

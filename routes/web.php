@@ -16,6 +16,8 @@ Route::get('/politika-privatnosti', function () {
     return view('privacy');
 })->name('privacy');
 Route::view('/uvjeti-koristenja', 'pravno.uvjeti')->name('uvjeti');
+Route::post('/oglas/{oglas}/{mjesto}/prikaz', [\App\Http\Controllers\OglasController::class, 'prikaz'])->name('oglas.prikaz');
+Route::get('/oglas/{oglas}/{mjesto}/klik', [\App\Http\Controllers\OglasController::class, 'klik'])->name('oglas.klik');
 Route::view('/kolacici', 'pravno.kolacici')->name('kolacici');
 Route::view('/brisanje-racuna', 'pravno.brisanje')->name('brisanje');
 
@@ -87,6 +89,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/oglasi', [\App\Http\Controllers\OglasController::class, 'index'])->name('oglasi');
+        Route::post('/oglasi', [\App\Http\Controllers\OglasController::class, 'spremi'])->name('oglasi.spremi');
+        Route::post('/oglasi/{oglas}', [\App\Http\Controllers\OglasController::class, 'spremi'])->name('oglasi.azuriraj');
+        Route::delete('/oglasi/{oglas}', [\App\Http\Controllers\OglasController::class, 'obrisi'])->name('oglasi.obrisi');
         Route::get('/korisnici', [AdminController::class, 'korisnici'])->name('korisnici');
         Route::get('/korisnici/{user}', [AdminController::class, 'korisnik'])->name('korisnik');
         Route::post('/korisnici/{user}/obavijesti', [ObavijestController::class, 'prekidac'])->name('korisnik.obavijesti');

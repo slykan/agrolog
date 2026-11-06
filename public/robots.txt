@@ -4,5 +4,6 @@ Disallow: /parcele
 Disallow: /gnojidba
 Disallow: /prskanje
 Disallow: /profile
+Disallow: /oglas/
 
 Sitemap: https://agro-log.app/sitemap.xml

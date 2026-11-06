@@ -71,7 +71,7 @@
 
     <section>
         <h2 class="{{ $n }}">10. Sadržaj i oglasi</h2>
-        <p>Tekstovi, izgled, logotip i kod AgroLoga zaštićeni su i ne smiju se kopirati bez dopuštenja. Vodiči su opće informacije. Na javnim stranicama s vodičima i alatima mogu se prikazivati oglasi trećih strana, za čiji sadržaj ne odgovaramo.</p>
+        <p>Tekstovi, izgled, logotip i kod AgroLoga zaštićeni su i ne smiju se kopirati bez dopuštenja. Vodiči su opće informacije. U AgroLogu, uključujući početnu stranicu aplikacije, mogu se prikazivati oglasi, označeni kao oglas. Za proizvode i usluge oglašivača odgovara oglašivač, a prikaz oglasa ne znači da ih preporučujemo.</p>
     </section>
 
     <section>

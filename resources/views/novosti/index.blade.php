@@ -3,6 +3,7 @@
     'description' => 'Novosti o AgroLogu i propisima za evidenciju gnojidbe i prskanja: nove mogućnosti, rokovi i promjene obrazaca.',
     'active' => 'novosti',
     'ads' => false,
+    'oglasMjesto' => 'novosti',
 ])
 
 @section('content')
