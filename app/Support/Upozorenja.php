@@ -97,6 +97,27 @@ class Upozorenja
             }
         }
 
+        // preporuke: samo vlasniku računa, ne savjetniku koji radi u tuđem gospodarstvu
+        if (! request()->attributes->has('pristup')) {
+            $nove = \App\Models\Preporuka::where('vlasnik_id', $user->id)->where('status', 'poslano')->latest('id')->get();
+            foreach ($nove->take(3) as $p) {
+                $stavke->push([
+                    'kljuc' => 'preporuka-' . $p->id,
+                    'naslov' => 'Preporuka: ' . $p->savjetnik_ime,
+                    'tekst' => $p->sazetak() ?: \Illuminate\Support\Str::limit((string) $p->napomena, 80),
+                    'link' => route('preporuke.index'),
+                    'razina' => 'zuto',
+                ]);
+            }
+            if ($nove->count() > 3) {
+                $stavke->push(['kljuc' => 'preporuka-jos-' . ($nove->count() - 3), 'naslov' => 'Preporuke', 'tekst' => 'Još ' . ($nove->count() - 3) . ' čeka odgovor', 'link' => route('preporuke.index'), 'razina' => 'zuto']);
+            }
+            $odgovori = \App\Models\Preporuka::where('savjetnik_id', $user->id)->whereNotNull('odgovoreno_at')->whereNull('savjetnik_vidio_at')->count();
+            if ($odgovori) {
+                $stavke->push(['kljuc' => 'preporuka-odgovori-' . $odgovori, 'naslov' => 'Odgovori na preporuke', 'tekst' => 'Novih odgovora klijenata: ' . $odgovori, 'link' => route('klijenti.preporuke'), 'razina' => 'zuto']);
+            }
+        }
+
         return $stavke->sortBy(fn ($s) => ['crveno' => 0, 'zuto' => 1, 'info' => 2][$s['razina']] ?? 3)->values();
     }
 }

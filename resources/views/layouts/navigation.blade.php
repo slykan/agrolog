@@ -2,6 +2,7 @@
     $jaStvarni = request()->attributes->get('savjetnik') ?? Auth::user();
     $uKlijentu = request()->attributes->has('savjetnik');
     $brojKlijenata = \App\Models\Pristup::aktivni()->where('savjetnik_id', $jaStvarni->id)->count();
+    $imaPreporuke = ! $uKlijentu && \App\Models\Preporuka::where('vlasnik_id', $jaStvarni->id)->exists();
 @endphp
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
@@ -75,9 +76,14 @@
                             Profil
                         </x-dropdown-link>
                         @endunless
-                        @if($brojKlijenata)
+                        @if($brojKlijenata || $jaStvarni->je_savjetnik)
                         <x-dropdown-link :href="route('klijenti')">
                             Klijenti ({{ $brojKlijenata }})
+                        </x-dropdown-link>
+                        @endif
+                        @if($imaPreporuke)
+                        <x-dropdown-link :href="route('preporuke.index')">
+                            Preporuke savjetnika
                         </x-dropdown-link>
                         @endif
                         <x-dropdown-link :href="route('docs')">
@@ -148,9 +154,14 @@
                     Profil
                 </x-responsive-nav-link>
                 @endunless
-                @if($brojKlijenata)
+                @if($brojKlijenata || $jaStvarni->je_savjetnik)
                 <x-responsive-nav-link :href="route('klijenti')">
                     Klijenti ({{ $brojKlijenata }})
+                </x-responsive-nav-link>
+                @endif
+                @if($imaPreporuke)
+                <x-responsive-nav-link :href="route('preporuke.index')">
+                    Preporuke savjetnika
                 </x-responsive-nav-link>
                 @endif
                 <x-responsive-nav-link :href="route('docs')">

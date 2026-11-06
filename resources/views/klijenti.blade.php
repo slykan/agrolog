@@ -17,6 +17,13 @@
                 </div>
             @endforeach
 
+            @if($klijenti->isNotEmpty())
+                <div class="flex flex-col gap-3 rounded-xl border border-green-200 bg-green-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-sm text-green-900"><strong>Preporuke:</strong> pošaljite preporuku za prskanje ili gnojidbu jednom ili svim klijentima s tom kulturom.</p>
+                    <a href="{{ route('klijenti.preporuke') }}" class="btn-primary whitespace-nowrap text-center">Pošalji preporuku</a>
+                </div>
+            @endif
+
             @if($ja->je_savjetnik)
                 <div class="bg-white shadow rounded-lg border-t-4 border-green-600 p-4 sm:p-6">
                     <h3 class="text-lg font-semibold text-gray-900">Pozovite svoje poljoprivrednike</h3>

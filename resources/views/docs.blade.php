@@ -62,6 +62,7 @@
                     <a href="#profil" class="block text-gray-600 hover:text-green-700 py-1 transition">8. Profil i obavijesti</a>
                     <a href="#obavijesti" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Push i mail obavijesti</a>
                     <a href="#savjetnik" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Pristup savjetniku</a>
+                    <a href="#preporuke" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Preporuke savjetnika</a>
                     <a href="#mobitel" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ AgroLog na mobitelu</a>
                     <a href="#pitanja" class="block text-gray-600 hover:text-green-700 py-1 transition">9. Česta pitanja</a>
                 </div>
@@ -553,6 +554,29 @@
                         <p>Otvorite poveznicu iz maila i provjerite tko vas poziva. Prihvatite samo ako tu osobu poznajete. Prava birate sami, a kasnije ih možete promijeniti ili pristup ukinuti u <strong>Profil → Pristup savjetniku</strong>. Ako ne želite suradnju, odaberite <strong>Ne želim, odbij poziv</strong>. Za odbijanje vam ne treba račun.</p>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Za savjetnika: Klijenti</h3>
                         <p>U padajućem izborniku pod imenom je <strong>Klijenti</strong> — popis gospodarstava koja su vam dala pristup, s površinom, zadnjim unosom i onim što traži pažnju. <strong>Otvori</strong> vas prebaci u gospodarstvo klijenta (na vrhu je traka „Radite u gospodarstvu …”), a <strong>Natrag na svoje</strong> vraća u vaše. Uz „samo pregled” sve vidite i ispisujete, ali ne možete mijenjati.</p>
+                    </div>
+                </section>
+
+                {{-- PREPORUKE --}}
+                <section id="preporuke" class="scroll-mt-24">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Preporuke savjetnika</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Savjetnik može gospodarstvu poslati preporuku za prskanje ili gnojidbu, ili opću poruku. Poljoprivrednik sam odlučuje što će napraviti.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg">Za savjetnika: slanje</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Otvorite <strong>Klijenti → Pošalji preporuku</strong> i odaberite prskanje, gnojidbu ili opću poruku</li>
+                            <li>Odaberite <strong>kulturu</strong>. Na popisu su parcele svih klijenata s tom kulturom i sve su označene, a možete maknuti one koje ne želite. Gospodarstva bez te kulture ne dobivaju preporuku</li>
+                            <li>Upišite sredstvo ili gnojivo, a po želji dozu, rok i napomenu. Opća poruka nema kulturu i može ići svim klijentima</li>
+                            <li>Kliknite <strong>Pregledaj prije slanja</strong>. Za prskanje AgroLog javlja što kaže registar FIS-a, npr. ako sredstvo nije registrirano za tu kulturu</li>
+                            <li>Kliknite <strong>Pošalji</strong>. Stanje svake preporuke vidite na istoj stranici, a na pitanja možete odgovoriti izravno tamo</li>
+                        </ol>
+                        <p>Preporuke možete slati i sa „samo pregled” jer time ništa ne mijenjate u evidenciji.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Za gospodarstvo: odgovor</h3>
+                        <p>Obavijest stiže u <strong>zvono</strong>, a prema vašim postavkama i mailom i pushem. Preporuke su u izborniku pod imenom, pod <strong>Preporuke savjetnika</strong>. Možete odabrati <strong>Prihvaćam</strong>, <strong>Ne prihvaćam</strong> ili <strong>Imam pitanje</strong>.</p>
+                        <p>Prihvaćanje ne upisuje ništa u evidenciju. Kad posao stvarno obavite, kliknite <strong>Napravljeno, unesi u evidenciju</strong>. Otvara se popunjen unos, a vi provjerite datum, količinu i ostalo pa spremite. Ako zapis već imate, odaberite <strong>Već je upisano</strong>, a ako posao ipak niste obavili, <strong>Nije napravljeno</strong>.</p>
                     </div>
                 </section>
 

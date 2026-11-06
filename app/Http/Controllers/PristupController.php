@@ -114,7 +114,7 @@ class PristupController extends Controller
             ->filter(fn ($p) => $p->vlasnik)
             ->map(function (Pristup $p) {
                 $v = $p->vlasnik;
-                $upozorenja = Upozorenja::za($v);
+                $upozorenja = Upozorenja::za($v)->reject(fn ($u) => str_starts_with($u['kljuc'], 'preporuka'));
                 $vrsta = fn ($prefiks) => $upozorenja->filter(fn ($u) => str_starts_with($u['kljuc'], $prefiks));
                 $zadnji = collect([
                     Prskanje::where('user_id', $v->id)->max('updated_at'),

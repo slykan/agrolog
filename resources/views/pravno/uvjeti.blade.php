@@ -38,6 +38,7 @@
         <h2 class="{{ $n }}">5. Pristup savjetniku</h2>
         <p>Pozvani savjetnik radi u vašem gospodarstvu s pravima koja mu dodijelite. Izmjene se bilježe u povijest, a pristup možete ukinuti u svakom trenutku. Vaš odnos sa savjetnikom stvar je vas i njega, i mi nismo njegova strana. Savjetnik mora imati vaše dopuštenje i podacima se smije koristiti samo za posao koji za vas obavlja.</p>
         <p class="mt-3">Savjetnik može i sam pozvati poljoprivrednika mailom, a pristup nastaje tek kad ga poljoprivrednik prihvati. Oznaku agronoma ili savjetnika upisuje sam korisnik i mi je ne provjeravamo, pa prije prihvaćanja provjerite tko vas poziva. Pozive smijete slati samo osobama s kojima surađujete, ne kao oglašavanje ili masovne poruke. Račun koji to krši možemo ograničiti ili ugasiti.</p>
+        <p class="mt-3">Preporuke za prskanje i gnojidbu daje savjetnik i za njih odgovara on, a AgroLog ih samo prenosi. Provjera prema registru je pomoć i ne zamjenjuje stručnu procjenu ni čitanje uputa na etiketi. Poljoprivrednik sam odlučuje hoće li preporuku primijeniti.</p>
     </section>
 
     <section>

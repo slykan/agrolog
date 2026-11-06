@@ -114,6 +114,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/klijenti/{pristup}/otvori', [\App\Http\Controllers\PristupController::class, 'otvori'])->name('klijenti.otvori');
     Route::post('/klijenti/natrag', [\App\Http\Controllers\PristupController::class, 'zatvori'])->name('klijenti.zatvori');
 
+    // preporuke: agronom šalje s Klijenata, gospodarstvo odgovara (u tuđem gospodarstvu preporuke.* nisu dostupne)
+    Route::get('/klijenti/preporuke', [\App\Http\Controllers\PreporukaController::class, 'savjetnik'])->name('klijenti.preporuke');
+    Route::post('/klijenti/preporuke', [\App\Http\Controllers\PreporukaController::class, 'posalji'])->middleware('throttle:30,1')->name('klijenti.preporuke.posalji');
+    Route::post('/klijenti/preporuke/{preporuka}/odgovor', [\App\Http\Controllers\PreporukaController::class, 'odgovori'])->name('klijenti.preporuke.odgovori');
+    Route::post('/klijenti/preporuke/{preporuka}/povuci', [\App\Http\Controllers\PreporukaController::class, 'povuci'])->name('klijenti.preporuke.povuci');
+    Route::get('/preporuke', [\App\Http\Controllers\PreporukaController::class, 'index'])->name('preporuke.index');
+    Route::post('/preporuke/{preporuka}/odgovor', [\App\Http\Controllers\PreporukaController::class, 'odgovor'])->middleware('throttle:60,1')->name('preporuke.odgovor');
+
     // savjetnik poziva poljoprivrednike; pristup nastaje tek kad poljoprivrednik prihvati
     Route::post('/klijenti/pozivi', [\App\Http\Controllers\PozivGospodarstvuController::class, 'posalji'])->middleware('throttle:30,1')->name('klijenti.pozivi.posalji');
     Route::post('/klijenti/pozivi/{poziv}/ponovno', [\App\Http\Controllers\PozivGospodarstvuController::class, 'ponovno'])->middleware('throttle:30,1')->name('klijenti.pozivi.ponovno');

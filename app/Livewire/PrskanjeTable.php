@@ -56,9 +56,23 @@ class PrskanjeTable extends Component
         'editForm.kolicina_vode_l_ha' => 'kolicina vode L/ha',
     ];
 
+    /** Preporuka iz koje se unosi zapis; zatvara se tek spremanjem. */
+    public ?int $preporukaId = null;
+    public string $preporukaOpis = '';
+
     public function mount(): void
     {
         $this->form = $this->praznaForma();
+        if ($p = \App\Support\Preporuke::zaUnos(request()->integer('preporuka'), auth()->id(), 'prskanje')) {
+            $this->preporukaId = $p->id;
+            $this->preporukaOpis = $p->savjetnik_ime . ': ' . $p->sazetak();
+            $this->showForm = true;
+            $this->form['kultura_id'] = $p->kultura_id;
+            $this->updatedFormKulturaId($p->kultura_id);
+            $this->form['trgovacki_naziv_sredstva'] = $p->sredstvo;
+            $this->updatedFormTrgovackiNazivSredstva($p->sredstvo);
+            $this->form['kolicina_sredstva_l_ha'] = $p->doza ?? '';
+        }
     }
 
     /** Nova prazna forma; vrsta uporabe i sustav proizvodnje preuzimaju se iz zadnjeg prskanja. */
@@ -239,6 +253,8 @@ class PrskanjeTable extends Component
 
     public function addRow(): void
     {
+        $this->preporukaId = null;
+        $this->preporukaOpis = '';
         $this->showForm = true;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -247,6 +263,8 @@ class PrskanjeTable extends Component
 
     public function cancelAdd(): void
     {
+        $this->preporukaId = null;
+        $this->preporukaOpis = '';
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -305,7 +323,10 @@ class PrskanjeTable extends Component
         $data['registracijski_broj'] = blank($data['registracijski_broj'] ?? null) ? null : trim($data['registracijski_broj']);
         $data['bbch'] = blank($data['bbch'] ?? null) ? null : trim($data['bbch']);
         $data['skladiste_id'] = $this->skladisteZaSpremanje($data['skladiste_id'] ?? null);
-        Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
+        $zapis = Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
+        \App\Support\Preporuke::zavrsiUnosom($this->preporukaId, auth()->id(), 'prskanje', $zapis->id);
+        $this->preporukaId = null;
+        $this->preporukaOpis = '';
 
         $this->showForm = false;
         $this->showKulturaPicker = false;

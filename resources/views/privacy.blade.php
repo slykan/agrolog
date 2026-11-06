@@ -23,6 +23,7 @@
             <li><strong>Evidencija:</strong> zapisi o prskanju, gnojidbi i berbi, uključujući količine, cijene i kupce koje upišete.</li>
             <li><strong>Skladište, mehanizacija i troškovi:</strong> nabave i zalihe, strojevi, registracijske oznake, rokovi, servisi, prinosi, potpore i iznosi.</li>
             <li><strong>Pristup savjetniku:</strong> e-mail pozvane osobe, prava pristupa i povijest izmjena, uključujući ime savjetnika.</li>
+            <li><strong>Preporuke savjetnika:</strong> sadržaj preporuke, kultura i parcela na koju se odnosi, vaš odgovor i pitanja. Vidite ih vi i savjetnik koji ih je poslao.</li>
             <li><strong>Poziv od savjetnika:</strong> ako vas agronom ili savjetnik pozove, od njega dobivamo vašu e-mail adresu i čuvamo je uz podatak o slanju i vašem odgovoru.</li>
             <li><strong>Obavijesti:</strong> vaši odabiri za mail i push te tehnički podaci o pretplati uređaja na push.</li>
             <li><strong>Tehnički podaci:</strong> IP adresa, vrsta preglednika, podaci o sesiji i vrijeme zadnje aktivnosti.</li>

@@ -37,9 +37,22 @@ class GnojidbaTable extends Component
         'editForm.kolicina_kg_ha' => 'kolicina kg/ha',
     ];
 
+    /** Preporuka iz koje se unosi zapis; zatvara se tek spremanjem. */
+    public ?int $preporukaId = null;
+    public string $preporukaOpis = '';
+
     public function mount(): void
     {
         $this->form = $this->praznaForma();
+        if ($p = \App\Support\Preporuke::zaUnos(request()->integer('preporuka'), auth()->id(), 'gnojidba')) {
+            $this->preporukaId = $p->id;
+            $this->preporukaOpis = $p->savjetnik_ime . ': ' . $p->sazetak();
+            $this->showForm = true;
+            $this->form['kultura_id'] = $p->kultura_id;
+            $this->form['tip_gnojiva'] = $p->sredstvo;
+            $this->updatedFormTipGnojiva($p->sredstvo);
+            $this->form['kolicina_kg_ha'] = $p->doza ?? '';
+        }
     }
 
     private function praznaForma(): array
@@ -202,6 +215,8 @@ class GnojidbaTable extends Component
 
     public function addRow(): void
     {
+        $this->preporukaId = null;
+        $this->preporukaOpis = '';
         $this->showForm = true;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -210,6 +225,8 @@ class GnojidbaTable extends Component
 
     public function cancelAdd(): void
     {
+        $this->preporukaId = null;
+        $this->preporukaOpis = '';
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -240,7 +257,10 @@ class GnojidbaTable extends Component
             'form.kolicina_kg_ha' => 'required|numeric|min:0.01|max:999999.99',
         ] + $this->hranivaPravila('form'));
 
-        Gnojidba::create(Gnojidba::sHranivima(array_merge($this->form, ['user_id' => auth()->id(), 'skladiste_id' => $this->skladisteZaSpremanje($this->form['skladiste_id'] ?? null)])));
+        $zapis = Gnojidba::create(Gnojidba::sHranivima(array_merge($this->form, ['user_id' => auth()->id(), 'skladiste_id' => $this->skladisteZaSpremanje($this->form['skladiste_id'] ?? null)])));
+        \App\Support\Preporuke::zavrsiUnosom($this->preporukaId, auth()->id(), 'gnojidba', $zapis->id);
+        $this->preporukaId = null;
+        $this->preporukaOpis = '';
 
         $this->showForm = false;
         $this->showKulturaPicker = false;

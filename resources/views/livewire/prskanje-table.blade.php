@@ -1,4 +1,11 @@
 <div>
+    <div wire:key="preporuka-traka">
+    @if($preporukaOpis)
+        <div class="mb-3 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900">
+            <strong>Unos iz preporuke</strong> ({{ $preporukaOpis }}). Provjerite datum, količinu i ostale podatke prije spremanja jer evidencija mora pokazivati ono što je stvarno napravljeno.
+        </div>
+    @endif
+    </div>
     @if(session('success'))
         <div class="mb-3 p-2 bg-green-100 text-green-800 rounded text-sm">{{ session('success') }}</div>
     @endif
