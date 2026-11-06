@@ -25,6 +25,7 @@
             <li><strong>Obavijesti:</strong> vaši odabiri za mail i push te tehnički podaci o pretplati uređaja na push.</li>
             <li><strong>Tehnički podaci:</strong> IP adresa, vrsta preglednika, podaci o sesiji i vrijeme zadnje aktivnosti.</li>
             <li><strong>Upiti:</strong> ono što nam pošaljete mailom ili kontakt obrascem: ime i prezime, e-mail, po želji naziv tvrtke i OIB te poruka.</li>
+            <li><strong>Poslovni kontakti:</strong> ako vam pošaljemo ponudu za oglašavanje, čuvamo naziv tvrtke, javno objavljenu poslovnu e-mail adresu, datum slanja te podatak ako ste rekli da ne želite poruke.</li>
             <li><strong>Oglasi:</strong> prikaze i klikove na naš oglasni banner brojimo samo zbirno, po danu i mjestu na stranici, bez podataka o osobi.</li>
         </ul>
     </section>
@@ -34,6 +35,7 @@
         <ul class="{{ $lista }}">
             <li><strong>Pružanje usluge</strong>, uključujući evidenciju, izvještaje, podsjetnike na rokove i pristup savjetniku: izvršenje ugovora (čl. 6. st. 1. b GDPR-a).</li>
             <li><strong>Sigurnost, sprječavanje zlouporabe i tehnička podrška:</strong> legitimni interes (čl. 6. st. 1. f).</li>
+            <li><strong>Ponude za oglašavanje poslovnim kontaktima:</strong> legitimni interes predstavljanja usluge. Možete odbiti daljnje poruke odgovorom na mail, nakon čega vam više ne pišemo.</li>
             <li><strong>Odgovor na upit s kontakt obrasca:</strong> legitimni interes, odnosno radnje prije sklapanja ugovora, npr. kod upita o oglašavanju (čl. 6. st. 1. f i b). Poruku ne spremamo u aplikaciji, nego stiže na naš mail.</li>
             <li><strong>Novosti o AgroLogu mailom i pushem:</strong> legitimni interes da korisnike obavijestimo o usluzi koju koriste. Možete ih ugasiti u svakom trenutku.</li>
             <li><strong>Oglasni kolačići:</strong> vaša privola (čl. 6. st. 1. a), koju možete povući. Vidi <a href="{{ route('kolacici') }}" class="{{ $a }}">Pravila o kolačićima</a>.</li>
@@ -69,6 +71,7 @@
         <ul class="{{ $lista }}">
             <li>Podatke računa i evidencije čuvamo dok je račun aktivan.</li>
             <li>Nakon <a href="{{ route('brisanje') }}" class="{{ $a }}">brisanja računa</a> podaci se odmah brišu iz aplikacije, a preostali tragovi, npr. u sigurnosnim kopijama i zapisima poslužitelja, najkasnije u roku od 30 dana, osim ako zakon nalaže dulje čuvanje.</li>
+            <li>Zapis o poslanoj ponudi čuvamo da vam ne pišemo ponovno, a adresu koja je odbila poruke da je više ne kontaktiramo.</li>
             <li>Upite čuvamo dok su potrebni za rješavanje, a duže samo ako iz njih nastane poslovni odnos ili to traži zakon.</li>
             <li>Vi ste dužni čuvati svoju evidenciju koliko propisi traže, za sredstva za zaštitu bilja najmanje tri godine. Zato je preuzmite prije brisanja računa.</li>
         </ul>

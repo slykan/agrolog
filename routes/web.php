@@ -90,6 +90,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 
     Route::middleware('can:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/ponude', [\App\Http\Controllers\PonudaController::class, 'index'])->name('ponude');
+        Route::post('/ponude', [\App\Http\Controllers\PonudaController::class, 'posalji'])->name('ponude.posalji');
+        Route::post('/ponude/{ponuda}/ne-zeli', [\App\Http\Controllers\PonudaController::class, 'neZeli'])->name('ponude.ne-zeli');
         Route::get('/oglasi', [\App\Http\Controllers\OglasController::class, 'index'])->name('oglasi');
         Route::post('/oglasi', [\App\Http\Controllers\OglasController::class, 'spremi'])->name('oglasi.spremi');
         Route::post('/oglasi/{oglas}', [\App\Http\Controllers\OglasController::class, 'spremi'])->name('oglasi.azuriraj');

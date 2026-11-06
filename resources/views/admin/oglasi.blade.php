@@ -4,6 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Admin &mdash; oglasi</h2>
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ route('admin.korisnici') }}" class="text-sm text-green-700 hover:underline">Korisnici &rarr;</a>
+                <a href="{{ route('admin.ponude') }}" class="btn-secondary">Pošalji ponudu</a>
                 <a href="{{ route('admin.oglasi', ['nova' => 1]) }}" class="btn-primary">+ Novi oglas</a>
             </div>
         </div>

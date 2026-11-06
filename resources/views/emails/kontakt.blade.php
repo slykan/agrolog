@@ -79,7 +79,7 @@
                                     @if($kopija)
                                         Lijep pozdrav,<br><strong style="color:#033b2c;">Tim AgroLog</strong>
                                     @else
-                                        Poslano s kontakt obrasca na agro-log.app, {{ now()->format('d.m.Y.') }} u {{ now()->format('H:i') }}.
+                                        Poslano s kontakt obrasca na agro-log.app, {{ now('Europe/Zagreb')->format('d.m.Y.') }} u {{ now('Europe/Zagreb')->format('H:i') }}.
                                     @endif
                                 </td>
                             </tr>
