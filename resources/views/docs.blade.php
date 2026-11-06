@@ -125,6 +125,17 @@
                     <div class="space-y-4 text-gray-600 leading-relaxed">
                         <p>Prije unosa gnojidbe i prskanja unesite parcele i kulture koje uzgajate — u izborniku <strong class="text-gray-800">Parcele &amp; Kulture</strong>.</p>
 
+                        <div id="sto-je-arkod" class="scroll-mt-24 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-900 space-y-2">
+                            <p class="font-semibold">Što je ARKOD i gdje naći svoj broj?</p>
+                            <p><strong>ARKOD</strong> je digitalna evidencija uporabe poljoprivrednog zemljišta, koju objavljuje Agencija za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju. ARKOD parcela je neprekinuta površina poljoprivrednog zemljišta koju obrađuje jedno gospodarstvo.</p>
+                            <p>Podatke o svojim parcelama možete vidjeti na dva mjesta:</p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>u javnom <a href="https://preglednik.arkod.hr/ARKOD-Web/" target="_blank" rel="noopener" class="font-medium underline">ARKOD pregledniku</a>, pomoću MIBPG-a, matičnog broja koji ste dobili pri upisu gospodarstva,</li>
+                                <li>u aplikaciji <strong>AGRONET</strong>, ako imate korisničko ime i zaporku.</li>
+                            </ul>
+                            <p>Ako parcelu ne možete pronaći, obratite se Agenciji. Više na <a href="https://www.apprrr.hr/arkod/" target="_blank" rel="noopener" class="font-medium underline">stranici Agencije o ARKOD-u</a>.</p>
+                        </div>
+
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Dodavanje parcele — ARKOD broj i karta</h3>
                         <ol class="list-decimal pl-6 space-y-1">
                             <li>Kliknite <strong>+ Nova parcela</strong></li>

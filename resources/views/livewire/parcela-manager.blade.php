@@ -13,6 +13,7 @@
                 <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
                 <input type="text" wire:model.live.blur="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40" inputmode="numeric">
                 @error('parcelaForm.arkod_broj')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                <p class="mt-1 text-[11px] text-gray-500">Ne znate broj? <a href="https://preglednik.arkod.hr/ARKOD-Web/" target="_blank" rel="noopener" class="text-green-700 underline">ARKOD preglednik</a> · <a href="{{ route('docs') }}#sto-je-arkod" target="_blank" class="text-green-700 underline">Što je ARKOD?</a></p>
             </div>
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Površina (ha)</label>
