@@ -100,6 +100,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/obavijesti', [ProfileController::class, 'obavijesti'])->name('profile.obavijesti');
+    Route::post('/push/pretplata', [\App\Http\Controllers\PushController::class, 'spremi'])->name('push.spremi');
+    Route::delete('/push/pretplata', [\App\Http\Controllers\PushController::class, 'ukloni'])->name('push.ukloni');
+    Route::post('/push/proba', [\App\Http\Controllers\PushController::class, 'proba'])->middleware('throttle:5,1')->name('push.proba');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

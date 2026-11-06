@@ -6,6 +6,13 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        {{-- push: nikad dok savjetnik radi u tuđem gospodarstvu --}}
+        @php
+            $pushKljuc = auth()->check() && auth()->user()->push_obavijesti && ! request()->attributes->get('pristup') ? \App\Support\WebPush::javniKljuc() : null;
+        @endphp
+        @if($pushKljuc)
+            <meta name="agro-push" content="{{ $pushKljuc }}" data-ukljuceno="1" data-korisnik="{{ auth()->id() }}" data-spremi="{{ route('push.spremi') }}" data-proba="{{ route('push.proba') }}">
+        @endif
         @include('partials.favicon')
 
         <!-- Fonts -->
@@ -21,6 +28,10 @@
             <div class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true" x-data="poljaTraktori({ min: 2, max: 4 })"></div>
             <div class="relative z-10">
             @include('layouts.navigation')
+
+            @if($pushKljuc)
+                @include('partials.push-traka')
+            @endif
 
             {{-- savjetnik radi u klijentovom gospodarstvu --}}
             @if($kp = request()->attributes->get('pristup'))
@@ -59,7 +70,7 @@
                     </div>
                 </div>
             @endif
-            @if(session('status') && ! in_array(session('status'), ['profile-updated', 'password-updated', 'verification-link-sent', 'savjetnik-poslano', 'savjetnik-prava', 'savjetnik-ukinut'], true) && ! request()->routeIs('klijenti'))
+            @if(session('status') && ! in_array(session('status'), ['profile-updated', 'password-updated', 'verification-link-sent', 'savjetnik-poslano', 'savjetnik-prava', 'savjetnik-ukinut', 'obavijesti-spremljene'], true) && ! request()->routeIs('klijenti'))
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3"><p class="rounded-lg bg-amber-50 border border-amber-200 px-4 py-2 text-sm text-amber-900">{{ session('status') }}</p></div>
             @endif
 

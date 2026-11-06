@@ -14,6 +14,13 @@ class Obavijest extends Model
     public function autor() { return $this->belongsTo(User::class, 'user_id'); }
 
     /** Korisnici kojima se obavijest šalje: svi koji se nisu odjavili. */
+    /** Tko prima obavijest bar na jednom kanalu: mail ili push na nekom uređaju. */
+    public static function primateljiSvihKanala()
+    {
+        return User::where(fn ($q) => $q->whereNull('obavijesti_odjava_at')
+            ->orWhere(fn ($q) => $q->where('push_obavijesti', true)->whereHas('pushPretplate')));
+    }
+
     public static function primatelji()
     {
         return User::whereNull('obavijesti_odjava_at');

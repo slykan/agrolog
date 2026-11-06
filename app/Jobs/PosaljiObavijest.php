@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Mail\ObavijestMail;
 use App\Models\Obavijest;
 use App\Models\User;
+use App\Support\WebPush;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,11 +28,15 @@ class PosaljiObavijest implements ShouldQueue
         $obavijest = Obavijest::find($this->obavijestId);
         $user = User::find($this->userId);
 
-        // u međuvremenu obrisan ili odjavljen — ne šalje se
-        if (! $obavijest || ! $user || $user->obavijesti_odjava_at) {
-            return;
+        if (! $obavijest || ! $user) {
+            return;   // u međuvremenu obrisan
         }
 
-        Mail::to($user->email)->send(new ObavijestMail($obavijest, $user));
+        if (! $user->obavijesti_odjava_at) {
+            Mail::to($user->email)->send(new ObavijestMail($obavijest, $user));
+        }
+        // push nakon maila: ako mail padne i posao se ponovi, push ne stiže dvaput
+        WebPush::korisniku($user, $obavijest->naslov, Str::limit(trim(html_entity_decode(strip_tags($obavijest->tekst))), 140),
+            $obavijest->gumb_url ?: route('novosti'));
     }
 }

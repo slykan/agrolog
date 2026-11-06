@@ -74,10 +74,18 @@ class Mehanizacija
                 continue;
             }
             $user = $userRokovi->first()->stroj->user;
-            Mail::to($user)->send(new PodsjetnikRokovaMail($user, $uskoro->values(), $istekli->values()));
+            if (! $user->obavijesti_odjava_at) {
+                Mail::to($user)->send(new PodsjetnikRokovaMail($user, $uskoro->values(), $istekli->values()));
+                $poslano++;
+            }
+            $svi = $istekli->concat($uskoro);
+            $prvi = $svi->first();
+            WebPush::korisniku($user,
+                $svi->count() === 1 ? $prvi->stroj->naziv . ' · ' . $prvi->opis : 'Mehanizacija: rokova za provjeru: ' . $svi->count(),
+                $svi->count() === 1 ? ($prvi->dana < 0 ? 'Isteklo ' : 'Ističe ') . $prvi->datum_isteka->format('d.m.Y.') : $svi->take(3)->map(fn ($r) => $r->stroj->naziv . ' · ' . $r->opis)->implode(', '),
+                route('mehanizacija'));
             StrojRok::whereIn('id', $uskoro->pluck('id'))->update(['podsjetnik_poslan_at' => now()]);
             StrojRok::whereIn('id', $istekli->pluck('id'))->update(['istek_poslan_at' => now(), 'podsjetnik_poslan_at' => now()]);
-            $poslano++;
         }
 
         return $poslano;

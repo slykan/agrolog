@@ -37,6 +37,18 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
+    /** Prekidači Push i Mail obavijesti. Datum ranije odjave od mailova se ne pomiče. */
+    public function obavijesti(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        $user->forceFill([
+            'push_obavijesti' => $request->boolean('push'),
+            'obavijesti_odjava_at' => $request->boolean('mail') ? null : ($user->obavijesti_odjava_at ?? now()),
+        ])->save();
+
+        return Redirect::to(route('profile.edit') . '#obavijesti')->with('status', 'obavijesti-spremljene');
+    }
+
     /**
      * Delete the user's account.
      */

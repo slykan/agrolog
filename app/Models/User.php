@@ -17,6 +17,10 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $attributes = ['push_obavijesti' => true];
+
+    public function pushPretplate() { return $this->hasMany(PushPretplata::class); }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -28,6 +32,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_seen_at' => 'datetime',
             'obavijesti_odjava_at' => 'datetime',
+            'push_obavijesti' => 'boolean',
             'password' => 'hashed',
         ];
     }

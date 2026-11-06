@@ -50,6 +50,7 @@
                     <a href="#provjera-fis" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Provjera prema FIS-u</a>
                     <a href="#gnojidba" class="block text-gray-600 hover:text-green-700 py-1 transition">5. Evidencija gnojidbe</a>
                     <a href="#berba" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Berba i trajni nasadi</a>
+                    <a href="#vocari" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Upute za voćare i vinogradare</a>
                     <a href="#viseredni-unos" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Višeredni unos</a>
                     <a href="#kopiranje" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kopiranje zapisa</a>
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
@@ -58,6 +59,7 @@
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
                     <a href="#profil" class="block text-gray-600 hover:text-green-700 py-1 transition">8. Profil i obavijesti</a>
+                    <a href="#obavijesti" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Push i mail obavijesti</a>
                     <a href="#savjetnik" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Pristup savjetniku</a>
                     <a href="#mobitel" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ AgroLog na mobitelu</a>
                     <a href="#pitanja" class="block text-gray-600 hover:text-green-700 py-1 transition">9. Česta pitanja</a>
@@ -302,6 +304,28 @@
                     </div>
                 </section>
 
+                {{-- UPUTE ZA VOĆARE --}}
+                <section id="vocari">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Upute za voćare i vinogradare: korak po korak</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <ol class="list-decimal pl-6 space-y-3">
+                            <li><strong class="text-gray-800">Dodajte parcelu.</strong> Pod <strong>Parcele &amp; Kulture</strong> kliknite <strong>+ Nova parcela</strong> i upišite ARKOD broj.</li>
+                            <li><strong class="text-gray-800">Dodajte nasad.</strong> Kliknite <strong>+ Kultura</strong> i upišite naziv, npr. „Jabuka”. Oznaka <strong>Trajni nasad</strong> se predloži sama, a po želji dodajte sortu, godinu sadnje i broj stabala. Ako imate više sorti, upišite svaku kao posebnu kulturu s njezinom površinom, npr. „Jabuka Idared” i „Jabuka Gala”.</li>
+                            <li><strong class="text-gray-800">Vodite prskanje i gnojidbu.</strong> Upisujete ih kao i za druge kulture, pod <strong>Aktivnosti</strong>. Nasad ne upisujete ponovno svake godine. Provjera prema FIS-u broj tretmana za nasad računa po godini.</li>
+                            <li><strong class="text-gray-800">Upišite svaku berbu.</strong> Pod <strong>Aktivnosti → Berba i žetva</strong> dodajte zaseban zapis za svako branje, s količinom i po želji cijenom, klasom i kupcem. Ako karenca nekog upisanog prskanja nije prošla, AgroLog vas upozori.</li>
+                            <li><strong class="text-gray-800">Upišite potpore i ostale troškove.</strong> Uz nasad kliknite <strong>Troškovi i potpore</strong>, odaberite godinu i upišite iznose, npr. sadnice, rezidbu ili usluge. Za svaku godinu upisujete posebno.</li>
+                            <li><strong class="text-gray-800">Pogledajte dobit.</strong> Stranica <strong>Troškovi</strong> za odabrano razdoblje pokazuje prihod iz berbi, troškove i dobit po hektaru.</li>
+                            <li><strong class="text-gray-800">Kad nasad više ne postoji,</strong> kliknite <strong>Iskrči</strong>. Površina parcele se oslobađa, a sva evidencija ostaje sačuvana.</li>
+                        </ol>
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+                            <strong>Već imate voćke upisane kao običnu kulturu?</strong> Kliknite <strong>označi kao trajni nasad</strong> uz njezin naziv. Ako ste isti nasad upisali posebno za svaku godinu, označite samo jedan zapis, a stare završite, inače se površina računa dvaput.
+                        </div>
+                    </div>
+                </section>
+
                 {{-- SKLADIŠTE (neobavezno) --}}
                 <section id="skladiste">
                     <div class="flex items-center gap-3 mb-5">
@@ -439,8 +463,43 @@
                         </ul>
                         <p>U istom padajućem izborniku pod imenom su i ove <strong>Upute</strong>, a u profilu i <a href="#savjetnik" class="text-green-700 hover:underline">pristup savjetniku</a>.</p>
 
-                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Obavijesti mailom</h3>
-                        <p>Povremeno šaljemo kratku obavijest o važnim novostima u AgroLogu i promjenama propisa o evidencijama. Ne želite ih primati? U dnu svakog takvog maila je poveznica <strong>Odjavite se jednim klikom</strong>. Odjava ne utječe na vaš račun ni na evidencije. Sve novosti su i na stranici <a href="{{ route('novosti') }}" class="text-green-700 hover:underline font-medium">Novosti</a>.</p>
+                        <p>O obavijestima mailom i na mobitel pročitajte u poglavlju <a href="#obavijesti" class="text-green-700 hover:underline">Push i mail obavijesti</a>. Sve novosti su i na stranici <a href="{{ route('novosti') }}" class="text-green-700 hover:underline font-medium">Novosti</a>.</p>
+                    </div>
+                </section>
+
+                {{-- PUSH I MAIL OBAVIJESTI --}}
+                <section id="obavijesti">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Push i mail obavijesti</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>U <strong>Profil → Obavijesti</strong> su dvije oznake, <strong>Push obavijesti</strong> i <strong>Mail obavijesti</strong>. Obje su zadano uključene, a svaku možete ugasiti posebno.</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm border border-gray-200 rounded-lg">
+                                <thead class="bg-gray-50 text-gray-700"><tr><th class="text-left px-3 py-2">Obavijest</th><th class="px-3 py-2">Push</th><th class="px-3 py-2">Mail</th></tr></thead>
+                                <tbody class="divide-y">
+                                    <tr><td class="px-3 py-2">Rokovi mehanizacije: prije isteka i kad rok prođe</td><td class="px-3 py-2 text-center">da</td><td class="px-3 py-2 text-center">da</td></tr>
+                                    <tr><td class="px-3 py-2">Novosti u AgroLogu i promjene propisa</td><td class="px-3 py-2 text-center">da</td><td class="px-3 py-2 text-center">da</td></tr>
+                                    <tr><td class="px-3 py-2">Nova karenca nakon upisanog prskanja</td><td class="px-3 py-2 text-center">da</td><td class="px-3 py-2 text-center">ne</td></tr>
+                                    <tr><td class="px-3 py-2">Sredstvo ili gnojivo pri kraju ili u minusu na skladištu</td><td class="px-3 py-2 text-center">da</td><td class="px-3 py-2 text-center">ne</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p>Provjera ide jednom dnevno, ujutro, a ista se stavka ne javlja svaki dan. Sve te stavke vidite i u <strong>zvonu</strong> uz svoje ime. Poruke o računu, npr. promjena lozinke ili poziv savjetnika, stižu uvijek i ne mogu se ugasiti.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Uključivanje pusha na uređaju</h3>
+                        <p>Oznaka u profilu nije dovoljna: preglednik na svakom uređaju traži vaše dopuštenje. Zato jednom kliknite <strong>Uključi</strong> na traci u aplikaciji, ili <strong>Uključi na ovom uređaju</strong> u profilu, i dopustite obavijesti.</p>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>Android:</strong> radi u Chromeu. Aplikaciju možete, ali ne morate dodati na početni zaslon.</li>
+                            <li><strong>iPhone:</strong> potreban je iOS 16.4 ili noviji. Najprije u Safariju odaberite <strong>Dijeli → Dodaj na početni zaslon</strong>, otvorite AgroLog s te ikone i tek onda uključite obavijesti.</li>
+                            <li><strong>Računalo:</strong> radi u pregledniku koji podržava push obavijesti, npr. Chromeu, Edgeu ili Firefoxu.</li>
+                        </ul>
+                        <p>Gumbom <strong>Pošalji probnu obavijest</strong> u profilu provjerite stiže li obavijest. Uključiti možete više uređaja. Kad se odjavite s uređaja, on prestaje primati obavijesti, a nakon nove prijave uključuju se same.</p>
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+                            <strong>Ne stiže ništa?</strong> Provjerite je li uključena oznaka u profilu i nisu li obavijesti za agro-log.app blokirane u postavkama preglednika ili mobitela. Ako ste ih blokirali, dopustiti ih možete samo u tim postavkama.
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Gašenje</h3>
+                        <p>Maknite oznaku u profilu. Mailove s novostima možete ugasiti i poveznicom <strong>Odjavite se jednim klikom</strong> u dnu svakog takvog maila, što gasi i podsjetnike mailom. Gašenje ne utječe na vaš račun ni na evidencije.</p>
                     </div>
                 </section>
 

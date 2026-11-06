@@ -50,7 +50,7 @@ class ObavijestController extends Controller
         $obavijest = Obavijest::create($podaci + ['user_id' => $request->user()->id, 'poslano_at' => now()]);
 
         $i = 0;
-        Obavijest::primatelji()->orderBy('id')->select('id')->chunkById(500, function ($korisnici) use ($obavijest, &$i) {
+        Obavijest::primateljiSvihKanala()->orderBy('id')->select('id')->chunkById(500, function ($korisnici) use ($obavijest, &$i) {
             foreach ($korisnici as $k) {
                 PosaljiObavijest::dispatch($obavijest->id, $k->id)
                     ->onConnection('database')

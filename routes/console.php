@@ -39,5 +39,11 @@ Artisan::command('mehanizacija:podsjetnici', function () {
 
 Schedule::command('mehanizacija:podsjetnici')->dailyAt('07:00');
 
+Artisan::command('push:upozorenja', function () {
+    $this->info('Poslano korisnicima: ' . \App\Support\PushUpozorenja::posalji());
+})->purpose('Push obavijest o novim stavkama iz zvona: karence i skladište');
+
+Schedule::command('push:upozorenja')->dailyAt('07:30');
+
 // red čekanja (obavijesti mailom): obrađuje se svake minute preko cron schedule:run
 Schedule::command('queue:work database --stop-when-empty --max-time=50 --tries=3')->everyMinute()->withoutOverlapping();

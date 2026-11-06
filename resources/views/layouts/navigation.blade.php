@@ -99,7 +99,7 @@
 
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                                this.closest('form').requestSubmit();">
                                 Odjava
                             </x-dropdown-link>
                         </form>
@@ -172,7 +172,7 @@
 
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                                        this.closest('form').requestSubmit();">
                         Odjava
                     </x-responsive-nav-link>
                 </form>
