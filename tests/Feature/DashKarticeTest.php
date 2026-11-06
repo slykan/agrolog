@@ -55,7 +55,7 @@ class DashKarticeTest extends TestCase
         StrojRok::create(['user_id' => $u->id, 'stroj_id' => $st->id, 'vrsta' => 'servis', 'datum_isteka' => now()->addDays(5), 'podsjetnik_dana' => 30]);
         StrojServis::create(['user_id' => $u->id, 'stroj_id' => $st->id, 'datum' => '2026-02-01', 'opis' => 'Ulje', 'trosak' => 200]);
 
-        [$parcele, $gnojidba, $prskanje, $skladiste, $meh, $troskovi] = DashKartice::za($u);
+        [$parcele, $gnojidba, $prskanje, , $skladiste, $meh, $troskovi] = DashKartice::za($u);
 
         $this->assertSame('12,50 ha', $parcele['brojka']);
         $this->assertSame('1 parcela · 2 kulture', $parcele['pod']);
@@ -85,7 +85,7 @@ class DashKarticeTest extends TestCase
     public function test_prazno_gospodarstvo_pokazuje_sljedeci_korak(): void
     {
         $u = User::factory()->create();
-        [$parcele, , , $skladiste, $meh, $troskovi] = DashKartice::za($u);
+        [$parcele, , , , $skladiste, $meh, $troskovi] = DashKartice::za($u);
         $this->assertSame('Dodajte prvu parcelu →', $parcele['prazno']);
         $this->assertSame('Dodajte prvo skladište →', $skladiste['prazno']);
         $this->assertSame('Dodajte prvi stroj →', $meh['prazno']);

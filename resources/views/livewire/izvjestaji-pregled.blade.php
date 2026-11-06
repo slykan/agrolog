@@ -62,6 +62,16 @@
             </li>
             <li class="px-4 py-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
+                    <p class="font-medium text-gray-800">Berba i žetva</p>
+                    <p class="text-xs text-gray-500">Zapisa: {{ $brojBerbi }}, s količinom, cijenom i kupcem</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{{ route('izvjestaji.ispis', ['vrsta' => 'berba'] + $upit) }}" target="_blank" class="{{ $gumb }}">🖨 Ispis / PDF</a>
+                    <a href="{{ route('izvjestaji.berba.csv', $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">CSV</span> Preuzmi</a>
+                </div>
+            </li>
+            <li class="px-4 py-3 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
                     <p class="font-medium text-gray-800">Promet skladišta i troškovi</p>
                     <p class="text-xs text-gray-500">
                         @if($imaSkladiste){{ $brojPrometa }} {{ $brojPrometa === 1 ? 'redak' : 'redaka' }}: nabava, inventura, prijenos i potrošnja s iznosom u €

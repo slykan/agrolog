@@ -16,6 +16,7 @@ class DashKartice
 {
     public const GNOJIDBA = '#008300';   // iste boje kao u Pregledu gospodarstva
     public const PRSKANJE = '#2a78d6';
+    public const BERBA = '#86bc25';
 
     public static function za(User $user): array
     {
@@ -28,6 +29,7 @@ class DashKartice
                 Gnojidba::where('user_id', $user->id)->where('datum', '>=', $od->toDateString())->pluck('datum'), $od, self::GNOJIDBA),
             self::aktivnost('prskanje', 'Evidencija prskanja', 'Upotreba sredstava za zaštitu bilja.',
                 Prskanje::where('user_id', $user->id)->where('datum_tretiranja', '>=', $od->toDateString())->pluck('datum_tretiranja'), $od, self::PRSKANJE),
+            self::berba($user, $od),
             self::skladiste($user),
             self::mehanizacija($user),
             self::troskovi($user, $od, $do),
@@ -83,6 +85,29 @@ class DashKartice
             'brojka' => self::mn($n, 'zapis', 'zapisa', 'zapisa'),
             'pod' => $zadnji ? 'zadnji ' . $zadnji->format('d.m.Y.') : 'u zadnjih 12 mjeseci',
             'graf' => 'stupci', 'boja' => $boja, 'vrh' => $vrh, 'stupci' => array_values($mjeseci),
+            'prazno' => null,
+        ];
+    }
+
+    private static function berba(User $user, Carbon $od): array
+    {
+        $berbe = \App\Models\Berba::where('user_id', $user->id)->where('datum', '>=', $od->toDateString())
+            ->where('datum', '<', now()->startOfMonth()->addMonth()->toDateString())->get(['datum', 'kolicina_kg']);
+        $mjeseci = [];
+        for ($i = 0; $i < 12; $i++) {
+            $m = $od->copy()->addMonths($i);
+            $mjeseci[$m->format('Y-m')] = ['oznaka' => $m->format('m.Y.'), 'broj' => 0];
+        }
+        foreach ($berbe as $b) {
+            $mjeseci[$b->datum->format('Y-m')]['broj'] += (float) $b->kolicina_kg;
+        }
+        $zadnja = $berbe->max('datum');
+
+        return [
+            'ruta' => 'berba', 'naslov' => 'Berba i žetva', 'opis' => 'Količine, cijene i kupci za svaku berbu.', 'ikona' => 'berba',
+            'brojka' => Berbe::masa((float) $berbe->sum('kolicina_kg')),
+            'pod' => self::mn($berbe->count(), 'berba', 'berbe', 'berbi') . ($zadnja ? ' · zadnja ' . $zadnja->format('d.m.Y.') : ''),
+            'graf' => 'stupci', 'boja' => self::BERBA, 'vrh' => max(1, max(array_column($mjeseci, 'broj'))), 'stupci' => array_values($mjeseci), 'jedinica' => ' kg',
             'prazno' => null,
         ];
     }

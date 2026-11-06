@@ -142,6 +142,11 @@ class ProvjeraSzb
             $kljuc = Skladiste::kljuc($s->naziv);
             $bilo = Prskanje::where('user_id', $user->id)->where('kultura_id', $k->id)
                 ->when($bezPrskanja, fn ($q) => $q->where('id', '!=', $bezPrskanja))
+                ->when($k->trajni, function ($q) use ($datum) {   // nasad traje godinama: tretmani se broje za sezonu
+                    $g = ($datum ? Carbon::parse($datum) : now())->year;
+
+                    return $q->where('datum_tretiranja', '>=', $g . '-01-01')->where('datum_tretiranja', '<', ($g + 1) . '-01-01');
+                })
                 ->pluck('trgovacki_naziv_sredstva')->filter(fn ($n) => Skladiste::kljuc($n) === $kljuc)->count();
             $ovo = $bilo + 1;
             $stavke[] = $ovo > $reg['max']
@@ -157,6 +162,44 @@ class ProvjeraSzb
      *
      * @return array<int, array{kultura: Kultura, sredstvo: string, do: Carbon}>
      */
+    /**
+     * Je li berba na taj datum još u karenci, prema upisanim prskanjima te kulture.
+     *
+     * @return array{krsi: ?array, provjereno: int, neprovjereno: string[]}|null
+     */
+    public static function karencaZaBerbu(User $user, $kulturaId, $datum, bool $dohvati = false): ?array
+    {
+        $k = Kultura::where('user_id', $user->id)->find((int) $kulturaId);
+        if (! $k || blank($datum)) {
+            return null;
+        }
+        $d = Carbon::parse($datum)->startOfDay();
+        $prskanja = Prskanje::where('user_id', $user->id)->where('kultura_id', $k->id)
+            ->where('datum_tretiranja', '>=', $d->copy()->subDays(150)->toDateString())
+            ->where('datum_tretiranja', '<=', $d->toDateString())
+            ->whereNotNull('trgovacki_naziv_sredstva')->get();
+
+        $krsi = null;
+        $provjereno = 0;
+        $neprovjereno = [];
+        foreach ($prskanja as $p) {
+            $s = SzbSredstvo::poNazivu($p->trgovacki_naziv_sredstva);
+            $detalji = $s ? self::detalji($s, $dohvati) : null;
+            $reg = $detalji ? self::zaKulturu($detalji, $k) : null;
+            if (! $reg || ! $reg['karenca_dana']) {
+                $neprovjereno[$p->trgovacki_naziv_sredstva] = $p->trgovacki_naziv_sredstva;
+                continue;
+            }
+            $provjereno++;
+            $do = $p->datum_tretiranja->copy()->addDays($reg['karenca_dana']);
+            if ($d->lt($do) && (! $krsi || $do->gt($krsi['do']))) {
+                $krsi = ['sredstvo' => $s->naziv, 'prskano' => $p->datum_tretiranja, 'dana' => $reg['karenca_dana'], 'do' => $do];
+            }
+        }
+
+        return ['krsi' => $krsi, 'provjereno' => $provjereno, 'neprovjereno' => array_values($neprovjereno)];
+    }
+
     public static function aktivneKarence(User $user): array
     {
         $prskanja = Prskanje::where('user_id', $user->id)->where('datum_tretiranja', '>=', now()->subDays(150)->toDateString())

@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/parcele', fn() => view('parcele'))->name('parcele');
     Route::get('/gnojidba', fn() => view('gnojidba'))->name('gnojidba');
     Route::get('/prskanje', fn() => view('prskanje'))->name('prskanje');
+    Route::get('/berba', fn() => view('berba'))->name('berba');
     Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
     Route::get('/parcele/{parcela}/arkod', ParcelaArkodController::class)->name('parcela.arkod');
     Route::get('/skladiste', fn() => view('skladiste'))->name('skladiste');
@@ -75,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/izvjestaji', fn() => view('izvjestaji'))->name('izvjestaji');
     Route::get('/izvjestaji/ispis/{vrsta}', [\App\Http\Controllers\IzvjestajiController::class, 'ispis'])->name('izvjestaji.ispis');
     Route::get('/izvjestaji/gnojidba.csv', [\App\Http\Controllers\IzvjestajiController::class, 'gnojidbeCsv'])->name('izvjestaji.gnojidba.csv');
+    Route::get('/izvjestaji/berba.csv', [\App\Http\Controllers\IzvjestajiController::class, 'berbeCsv'])->name('izvjestaji.berba.csv');
     Route::get('/izvjestaji/skladiste.csv', [\App\Http\Controllers\IzvjestajiController::class, 'skladisteCsv'])->name('izvjestaji.skladiste.csv');
     Route::get('/prskanje/izvoz.xlsx', [EvidencijaIzvozController::class, 'prskanjaXlsx'])->name('prskanje.xlsx');
 

@@ -27,22 +27,29 @@ class TroskoviPregled extends Component
     private function dobitPoKulturi($redovi, $od, $do)
     {
         $utrosak = $redovi->keyBy('kultura_id');
+        $berbe = \App\Support\Berbe::uRazdoblju(auth()->user(), $od, $do);
+        $saBerbama = \App\Models\Berba::where('user_id', auth()->id())->distinct()->pluck('kultura_id')->flip();
+        $nasadi = \App\Models\NasadGodina::whereBetween('godina', [$od->year, $do->year])->pluck('kultura_id');
         $kulture = \App\Models\Kultura::with('parcela')->where('user_id', auth()->id())
-            ->where(function ($q) use ($utrosak, $od, $do) {
+            ->where(function ($q) use ($utrosak, $od, $do, $berbe, $nasadi) {
                 $q->whereIn('id', $utrosak->keys())
+                  ->orWhereIn('id', $berbe->keys())
+                  ->orWhereIn('id', $nasadi)
                   ->orWhereBetween('zetva_datum', [$od->toDateString(), $do->toDateString()])
                   ->orWhere(fn ($q) => $q->whereNull('zetva_datum')->whereBetween('godina', [$od->year, $do->year])
                       ->where(fn ($q) => $q->whereNotNull('prinos_t_ha')->orWhereNotNull('trosak_sjeme')->orWhereNotNull('trosak_ostalo')->orWhereNotNull('potpora_ha')));
             })->get();
 
-        return $kulture->map(function ($k) use ($utrosak) {
+        return $kulture->map(function ($k) use ($utrosak, $berbe, $saBerbama, $od, $do) {
             $u = $utrosak[$k->id] ?? null;
-            $trosak = (float) ($u['ukupno'] ?? 0) + $k->ostaliTroskovi();
+            $b = $berbe[$k->id] ?? null;
+            $pr = \App\Support\Berbe::prihodKulture($k, $b, isset($saBerbama[$k->id]), $od, $do);
+            $trosak = (float) ($u['ukupno'] ?? 0) + $pr['ostalo'];
 
             return [
                 'kultura_id' => $k->id, 'parcela_id' => $k->parcela_id, 'parcela_ha' => (float) ($k->parcela?->povrsina_ha ?? 0),
                 'arkod' => $k->parcela?->arkod_broj, 'kultura' => $k->naziv, 'godina' => $k->godina, 'ha' => (float) $k->posadjena_povrsina_ha,
-                'trosak' => round($trosak, 2), 'prihod' => $k->prihod(),
+                'trosak' => round($trosak, 2), 'prihod' => $pr['prihod'], 'berbe_bez_cijene' => $b['bez_cijene'] ?? 0,
             ];
         });
     }
@@ -71,6 +78,7 @@ class TroskoviPregled extends Component
                 'dobit' => $dobit !== null ? round($dobit, 2) : null,
                 'dobit_ha' => $dobit !== null && $ha > 0 ? round($dobit / $ha, 2) : null,
                 'bez_prihoda' => $g->filter(fn ($r) => $r['prihod'] === null)->count(),
+                'berbe_bez_cijene' => (int) $g->sum('berbe_bez_cijene'),
             ];
         })->sortByDesc(fn ($r) => $r['dobit'] ?? -INF)->values();
     }

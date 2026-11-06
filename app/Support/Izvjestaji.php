@@ -59,6 +59,13 @@ class Izvjestaji
             });
     }
 
+    public static function berbe(User $user, Carbon $od, Carbon $do): Collection
+    {
+        return \App\Models\Berba::with('kultura.parcela')->where('user_id', $user->id)
+            ->where('datum', '>=', $od->toDateString())->where('datum', '<', $do->copy()->addDay()->toDateString())
+            ->orderBy('datum')->orderBy('id')->get();
+    }
+
     /**
      * Promet skladišta u razdoblju: ulazi (nabava, inventura, prijenos) i potrošnja iz evidencije, s iznosom u €.
      *

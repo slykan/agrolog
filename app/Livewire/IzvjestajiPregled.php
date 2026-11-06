@@ -26,6 +26,7 @@ class IzvjestajiPregled extends Component
             'sredstva' => (float) $prskanja->sum('ukupno'),
             'gnojiva' => (float) $gnojidbe->sum('ukupno'),
             'dusik' => (float) $gnojidbe->sum('kg_n'),
+            'brojBerbi' => Izvjestaji::berbe($user, $od, $do)->count(),
             'imaSkladiste' => $imaSkladiste,
             'brojPrometa' => $imaSkladiste ? Izvjestaji::prometSkladista($user, $od, $do)->count() : 0,
         ]);

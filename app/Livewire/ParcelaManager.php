@@ -39,7 +39,7 @@ class ParcelaManager extends Component
     {
         // Sortiraj po datumu unosa, najnovija prva
         return Parcela::where('user_id', auth()->id())
-            ->with(['kulture' => fn($q) => $q->withCount(['gnojidbe', 'prskanja'])
+            ->with(['kulture' => fn($q) => $q->withCount(['gnojidbe', 'prskanja', 'berbe'])
                 ->orderByRaw('zavrsena_at IS NOT NULL')->orderByDesc('godina')->orderByDesc('zavrsena_at')->orderBy('naziv')])
             ->orderByDesc('created_at')
             ->get();
@@ -179,6 +179,10 @@ class ParcelaManager extends Component
         if (blank($this->kulturaForm['eppo_naziv'] ?? null)) {
             $this->kulturaForm['eppo_naziv'] = SzbPopisi::usjevZaKulturu($naziv)[0] ?? '';
         }
+        // voćke i vinova loza: predloži trajni nasad (korisnik može maknuti kvačicu)
+        if (! $this->editKulturaId && Kultura::jeTrajniNaziv($naziv)) {
+            $this->kulturaForm['trajni'] = true;
+        }
     }
 
     public function editParcela(int $id): void
@@ -206,9 +210,10 @@ class ParcelaManager extends Component
         // Brisanje parcele kaskadno briše kulture i njihovu evidenciju — ne dopuštamo ako zapisa ima
         $kultureIds = Kultura::where('parcela_id', $parcela->id)->pluck('id');
         $imaZapise = \App\Models\Gnojidba::whereIn('kultura_id', $kultureIds)->exists()
-            || \App\Models\Prskanje::whereIn('kultura_id', $kultureIds)->exists();
+            || \App\Models\Prskanje::whereIn('kultura_id', $kultureIds)->exists()
+            || \App\Models\Berba::whereIn('kultura_id', $kultureIds)->exists();
         if ($imaZapise) {
-            $this->poruka = "Parcela {$parcela->arkod_broj} ima zapise gnojidbe/prskanja i ne može se obrisati — evidenciju je obvezno čuvati.";
+            $this->poruka = "Parcela {$parcela->arkod_broj} ima zapise gnojidbe, prskanja ili berbe i ne može se obrisati — evidenciju je obvezno čuvati.";
             return;
         }
 
@@ -222,7 +227,7 @@ class ParcelaManager extends Component
         if (! $parcela) {
             return 0.0;
         }
-        $zauzeto = Kultura::where('parcela_id', $parcelaId)->where('godina', (int) $godina)->whereNull('zavrsena_at')
+        $zauzeto = Kultura::where('parcela_id', $parcelaId)->uGodini($godina)->whereNull('zavrsena_at')
             ->when($bez, fn ($q) => $q->whereNotIn('id', array_filter($bez)))
             ->sum('posadjena_povrsina_ha');
 
@@ -242,7 +247,7 @@ class ParcelaManager extends Component
         $slobodno = $this->slobodnoHa($parcelaId, date('Y'));
         if ($slobodno < 0.01) {
             $p = Parcela::where('user_id', auth()->id())->find($parcelaId);
-            $this->poruka = "Parcela {$p?->arkod_broj} je popunjena (" . number_format((float) $p?->povrsina_ha, 2, ',', '.') . ' ha) za ' . date('Y') . '. Za novu kulturu klikni „Zamijeni kulturu” ili „Završi” uz postojeću.';
+            $this->poruka = "Parcela {$p?->arkod_broj} je popunjena (" . number_format((float) $p?->povrsina_ha, 2, ',', '.') . ' ha) za ' . date('Y') . '. Za novu kulturu klikni „Zamijeni kulturu” ili „Završi” uz postojeću, a kod nasada „Iskrči”.';
             $this->showKulturaForm = false;
             return;
         }
@@ -251,8 +256,23 @@ class ParcelaManager extends Component
         $this->showKulturaForm = true;
         $this->editKulturaId = null;
         $this->zamjenaZaId = null;
-        $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => $slobodno, 'godina' => date('Y')];
+        $this->kulturaForm = ['naziv' => '', 'eppo_naziv' => '', 'posadjena_povrsina_ha' => $slobodno, 'godina' => date('Y'),
+            'trajni' => $this->parcelaJeNasad($parcelaId)];
         $this->clearValidation();
+    }
+
+    /** ARKOD vrsta uporabe vinograd, voćnjak ili maslinik. */
+    private function parcelaJeNasad(int $parcelaId): bool
+    {
+        $vrsta = Parcela::where('user_id', auth()->id())->whereKey($parcelaId)->value('arkod_vrsta_uporabe');
+
+        return in_array($vrsta, ['Vinograd', 'Voćnjak', 'Maslinik'], true);
+    }
+
+    /** Postojeću kulturu označi kao trajni nasad. */
+    public function oznaciTrajni(int $id): void
+    {
+        Kultura::where('user_id', auth()->id())->whereKey($id)->update(['trajni' => true]);
     }
 
     /** Promjena godine u formi nove kulture: ponudi slobodnu površinu za tu godinu. */
@@ -304,6 +324,10 @@ class ParcelaManager extends Component
             'eppo_naziv'            => $k->eppo_naziv ?? '',
             'posadjena_povrsina_ha' => $k->posadjena_povrsina_ha,
             'godina'                => $k->godina,
+            'trajni'                => (bool) $k->trajni,
+            'sorta'                 => $k->sorta ?? '',
+            'godina_sadnje'         => $k->godina_sadnje ?? '',
+            'broj_stabala'          => $k->broj_stabala ?? '',
         ];
         $this->showKulturaForm = false;
         $this->clearValidation();
@@ -323,7 +347,10 @@ class ParcelaManager extends Component
             'kulturaForm.posadjena_povrsina_ha' => 'required|numeric|min:0.01',
             'kulturaForm.godina'                => 'required|integer|min:2000|max:2100',
             'kulturaForm.eppo_naziv'            => 'nullable|string|max:255',
-        ], [], ['kulturaForm.eppo_naziv' => 'usjev (EPPO)']);
+            'kulturaForm.sorta'                 => 'nullable|string|max:100',
+            'kulturaForm.godina_sadnje'         => 'nullable|integer|min:1900|max:2100',
+            'kulturaForm.broj_stabala'          => 'nullable|integer|min:0|max:100000000',
+        ], [], ['kulturaForm.eppo_naziv' => 'usjev (EPPO)', 'kulturaForm.godina_sadnje' => 'godina sadnje', 'kulturaForm.broj_stabala' => 'broj stabala']);
 
         // Usjev za evidenciju SZB: s Ministarstvova popisa, ili prepoznat iz naziva kulture
         $eppoNaziv = trim((string) ($this->kulturaForm['eppo_naziv'] ?? ''));
@@ -350,7 +377,7 @@ class ParcelaManager extends Component
 
         // Zbroj površina ostalih aktivnih kultura na ovoj parceli (iste godine) — završene se ne broje
         $zauzetoHa = Kultura::where('parcela_id', $this->kulturaParcelaId)
-            ->where('godina', $this->kulturaForm['godina'])
+            ->uGodini($this->kulturaForm['godina'])
             ->whereNull('zavrsena_at')
             ->when($this->editKulturaId, fn($q) => $q->where('id', '!=', $this->editKulturaId))
             ->when($this->zamjenaZaId, fn($q) => $q->where('id', '!=', $this->zamjenaZaId))
@@ -371,6 +398,11 @@ class ParcelaManager extends Component
             'eppo_naziv' => $usjev[0] ?? null,
             'eppo_kod'   => $usjev[1] ?? null,
         ]);
+        $trajni = (bool) ($this->kulturaForm['trajni'] ?? false);
+        $data['trajni'] = $trajni;
+        foreach (['sorta', 'godina_sadnje', 'broj_stabala'] as $polje) {
+            $data[$polje] = $trajni && ! blank($this->kulturaForm[$polje] ?? null) ? $this->kulturaForm[$polje] : null;
+        }
 
         if ($this->editKulturaId) {
             Kultura::where('id', $this->editKulturaId)->where('user_id', auth()->id())->update($data);
@@ -407,7 +439,7 @@ class ParcelaManager extends Component
 
         // Brisanje bi kaskadno obrisalo i evidenciju gnojidbe/prskanja, koju je obvezno čuvati
         if ($k->imaZapise()) {
-            $this->poruka = "Kultura „{$k->naziv}\" ima zapise gnojidbe/prskanja i ne može se obrisati. Označi je završenom ili je zamijeni novom kulturom.";
+            $this->poruka = "Kultura „{$k->naziv}\" ima zapise gnojidbe, prskanja ili berbe i ne može se obrisati. Označi je završenom ili je zamijeni novom kulturom.";
             return;
         }
 
@@ -423,6 +455,12 @@ class ParcelaManager extends Component
     {
         $k = Kultura::where('user_id', auth()->id())->findOrFail($id);
         $this->prinosId = $k->id;
+        $this->resetErrorBag();
+        if ($k->trajni) {
+            $this->prinosForm = $this->nasadGodina($k->id, (int) date('Y'));
+
+            return;
+        }
         $this->prinosForm = [
             'zetva_datum' => $k->zetva_datum?->format('Y-m-d') ?? date('Y-m-d'),
             'prinos_t_ha' => $k->prinos_t_ha, 'cijena_t' => $k->cijena_t, 'potpora_ha' => $k->potpora_ha,
@@ -431,8 +469,39 @@ class ParcelaManager extends Component
         $this->resetErrorBag();
     }
 
+    /** Potpore i ostali troškovi trajnog nasada za godinu. */
+    private function nasadGodina(int $kulturaId, int $godina): array
+    {
+        $g = \App\Models\NasadGodina::where('kultura_id', $kulturaId)->where('godina', $godina)->first();
+
+        return ['godina' => $godina, 'potpora_ha' => $g?->potpora_ha, 'trosak_ostalo' => $g?->trosak_ostalo];
+    }
+
+    public function updatedPrinosFormGodina($godina): void
+    {
+        if ($this->prinosId && (int) $godina >= 1900 && (int) $godina <= 2100) {
+            $this->prinosForm = $this->nasadGodina($this->prinosId, (int) $godina);
+        }
+    }
+
     public function spremiPrinos(): void
     {
+        $nasad = Kultura::where('user_id', auth()->id())->where('trajni', true)->find($this->prinosId);
+        if ($nasad) {
+            $this->validate([
+                'prinosForm.godina' => 'required|integer|min:1900|max:2100',
+                'prinosForm.potpora_ha' => 'nullable|numeric|min:0|max:100000',
+                'prinosForm.trosak_ostalo' => 'nullable|numeric|min:0|max:10000000',
+            ], [], ['prinosForm.godina' => 'godina', 'prinosForm.potpora_ha' => 'potpore', 'prinosForm.trosak_ostalo' => 'ostali troškovi']);
+            $potpora = blank($this->prinosForm['potpora_ha'] ?? null) ? null : $this->prinosForm['potpora_ha'];
+            $ostalo = blank($this->prinosForm['trosak_ostalo'] ?? null) ? null : $this->prinosForm['trosak_ostalo'];
+            \App\Models\NasadGodina::updateOrCreate(['kultura_id' => $nasad->id, 'godina' => (int) $this->prinosForm['godina']],
+                ['potpora_ha' => $potpora, 'trosak_ostalo' => $ostalo]);
+            $this->prinosId = null;
+            $this->prinosForm = [];
+
+            return;
+        }
         $this->validate([
             'prinosForm.zetva_datum' => 'nullable|date',
             'prinosForm.prinos_t_ha' => 'nullable|numeric|min:0|max:500',

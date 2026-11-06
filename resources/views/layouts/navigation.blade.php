@@ -26,7 +26,7 @@
                     {{-- Aktivnosti: podizbornik s gnojidbom i prskanjem --}}
                     <div class="relative inline-flex" x-data="{ akt: false }" @click.outside="akt = false" @keydown.escape.window="akt = false">
                         <button type="button" @click="akt = ! akt" :aria-expanded="akt"
-                                class="inline-flex items-center gap-1 px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out {{ request()->routeIs('gnojidba') || request()->routeIs('prskanje') ? 'border-green-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                                class="inline-flex items-center gap-1 px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out {{ request()->routeIs('gnojidba') || request()->routeIs('prskanje') || request()->routeIs('berba') ? 'border-green-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                             Aktivnosti
                             <svg class="h-4 w-4 transition" :class="akt && 'rotate-180'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                         </button>
@@ -34,6 +34,7 @@
                              class="absolute left-0 top-full z-50 mt-1 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5">
                             <a href="{{ route('gnojidba') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('gnojidba') ? 'bg-green-50 text-green-800 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">Gnojidba</a>
                             <a href="{{ route('prskanje') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('prskanje') ? 'bg-green-50 text-green-800 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">Prskanje</a>
+                            <a href="{{ route('berba') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('berba') ? 'bg-green-50 text-green-800 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">Berba i žetva</a>
                         </div>
                     </div>
                     <x-nav-link :href="route('skladiste')" :active="request()->routeIs('skladiste')">
@@ -126,6 +127,7 @@
             <div class="ps-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Aktivnosti</div>
             <x-responsive-nav-link :href="route('gnojidba')" :active="request()->routeIs('gnojidba')" class="ps-7">Gnojidba</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('prskanje')" :active="request()->routeIs('prskanje')" class="ps-7">Prskanje</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('berba')" :active="request()->routeIs('berba')" class="ps-7">Berba i žetva</x-responsive-nav-link>
             <div class="border-t border-gray-100 my-1"></div>
             <x-responsive-nav-link :href="route('skladiste')" :active="request()->routeIs('skladiste')">Skladište</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('mehanizacija')" :active="request()->routeIs('mehanizacija')">Mehanizacija</x-responsive-nav-link>

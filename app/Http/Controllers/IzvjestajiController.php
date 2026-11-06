@@ -13,13 +13,13 @@ class IzvjestajiController extends Controller
 {
     public function ispis(Request $request, string $vrsta): View
     {
-        abort_unless(in_array($vrsta, ['prskanje', 'gnojidba'], true), 404);
+        abort_unless(in_array($vrsta, ['prskanje', 'gnojidba', 'berba'], true), 404);
         [$od, $do] = Izvjestaji::razdoblje($request);
         $user = $request->user();
 
         return view('izvjestaji.ispis', [
             'vrsta' => $vrsta, 'od' => $od, 'do' => $do, 'user' => $user,
-            'redovi' => $vrsta === 'prskanje' ? Izvjestaji::prskanja($user, $od, $do) : Izvjestaji::gnojidbe($user, $od, $do),
+            'redovi' => match ($vrsta) { 'prskanje' => Izvjestaji::prskanja($user, $od, $do), 'gnojidba' => Izvjestaji::gnojidbe($user, $od, $do), 'berba' => Izvjestaji::berbe($user, $od, $do) },
             'vrste' => SzbPopisi::VRSTE_UPORABE_KRATKO, 'sustavi' => SzbPopisi::SUSTAVI,
             'automatski' => ! $request->boolean('bez_ispisa'),
         ]);
@@ -37,6 +37,20 @@ class IzvjestajiController extends Controller
                 $r->datum->format('d.m.Y'), $r->arkod_broj, $r->kultura_naziv, $b($r->povrsina, 2), $r->tip_gnojiva,
                 $b($r->kolicina_kg_ha, 2), $b($r->ukupno, 2), $b($r->n_posto, 2), $b($r->p_posto, 2), $b($r->k_posto, 2),
                 $r->organsko ? 'da' : 'ne', $b($r->kg_n_ha, 1), $b($r->kg_n, 1),
+            ]));
+    }
+
+    public function berbeCsv(Request $request): StreamedResponse
+    {
+        [$od, $do] = Izvjestaji::razdoblje($request);
+        $redovi = Izvjestaji::berbe($request->user(), $od, $do);
+        $b = fn ($v, $d = 3) => Izvjestaji::csvBroj($v, $d);
+
+        return $this->csv('berba-' . $od->format('Y-m-d') . '-' . $do->format('Y-m-d') . '.csv',
+            ['Datum', 'ARKOD ID parcele', 'Kultura', 'Sorta', 'Klasa', 'Količina (kg)', 'Cijena (€/kg)', 'Iznos (€)', 'Pobrana površina (ha)', 'Kupac', 'Napomena'],
+            $redovi->map(fn ($r) => [
+                $r->datum->format('d.m.Y'), $r->kultura?->parcela?->arkod_broj, $r->kultura?->naziv, $r->sorta, $r->klasa,
+                $b($r->kolicina_kg, 2), $b($r->cijena_kg, 4), $b($r->iznos, 2), $b($r->povrsina_ha, 2), $r->kupac, $r->napomena,
             ]));
     }
 

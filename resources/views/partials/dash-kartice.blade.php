@@ -4,6 +4,7 @@
         'parcele' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7',
         'gnojidba' => 'M12 21c-4-3-7-7-7-11a7 7 0 0114 0c0 4-3 8-7 11zm0-11v6m0-6c-1.5-2-3.5-2.5-5-2m5 2c1.5-2 3.5-2.5 5-2',
         'prskanje' => 'M12 3c3 4 6 7.5 6 11a6 6 0 01-12 0c0-3.5 3-7 6-11z',
+        'berba' => 'M12 8c-1-2.5-3-4-5.5-4 0 2.5 1.5 4.5 4 5M12 8c3-2 8.5-1 8.5 5 0 4.5-3.5 8-6 8-1.2 0-1.8-.5-2.500-.5s-1.300.5-2.500.5c-2.500 0-6-3.500-6-8 0-6 5.500-7 8.500-5z',
         'skladiste' => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
         'mehanizacija' => 'M5 17a2 2 0 104 0 2 2 0 00-4 0zm10 0a2 2 0 104 0 2 2 0 00-4 0M5 17H3v-4l2-5h7l2 5h3a2 2 0 012 2v2h-2M9 17h6M12 8V5',
         'troskovi' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
@@ -11,7 +12,7 @@
 @endphp
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     @foreach(\App\Support\DashKartice::za(auth()->user()) as $k)
-        <a href="{{ route($k['ruta']) }}" class="flex flex-col bg-white shadow-sm rounded-xl p-5 hover:shadow-md transition group border border-transparent hover:border-green-200">
+        <a href="{{ route($k['ruta']) }}" class="{{ $loop->first ? 'lg:col-span-2' : '' }} {{ $loop->last ? 'sm:col-span-2' : '' }} flex flex-col bg-white shadow-sm rounded-xl p-5 hover:shadow-md transition group border border-transparent hover:border-green-200">
             <div class="flex items-start gap-3">
                 <span class="w-11 h-11 shrink-0 rounded-xl bg-green-50 ring-1 ring-green-100 flex items-center justify-center text-green-700 group-hover:bg-green-100 transition">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $ikone[$k['ikona']] }}"/></svg>
@@ -33,7 +34,7 @@
                 @elseif($k['graf'] === 'stupci')
                     <div class="flex items-end gap-0.5 h-12" role="img" aria-label="{{ $k['naslov'] }} po mjesecima">
                         @foreach($k['stupci'] as $s)
-                            <span class="flex-1 h-full flex items-end" title="{{ $s['oznaka'] }}: {{ $s['broj'] }}">
+                            <span class="flex-1 h-full flex items-end" title="{{ $s['oznaka'] }}: {{ number_format($s['broj'], 0, ',', '.') }}{{ $k['jedinica'] ?? '' }}">
                                 @if($s['broj'] > 0)
                                     <span class="w-full rounded-t" style="height: {{ max(8, round($s['broj'] / $k['vrh'] * 100)) }}%; background: {{ $k['boja'] }}"></span>
                                 @else

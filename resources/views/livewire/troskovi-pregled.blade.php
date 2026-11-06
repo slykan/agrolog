@@ -303,6 +303,10 @@
             </table>
             </div>
 
+            @if($dobit->sum('berbe_bez_cijene') > 0)
+                <p class="px-4 pt-3 text-xs text-amber-800">Berbi bez cijene: {{ $dobit->sum('berbe_bez_cijene') }}. Nisu uračunate u prihod, cijenu možete dopisati na stranici <a href="{{ route('berba') }}" class="underline">Berba</a>.</p>
+            @endif
+
             {{-- graf: dobit po hektaru, trake lijevo (gubitak) i desno (dobit) od nule --}}
             @php
                 $sDobiti = $dobit->whereNotNull('dobit_ha');

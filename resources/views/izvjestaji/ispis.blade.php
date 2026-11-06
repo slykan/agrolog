@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @include('partials.favicon')
-    <title>{{ $vrsta === 'prskanje' ? 'Evidencija SZB' : 'Evidencija gnojidbe' }} {{ $od->format('d.m.Y.') }}–{{ $do->format('d.m.Y.') }}</title>
+    <title>{{ ['prskanje' => 'Evidencija SZB', 'gnojidba' => 'Evidencija gnojidbe', 'berba' => 'Evidencija berbe'][$vrsta] }} {{ $od->format('d.m.Y.') }}–{{ $do->format('d.m.Y.') }}</title>
     <style>
         @page { size: A4 landscape; margin: 10mm; }
         * { box-sizing: border-box; }
@@ -40,7 +40,7 @@
         <div class="zaglavlje">
             <div>
                 <div class="mala">Evidencija</div>
-                <h1>{{ $vrsta === 'prskanje' ? 'Primjena sredstava za zaštitu bilja' : 'Gnojidba' }}</h1>
+                <h1>{{ ['prskanje' => 'Primjena sredstava za zaštitu bilja', 'gnojidba' => 'Gnojidba', 'berba' => 'Berba i žetva'][$vrsta] }}</h1>
             </div>
             <div class="desno">
                 <strong>{{ $user->naziv_gospodarstva ?: $user->name }}</strong><br>
@@ -87,7 +87,7 @@
                     @endforeach
                 </tbody>
             </table>
-        @else
+        @elseif($vrsta === 'gnojidba')
             <table>
                 <thead>
                     <tr>
@@ -120,6 +120,42 @@
                         <td></td>
                         <td class="br">{{ $b($redovi->sum('kg_n'), 1) }}</td>
                         <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        @else
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rb.</th><th>Datum</th><th>ARKOD</th><th>Kultura</th><th>Sorta</th><th>Klasa</th>
+                        <th>Količina kg</th><th>Cijena €/kg</th><th>Iznos €</th><th>Pobrano ha</th><th>Kupac</th><th>Napomena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($redovi as $r)
+                        <tr>
+                            <td class="br">{{ $loop->iteration }}</td>
+                            <td>{{ $r->datum->format('d.m.Y.') }}</td>
+                            <td>{{ $r->kultura?->parcela?->arkod_broj }}</td>
+                            <td>{{ $r->kultura?->naziv }}</td>
+                            <td>{{ $r->sorta }}</td>
+                            <td>{{ $r->klasa }}</td>
+                            <td class="br">{{ $b($r->kolicina_kg) }}</td>
+                            <td class="br">{{ $b($r->cijena_kg, 3) }}</td>
+                            <td class="br">{{ $b($r->iznos) }}</td>
+                            <td class="br">{{ $b($r->povrsina_ha) }}</td>
+                            <td>{{ $r->kupac }}</td>
+                            <td>{{ $r->napomena }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6">Ukupno</td>
+                        <td class="br">{{ $b($redovi->sum('kolicina_kg')) }}</td>
+                        <td></td>
+                        <td class="br">{{ $b($redovi->sum(fn ($r) => $r->iznos ?? 0)) }}</td>
+                        <td colspan="3"></td>
                     </tr>
                 </tfoot>
             </table>

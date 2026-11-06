@@ -89,6 +89,7 @@
                 <input type="number" wire:model.live.blur="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
                 @error('kulturaForm.godina')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
+            @include('livewire.partials.kultura-nasad')
             <div class="flex gap-2">
                 @if($stara)
                     <button wire:click="saveKultura" class="btn-xs-green">Spremi novu kulturu</button>
@@ -127,10 +128,10 @@
                 </div>
                 <div class="flex flex-wrap gap-2">
                     @php
-                        $slobodnoP = max(0, (float) $parcela->povrsina_ha - (float) $parcela->kulture->whereNull('zavrsena_at')->where('godina', (int) date('Y'))->sum('posadjena_povrsina_ha'));
+                        $slobodnoP = max(0, (float) $parcela->povrsina_ha - (float) $parcela->kulture->whereNull('zavrsena_at')->filter(fn ($k) => (int) $k->godina === (int) date('Y') || ($k->trajni && (int) $k->godina <= (int) date('Y')))->sum('posadjena_povrsina_ha'));
                     @endphp
                     @if($slobodnoP < 0.01)
-                        <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-500 cursor-help" title="Kulture zauzimaju cijelu parcelu. Za novu kulturu koristi „Zamijeni kulturu” ili „Završi” uz postojeću.">Parcela popunjena</span>
+                        <span class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-500 cursor-help" title="Kulture zauzimaju cijelu parcelu. Za novu kulturu koristi „Zamijeni kulturu” ili „Završi” uz postojeću, a kod nasada „Iskrči”.">Parcela popunjena</span>
                     @else
                         <button wire:click="openKulturaForm({{ $parcela->id }})" class="btn-xs-blue" title="Slobodno {{ number_format($slobodnoP, 2, ',', '.') }} ha">+ Kultura <span class="opacity-75">({{ number_format($slobodnoP, 2, ',', '.') }} ha)</span></button>
                     @endif
@@ -186,7 +187,7 @@
                                     <input type="text" wire:model.live.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
                                            list="kulture-prijedlozi" autocomplete="off" class="form-input w-40">
                                     @error('kulturaForm.naziv')<p class="text-red-500 text-xs mt-1 max-w-xs">{{ $message }}</p>@enderror
-                                    @if(($kultura->gnojidbe_count + $kultura->prskanja_count) > 0)
+                                    @if(($kultura->gnojidbe_count + $kultura->prskanja_count + $kultura->berbe_count) > 0)
                                         <p class="text-xs text-gray-500 mt-1 max-w-xs">Naziv se ne može mijenjati jer kultura ima zapise. Za novu kulturu koristi „Zamijeni kulturu".</p>
                                     @endif
                                 </div>
@@ -207,6 +208,7 @@
                                     <input type="number" wire:model.live.blur="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
                                     @error('kulturaForm.godina')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </div>
+                                @include('livewire.partials.kultura-nasad')
                                 <div class="flex gap-2">
                                     <button wire:click="saveKultura" class="btn-xs-blue">Završi</button>
                                     <button wire:click="cancelKulturaEdit" class="btn-xs-gray">Odustani</button>
@@ -216,7 +218,7 @@
                     </tr>
                     @else
                     @php
-                        $imaZapise = ($kultura->gnojidbe_count + $kultura->prskanja_count) > 0;
+                        $imaZapise = ($kultura->gnojidbe_count + $kultura->prskanja_count + $kultura->berbe_count) > 0;
                     @endphp
                     <tr class="border-t border-gray-100 hover:bg-gray-50 {{ $kultura->zavrsena_at ? 'text-gray-400 bg-gray-50/60' : '' }}">
                         <td class="mob-puna px-4 py-2 font-medium uppercase">
@@ -226,8 +228,16 @@
                             @elseif(! $kultura->zavrsena_at)
                                 <button wire:click="editKultura({{ $kultura->id }})" class="ml-1 text-[10px] font-normal normal-case text-amber-600 hover:underline" title="Za evidenciju SZB od 2027. odaberite usjev s Ministarstvova popisa">bez EPPO koda</button>
                             @endif
+                            @if($kultura->trajni)
+                                <span class="ml-2 normal-case text-xs font-normal bg-green-50 text-green-800 rounded px-2 py-0.5">trajni nasad{{ $kultura->sorta ? ' · ' . $kultura->sorta : '' }}{{ $kultura->godina_sadnje ? ' · sađeno ' . $kultura->godina_sadnje . '.' : '' }}{{ $kultura->broj_stabala ? ' · ' . number_format($kultura->broj_stabala, 0, ',', '.') . ' stabala' : '' }}</span>
+                            @elseif(! $kultura->zavrsena_at && \App\Models\Kultura::jeTrajniNaziv($kultura->naziv))
+                                <button wire:click="oznaciTrajni({{ $kultura->id }})" class="ml-1 text-[11px] font-normal normal-case text-green-700 underline" title="Voćnjak, vinograd, maslinik: ostaje na parceli svake godine">označi kao trajni nasad</button>
+                            @endif
+                            @if($kultura->berbe_count)
+                                <span class="ml-2 normal-case text-xs font-normal bg-green-50 text-green-800 rounded px-2 py-0.5">berbi: {{ $kultura->berbe_count }}</span>
+                            @endif
                             @if($kultura->zavrsena_at)
-                                <span class="ml-2 normal-case text-xs font-normal bg-gray-200 text-gray-600 rounded px-2 py-0.5">završena {{ $kultura->zavrsena_at->format('d.m.Y.') }}</span>
+                                <span class="ml-2 normal-case text-xs font-normal bg-gray-200 text-gray-600 rounded px-2 py-0.5">{{ $kultura->trajni ? 'iskrčen' : 'završena' }} {{ $kultura->zavrsena_at->format('d.m.Y.') }}</span>
                             @endif
                             @if($kultura->prinos_t_ha !== null)
                                 <span class="ml-2 normal-case text-xs font-normal bg-green-50 text-green-800 rounded px-2 py-0.5" title="Prinos{{ $kultura->zetva_datum ? ', žetva ' . $kultura->zetva_datum->format('d.m.Y.') : '' }}">{{ number_format($kultura->prinos_t_ha, 2, ',', '.') }} t/ha{{ $kultura->cijena_t !== null ? ' · ' . number_format($kultura->cijena_t, 0, ',', '.') . ' €/t' : '' }}</span>
@@ -241,11 +251,13 @@
                             @if($kultura->zavrsena_at)
                                 <button wire:click="vratiKulturu({{ $kultura->id }})" class="btn-xs-gray" title="Ponovno aktiviraj (ako je označena greškom)">Vrati</button>
                             @else
-                                <button wire:click="zamijeniKulturu({{ $kultura->id }})" class="btn-xs-green" title="Nova kultura na parceli, stara ostaje u evidenciji">Zamijeni kulturu</button>
+                                @unless($kultura->trajni)
+                                    <button wire:click="zamijeniKulturu({{ $kultura->id }})" class="btn-xs-green" title="Nova kultura na parceli, stara ostaje u evidenciji">Zamijeni kulturu</button>
+                                @endunless
                                 <button wire:click="editKultura({{ $kultura->id }})" class="btn-xs-blue">Uredi</button>
-                                <button wire:click="zavrsiKulturu({{ $kultura->id }})" wire:confirm="Označiti {{ $kultura->naziv }} kao završenu (požnjevenu)? Zapisi ostaju u evidenciji." class="btn-xs-gray">Završi</button>
+                                <button wire:click="zavrsiKulturu({{ $kultura->id }})" wire:confirm="{{ $kultura->trajni ? 'Označiti nasad ' . $kultura->naziv . ' kao iskrčen? Površina se oslobađa, a zapisi ostaju u evidenciji.' : 'Označiti ' . $kultura->naziv . ' kao završenu (požnjevenu)? Zapisi ostaju u evidenciji.' }}" class="btn-xs-gray">{{ $kultura->trajni ? 'Iskrči' : 'Završi' }}</button>
                             @endif
-                            <button wire:click="otvoriPrinos({{ $kultura->id }})" class="btn-xs-gray" title="Prinos, cijena i ostali troškovi — za dobit po hektaru (Troškovi)">Prinos</button>
+                            <button wire:click="otvoriPrinos({{ $kultura->id }})" class="btn-xs-gray" title="{{ $kultura->trajni ? 'Potpore i ostali troškovi po godinama, za dobit po hektaru' : 'Prinos, cijena i ostali troškovi — za dobit po hektaru (Troškovi)' }}">{{ $kultura->trajni ? 'Troškovi i potpore' : 'Prinos' }}</button>
                             @unless($imaZapise)
                                 <button wire:click="deleteKultura({{ $kultura->id }})" wire:confirm="Obrisati kulturu?" class="btn-xs-red">&#10005;</button>
                             @endunless
@@ -254,8 +266,26 @@
                     @if($prinosId === $kultura->id)
                     <tr class="bg-green-50">
                         <td colspan="6" class="mob-puna px-4 py-3">
+                            @if($kultura->trajni)
+                            <p class="text-sm font-semibold text-gray-700 mb-2">Troškovi i potpore: {{ $kultura->naziv }} ({{ number_format($kultura->posadjena_povrsina_ha, 2, ',', '.') }} ha)</p>
+                            <div class="flex flex-wrap gap-3 items-end">
+                                <label class="block text-xs text-gray-600">Godina
+                                    <input type="number" wire:model.live.blur="prinosForm.godina" min="1900" max="2100" class="form-input w-24 mt-1 block">
+                                    @error('prinosForm.godina')<span class="text-red-500">{{ $message }}</span>@enderror</label>
+                                <label class="block text-xs text-gray-600">Potpore (€/ha) <span class="text-gray-400">neob.</span>
+                                    <input type="number" step="0.01" wire:key="np-{{ $prinosForm['godina'] ?? '' }}" wire:model="prinosForm.potpora_ha" class="form-input w-28 mt-1 block"></label>
+                                <label class="block text-xs text-gray-600">Ostali troškovi (€) <span class="text-gray-400">sadnice, rezidba, usluge…</span>
+                                    <input type="number" step="0.01" wire:key="no-{{ $prinosForm['godina'] ?? '' }}" wire:model="prinosForm.trosak_ostalo" class="form-input w-32 mt-1 block"></label>
+                                <div class="flex gap-2">
+                                    <button wire:click="spremiPrinos" class="btn-xs-green">Spremi</button>
+                                    <button wire:click="odustaniPrinos" class="btn-xs-gray">Odustani</button>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-xs text-gray-600">Prinos i prodaja upisuju se kroz <a href="{{ route('berba') }}" class="text-green-700 underline">Berbu</a>, a dobit po hektaru vidi se na stranici <a href="{{ route('troskovi') }}" class="text-green-700 underline">Troškovi</a>.</p>
+                            @else
                             <p class="text-sm font-semibold text-gray-700 mb-2">Prinos i prihod: {{ $kultura->naziv }} {{ $kultura->godina }}. ({{ number_format($kultura->posadjena_povrsina_ha, 2, ',', '.') }} ha)</p>
                             <div class="flex flex-wrap gap-3 items-end">
+                                @unless($kultura->berbe_count)
                                 <label class="block text-xs text-gray-600">Datum žetve / berbe
                                     <input type="date" wire:model="prinosForm.zetva_datum" class="form-input w-40 mt-1 block"></label>
                                 <label class="block text-xs text-gray-600">Prinos (t/ha)
@@ -263,6 +293,7 @@
                                     @error('prinosForm.prinos_t_ha')<span class="text-red-500">{{ $message }}</span>@enderror</label>
                                 <label class="block text-xs text-gray-600">Cijena (€/t)
                                     <input type="number" step="0.01" wire:model.live.blur="prinosForm.cijena_t" placeholder="npr. 210" class="form-input w-28 mt-1 block"></label>
+                                @endunless
                                 <label class="block text-xs text-gray-600">Potpore (€/ha) <span class="text-gray-400">neob.</span>
                                     <input type="number" step="0.01" wire:model.live.blur="prinosForm.potpora_ha" placeholder="npr. 150" class="form-input w-28 mt-1 block"></label>
                                 <label class="block text-xs text-gray-600">Sjeme (€ ukupno) <span class="text-gray-400">neob.</span>
@@ -280,13 +311,16 @@
                                 $cj = is_numeric($prinosForm['cijena_t'] ?? null) ? (float) $prinosForm['cijena_t'] : null;
                                 $pt = is_numeric($prinosForm['potpora_ha'] ?? null) ? (float) $prinosForm['potpora_ha'] : 0;
                             @endphp
-                            @if($pr !== null)
+                            @if($kultura->berbe_count)
+                                <p class="mt-2 text-xs text-gray-600">Prinos i prodaja računaju se iz <a href="{{ route('berba') }}" class="text-green-700 underline">upisanih berbi</a>.</p>
+                            @elseif($pr !== null)
                                 <p class="mt-2 text-xs text-gray-600">
                                     Ukupno {{ number_format($pr * $ha, 2, ',', '.') }} t
                                     @if($cj !== null) · prodaja {{ number_format($pr * $ha * $cj, 2, ',', '.') }} € @endif
                                     @if($pt) · potpore {{ number_format($pt * $ha, 2, ',', '.') }} € @endif
                                     — dobit po hektaru vidi se na stranici <a href="{{ route('troskovi') }}" class="text-green-700 underline">Troškovi</a>.
                                 </p>
+                            @endif
                             @endif
                         </td>
                     </tr>

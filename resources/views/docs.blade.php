@@ -49,6 +49,7 @@
                     <a href="#prskanje" class="block text-gray-600 hover:text-green-700 py-1 transition">4. Evidencija prskanja</a>
                     <a href="#provjera-fis" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Provjera prema FIS-u</a>
                     <a href="#gnojidba" class="block text-gray-600 hover:text-green-700 py-1 transition">5. Evidencija gnojidbe</a>
+                    <a href="#berba" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Berba i trajni nasadi</a>
                     <a href="#viseredni-unos" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Višeredni unos</a>
                     <a href="#kopiranje" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kopiranje zapisa</a>
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
@@ -94,7 +95,7 @@
                             <li><strong class="text-gray-800">Prognoza za 5 dana</strong> za područje vaših parcela: vrijeme, temperatura, kiša, vjetar i oznaka je li dan povoljan za prskanje.</li>
                             <li><strong class="text-gray-800">Karta svih parcela</strong> na satelitskoj podlozi, s ARKOD brojevima. Zumirate kotačićem miša ili gumbima +/−, kartu pomičete povlačenjem, a klik na parcelu pokaže kulture na njoj. Gumbom ⛶ kartu otvorite <strong>preko cijelog zaslona</strong> (Esc ili isti gumb je zatvara).</li>
                             <li><strong class="text-gray-800">Pregled gospodarstva</strong> ispod karte — za odabrano razdoblje (ova godina, prošla, 12 mjeseci ili od–do): površina, parcele i kulture, broj prskanja i gnojidbi s usporedbom prema godini ranije, graf po mjesecima i što treba dopuniti za evidenciju 2027.</li>
-                            <li><strong class="text-gray-800">Kartice</strong> ispod — Parcele, Gnojidba, Prskanje, Skladište, Mehanizacija i Troškovi, svaka s brojkom i malim grafom za zadnjih 12 mjeseci. Klik vodi na tu stranicu.</li>
+                            <li><strong class="text-gray-800">Kartice</strong> ispod — Parcele, Gnojidba, Prskanje, Berba, Skladište, Mehanizacija i Troškovi, svaka s brojkom i malim grafom za zadnjih 12 mjeseci. Klik vodi na tu stranicu.</li>
                             <li><strong class="text-gray-800">Zvono</strong> uz vaše ime u gornjem desnom kutu — broj pokazuje koliko stvari traži pažnju: aktivne karence, rokovi mehanizacije koji ističu, sredstva pri kraju ili u minusu na skladištu i zapisi koje treba dopuniti za evidenciju 2027. Klik otvara kratki popis, a <strong>Više</strong> vodi na stranicu gdje se to rješava.</li>
                         </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Kada je dan povoljan za prskanje</h3>
@@ -267,6 +268,36 @@
                             <li class="flex gap-3"><svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>Kliknite ikonu kopiranja na desnoj strani retka i potvrdite</span></li>
                             <li class="flex gap-3"><svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>Kreira se novi zapis s <strong class="text-white">istim podacima</strong> — kultura, sredstvo i registracijski broj ili gnojivo s udjelima, količina, fenofaza…</span></li>
                             <li class="flex gap-3"><svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span><strong class="text-white">Datum se postavlja na današnji</strong> — po potrebi ga uredite</span></li>
+                        </ul>
+                    </div>
+                </section>
+
+                {{-- BERBA I TRAJNI NASADI --}}
+                <section id="berba">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Berba, žetva i trajni nasadi</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <h3 class="font-semibold text-gray-800 text-lg">Upis berbe ili žetve</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>U izborniku <strong>Aktivnosti → Berba i žetva</strong> kliknite <strong>+ Dodaj berbu</strong></li>
+                            <li>Odaberite kulturu i datum te upišite količinu u kg ili t</li>
+                            <li>Po želji dodajte cijenu, sortu, klasu, pobranu površinu, kupca i napomenu</li>
+                        </ol>
+                        <p>Jedna kultura može imati koliko god berbi, npr. tri branja iste sorte. Stranica pokazuje ukupnu količinu, vrijednost i prinos po hektaru za odabranu godinu.</p>
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+                            <strong>Karenca:</strong> AgroLog usporedi datum berbe s upisanim prskanjima te kulture i registrom FIS-a. Ako karenca nije prošla, upozori vas s nazivom sredstva i datumom. Spremanje se ne blokira, a provjera vrijedi samo za upisana prskanja. Mjerodavna je etiketa sredstva.
+                        </div>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Prihod i dobit</h3>
+                        <p>Čim kultura ima upisane berbe, prihod na stranici <a href="#troskovi" class="text-green-700 hover:underline">Troškovi</a> računa se iz njih, za odabrano razdoblje. Berbe bez cijene nisu uračunate, a to piše ispod tablice. Kultura bez berbi i dalje koristi ručni upis pod <strong>Prinos</strong>. Ubrani plod ne ulazi u Skladište.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Trajni nasadi: voćnjak, vinograd, maslinik</h3>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Pri dodavanju kulture označite <strong>Trajni nasad</strong>, a po želji upišite sortu, godinu sadnje i broj stabala. Oznaka se sama predloži za voćke i vinovu lozu te za parcele koje su u ARKOD-u voćnjak, vinograd ili maslinik.</li>
+                            <li>Postojeću kulturu možete označiti gumbom <strong>označi kao trajni nasad</strong> uz njezin naziv, ili pod <strong>Uredi</strong>.</li>
+                            <li>Nasad zauzima površinu parcele svake godine, dok ga ne označite kao <strong>iskrčen</strong>. Zapisi ostaju u evidenciji.</li>
+                            <li>Gumb <strong>Troškovi i potpore</strong> upisuje potpore i ostale troškove za svaku godinu posebno, a dobit se računa po godinama.</li>
+                            <li>Broj tretmana u FIS provjeri za nasad se broji za godinu prskanja.</li>
                         </ul>
                     </div>
                 </section>

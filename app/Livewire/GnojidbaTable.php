@@ -102,7 +102,7 @@ class GnojidbaTable extends Component
             ->orderBy('parcele.arkod_broj')
             ->get();
 
-        $ha = (float) Kultura::where('user_id', auth()->id())->where('godina', $godina)->sum('posadjena_povrsina_ha');
+        $ha = (float) Kultura::where('user_id', auth()->id())->uGodini($godina)->sum('posadjena_povrsina_ha');
         $kgStajski = $redovi->sum(fn ($r) => (float) $r->n_stajski * (float) $r->posadjena_povrsina_ha);
 
         return [
