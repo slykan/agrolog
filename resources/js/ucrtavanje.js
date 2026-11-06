@@ -1,6 +1,36 @@
 // Ucrtavanje parcele bez ARKOD-a na karti (Alpine komponenta). Točke se šalju Livewireu, koji računa površinu.
 const NAJMANJI_ZOOM = 14;
 const MAX_TOCAKA = 200;
+const NAJMANJA_SIGURNOST = 70;   // Esri ocjena pogotka, od 0 do 100
+
+async function traziEsri(upit) {
+    const adresa = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=5&countryCode=HRV&langCode=hr&outFields=Addr_type&singleLine=' + encodeURIComponent(upit);
+    const odgovor = await fetch(adresa);
+    const podaci = odgovor.ok ? await odgovor.json() : {};
+    const vidjeno = new Set();
+
+    return (podaci.candidates || [])
+        .filter((k) => k.score >= NAJMANJA_SIGURNOST && ! vidjeno.has(k.address) && vidjeno.add(k.address))
+        .map((k, i) => {
+            const [naziv, ...ostalo] = k.address.split(', ');
+            const vrsta = k.attributes?.Addr_type;
+
+            return {
+                id: i, naziv, opis: ostalo.join(', '), lat: k.location.y, lng: k.location.x,
+                zoom: vrsta === 'PointAddress' ? 18 : (['StreetAddress', 'StreetName'].includes(vrsta) ? 17 : 15),
+            };
+        });
+}
+
+async function traziOpenMeteo(upit) {
+    const adresa = 'https://geocoding-api.open-meteo.com/v1/search?count=5&language=hr&countryCode=HR&name=' + encodeURIComponent(upit);
+    const odgovor = await fetch(adresa);
+    const podaci = odgovor.ok ? await odgovor.json() : {};
+
+    return (podaci.results || []).map((m) => ({
+        id: m.id, naziv: m.name, opis: [m.admin2, m.admin1].filter(Boolean).join(', '), lat: m.latitude, lng: m.longitude, zoom: 15,
+    }));
+}
 
 export function ucrtavanjeParcele(pocetne, okvir) {
     // Leaflet objekti ostaju izvan Alpineove reaktivnosti
@@ -8,6 +38,7 @@ export function ucrtavanjeParcele(pocetne, okvir) {
     let oblik = null;
     let oznake = null;
     let mojaOznaka = null;
+    let nadjenaOznaka = null;
     let odgoda = null;
 
     return {
@@ -89,7 +120,7 @@ export function ucrtavanjeParcele(pocetne, okvir) {
             tocke.forEach((t) => window.L.circleMarker(t, { radius: 6, color: '#ffffff', weight: 2, fillColor: '#033b2c', fillOpacity: 1, interactive: false }).addTo(oznake));
         },
 
-        // Pretraga mjesta preko Open-Meteo geokodiranja, koje aplikacija već koristi za prognozu
+        // Pretraga adrese i mjesta: Esri nalazi i kućne brojeve, a Open-Meteo je rezerva ako Esri ne odgovori ili ne nađe ništa
         async traziMjesto() {
             const upit = this.trazi.trim();
             this.rezultati = [];
@@ -98,16 +129,10 @@ export function ucrtavanjeParcele(pocetne, okvir) {
             }
             this.trazim = true;
             this.poruka = '';
-            try {
-                const adresa = 'https://geocoding-api.open-meteo.com/v1/search?count=5&language=hr&countryCode=HR&name=' + encodeURIComponent(upit);
-                const odgovor = await fetch(adresa);
-                const podaci = odgovor.ok ? await odgovor.json() : {};
-                this.rezultati = podaci.results || [];
-                if (! this.rezultati.length) {
-                    this.poruka = 'Mjesto nije pronađeno. Probajte obližnje veće mjesto pa pomaknite kartu.';
-                }
-            } catch (e) {
-                this.poruka = 'Pretraga trenutno ne radi. Pomaknite kartu rukom.';
+            const rezultati = await traziEsri(upit).catch(() => []);
+            this.rezultati = rezultati.length ? rezultati : await traziOpenMeteo(upit).catch(() => []);
+            if (! this.rezultati.length) {
+                this.poruka = 'Adresa nije pronađena. Probajte samo mjesto pa pomaknite kartu.';
             }
             this.trazim = false;
         },
@@ -115,7 +140,11 @@ export function ucrtavanjeParcele(pocetne, okvir) {
         idiNa(mjesto) {
             this.rezultati = [];
             this.poruka = '';
-            karta.setView([mjesto.latitude, mjesto.longitude], 15);
+            karta.setView([mjesto.lat, mjesto.lng], mjesto.zoom);
+            if (nadjenaOznaka) {
+                nadjenaOznaka.remove();
+            }
+            nadjenaOznaka = window.L.circleMarker([mjesto.lat, mjesto.lng], { radius: 7, color: '#ffffff', weight: 2, fillColor: '#2a78d6', fillOpacity: 1, interactive: false }).addTo(karta);
         },
 
         lokacija(uspjeh) {

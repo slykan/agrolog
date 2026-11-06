@@ -55,7 +55,7 @@
             <li><strong>Ovlaštene osobe voditelja obrade,</strong> radi podrške i održavanja.</li>
             <li><strong>Pružatelji hostinga i slanja e-pošte,</strong> radi rada usluge.</li>
             <li><strong>Agencija za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju (ARKOD):</strong> ARKOD broj, radi dohvata parcele i prikaza slojeva karte.</li>
-            <li><strong>Esri (satelitska karta) i Open-Meteo (prognoza i pretraga mjesta):</strong> vaš preglednik im se obraća izravno, pa vide IP adresu, područje na karti koje gledate i upisani naziv mjesta.</li>
+            <li><strong>Esri (satelitska karta i pretraga adresa) i Open-Meteo (prognoza i pretraga mjesta):</strong> vaš preglednik im se obraća izravno, pa vide IP adresu, područje na karti koje gledate i upisanu adresu ili mjesto.</li>
             <li><strong>Google:</strong> ako se prijavljujete Google računom, ako prihvatite oglasne kolačiće i ako push obavijesti na vašem uređaju idu preko Googlea.</li>
             <li><strong>Push servisi preglednika</strong> (Google, Apple, Microsoft, Mozilla): dostavljaju obavijest na uređaj. Sadržaj je šifriran, a vide adresu pretplate i vrijeme slanja.</li>
             <li><strong>Bunny.net (fontovi) i unpkg (biblioteka za kartu):</strong> preglednik ih dohvaća izravno, pa vide IP adresu.</li>

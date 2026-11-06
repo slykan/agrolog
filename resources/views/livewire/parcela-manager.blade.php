@@ -11,7 +11,7 @@
         @if($rucnoUnos)
         @include('livewire.partials.ucrtaj-parcelu')
         @else
-        <div class="flex flex-wrap gap-3 items-end">
+        <div class="flex flex-wrap gap-3 items-start">
             <div>
                 <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
                 <input type="text" wire:model.live.blur="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40" inputmode="numeric">
@@ -23,11 +23,11 @@
                 <input type="number" wire:key="povrsina-{{ $arkodNadjen['id'] ?? 'x' }}-{{ $parcelaForm['povrsina_ha'] }}" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
                 @error('parcelaForm.povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 sm:mt-6">
                 <button wire:click="saveParcela" class="btn-xs-green">{{ $arkodNadjen ? 'Potvrdi i spremi' : 'Spremi' }}</button>
                 <button wire:click="cancelParcelaEdit" class="btn-xs-gray">Odustani</button>
             </div>
-            <span wire:loading wire:target="parcelaForm.arkod_broj" class="text-xs text-gray-500">Tražim parcelu u ARKOD-u…</span>
+            <span wire:loading wire:target="parcelaForm.arkod_broj" class="text-xs text-gray-500 sm:mt-7">Tražim parcelu u ARKOD-u…</span>
         </div>
         @include('livewire.partials.arkod-pregled')
         <button type="button" wire:click="ucrtajNaKarti" class="btn-xs-blue mt-3">Nemam ARKOD, ucrtaj na karti</button>
@@ -64,7 +64,8 @@
         @else
             <h3 class="font-semibold text-gray-700 mb-3">Dodaj kulturu na parcelu</h3>
         @endif
-        <div class="flex flex-wrap gap-3 items-end">
+        @include('livewire.partials.kultura-nasad')
+        <div class="flex flex-wrap gap-3 items-start">
             @if($stara)
             <div>
                 <label class="block text-xs text-gray-600 mb-1">{{ $stara->naziv }} završena (žetva/berba)</label>
@@ -90,13 +91,16 @@
                 @if($this->slobodno !== null)<p class="text-[11px] text-gray-500 mt-1">slobodno {{ number_format($this->slobodno, 2, ',', '.') }} ha</p>@endif
                 @error('kulturaForm.posadjena_povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
+            @if($kulturaForm['trajni'] ?? false)
+                @include('livewire.partials.kultura-nasad-polja')
+            @else
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Godina</label>
                 <input type="number" wire:model.live.blur="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
                 @error('kulturaForm.godina')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-            @include('livewire.partials.kultura-nasad')
-            <div class="flex gap-2">
+            @endif
+            <div class="w-full flex gap-2">
                 @if($stara)
                     <button wire:click="saveKultura" class="btn-xs-green">Spremi novu kulturu</button>
                 @else
@@ -112,7 +116,7 @@
     {{-- Lista parcela --}}
     <div class="space-y-3">
         @forelse($this->parcele as $parcela)
-        <div class="border border-gray-200 rounded-lg overflow-hidden">
+        <div wire:key="parcela-{{ $parcela->id }}" class="border border-gray-200 rounded-lg overflow-hidden">
             {{-- Parcela header --}}
             <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between bg-green-50 px-4 py-2">
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -153,7 +157,7 @@
                 @if($rucnoUnos)
                 @include('livewire.partials.ucrtaj-parcelu')
                 @else
-                <div class="flex flex-wrap gap-3 items-end">
+                <div class="flex flex-wrap gap-3 items-start">
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
                         <input type="text" wire:model.live.blur="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40" inputmode="numeric">
@@ -164,7 +168,7 @@
                         <input type="number" wire:key="povrsina-{{ $arkodNadjen['id'] ?? 'x' }}-{{ $parcelaForm['povrsina_ha'] }}" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
                         @error('parcelaForm.povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 sm:mt-6">
                         <button wire:click="saveParcela" class="btn-xs-green">{{ $arkodNadjen ? 'Potvrdi i spremi' : 'Spremi' }}</button>
                         <button wire:click="cancelParcelaEdit" class="btn-xs-gray">Odustani</button>
                     </div>
@@ -191,9 +195,10 @@
                 <tbody>
                     @foreach($parcela->kulture as $kultura)
                     @if($editKulturaId === $kultura->id)
-                    <tr class="border-t border-blue-200 bg-blue-50">
+                    <tr wire:key="kultura-uredi-{{ $kultura->id }}" class="border-t border-blue-200 bg-blue-50">
                         <td colspan="6" class="mob-puna px-4 py-3">
-                            <div class="flex flex-wrap gap-3 items-end">
+                            @include('livewire.partials.kultura-nasad')
+                            <div class="flex flex-wrap gap-3 items-start">
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Kultura</label>
                                     <input type="text" wire:model.live.blur="kulturaForm.naziv" placeholder="npr. Pšenica"
@@ -215,13 +220,16 @@
                 @if($this->slobodno !== null)<p class="text-[11px] text-gray-500 mt-1">slobodno {{ number_format($this->slobodno, 2, ',', '.') }} ha</p>@endif
                                     @error('kulturaForm.posadjena_povrsina_ha')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </div>
+                                @if($kulturaForm['trajni'] ?? false)
+                                    @include('livewire.partials.kultura-nasad-polja')
+                                @else
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Godina</label>
                                     <input type="number" wire:model.live.blur="kulturaForm.godina" min="2000" max="2100" class="form-input w-24">
                                     @error('kulturaForm.godina')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                                 </div>
-                                @include('livewire.partials.kultura-nasad')
-                                <div class="flex gap-2">
+                                @endif
+                                <div class="w-full flex gap-2">
                                     <button wire:click="saveKultura" class="btn-xs-blue">Završi</button>
                                     <button wire:click="cancelKulturaEdit" class="btn-xs-gray">Odustani</button>
                                 </div>
@@ -232,7 +240,7 @@
                     @php
                         $imaZapise = ($kultura->gnojidbe_count + $kultura->prskanja_count + $kultura->berbe_count) > 0;
                     @endphp
-                    <tr class="border-t border-gray-100 hover:bg-gray-50 {{ $kultura->zavrsena_at ? 'text-gray-400 bg-gray-50/60' : '' }}">
+                    <tr wire:key="kultura-{{ $kultura->id }}" class="border-t border-gray-100 hover:bg-gray-50 {{ $kultura->zavrsena_at ? 'text-gray-400 bg-gray-50/60' : '' }}">
                         <td class="mob-puna px-4 py-2 font-medium uppercase">
                             {{ $kultura->naziv }}
                             @if($kultura->eppo_kod)

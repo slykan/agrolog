@@ -168,6 +168,31 @@ class UcrtanaParcelaTest extends TestCase
         $this->actingAs($u)->get(route('izvjestaji.ispis', ['vrsta' => 'prskanje', 'godina' => date('Y')]))->assertOk()->assertSee('Ručno ucrtana: Iza kuće');
     }
 
+    public function test_trajni_nasad_skriva_godinu_i_vrijedi_od_tekuce_godine(): void
+    {
+        $u = User::factory()->create();
+        $p = $this->ucrtana($u);
+
+        $lw = Livewire::actingAs($u)->test(ParcelaManager::class)->call('openKulturaForm', $p->id)
+            ->assertSee('Godina')->assertDontSee('Broj stabala')
+            ->set('kulturaForm.godina', (int) date('Y') - 1)
+            ->set('kulturaForm.trajni', true)
+            ->assertSet('kulturaForm.godina', date('Y'))
+            ->assertSee('Broj stabala')->assertSee('Usjev za evidenciju')->assertDontSeeHtml('wire:model.live.blur="kulturaForm.godina"');
+
+        $lw->set('kulturaForm.naziv', 'Šljiva')->set('kulturaForm.sorta', 'Bistrica')->call('saveKultura')->assertHasNoErrors();
+        $k = Kultura::where('parcela_id', $p->id)->firstOrFail();
+        $this->assertTrue((bool) $k->trajni);
+        $this->assertSame((int) date('Y'), (int) $k->godina);
+
+        // uređivanje čuva postojeću godinu, a skinuta kvačica vraća polje
+        $k->update(['godina' => (int) date('Y') - 3]);
+        $lw->call('editKultura', $k->id)->assertDontSeeHtml('wire:model.live.blur="kulturaForm.godina"')
+            ->set('kulturaForm.trajni', false)->set('kulturaForm.trajni', true)
+            ->assertSet('kulturaForm.godina', (int) date('Y') - 3)
+            ->set('kulturaForm.trajni', false)->assertSeeHtml('wire:model.live.blur="kulturaForm.godina"');
+    }
+
     public function test_upute_opisuju_rucno_ucrtavanje(): void
     {
         $this->get(route('docs'))->assertOk()

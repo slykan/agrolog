@@ -280,6 +280,16 @@ class ParcelaManager extends Component
         // voćke i vinova loza: predloži trajni nasad (korisnik može maknuti kvačicu)
         if (! $this->editKulturaId && Kultura::jeTrajniNaziv($naziv)) {
             $this->kulturaForm['trajni'] = true;
+            $this->updatedKulturaFormTrajni(true);
+        }
+    }
+
+    /** Trajni nasad nema polje Godina: nova kultura vrijedi od tekuće godine i ostaje na parceli svake sljedeće. */
+    public function updatedKulturaFormTrajni($trajni): void
+    {
+        if ($trajni && ! $this->editKulturaId && (int) ($this->kulturaForm['godina'] ?? 0) !== (int) date('Y')) {
+            $this->kulturaForm['godina'] = date('Y');
+            $this->updatedKulturaFormGodina(date('Y'));
         }
     }
 
@@ -453,7 +463,7 @@ class ParcelaManager extends Component
             'kulturaForm.sorta'                 => 'nullable|string|max:100',
             'kulturaForm.godina_sadnje'         => 'nullable|integer|min:1900|max:2100',
             'kulturaForm.broj_stabala'          => 'nullable|integer|min:0|max:100000000',
-        ], [], ['kulturaForm.eppo_naziv' => 'usjev (EPPO)', 'kulturaForm.godina_sadnje' => 'godina sadnje', 'kulturaForm.broj_stabala' => 'broj stabala']);
+        ], [], ['kulturaForm.naziv' => 'kultura', 'kulturaForm.posadjena_povrsina_ha' => 'posađena površina', 'kulturaForm.godina' => 'godina', 'kulturaForm.eppo_naziv' => 'usjev (EPPO)', 'kulturaForm.godina_sadnje' => 'godina sadnje', 'kulturaForm.broj_stabala' => 'broj stabala']);
 
         // Usjev za evidenciju SZB: s Ministarstvova popisa, ili prepoznat iz naziva kulture
         $eppoNaziv = trim((string) ($this->kulturaForm['eppo_naziv'] ?? ''));

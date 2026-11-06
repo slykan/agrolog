@@ -152,7 +152,7 @@
                         <ol class="list-decimal pl-6 space-y-1">
                             <li>Kliknite <strong>+ Nova parcela</strong> pa <strong>Nemam ARKOD, ucrtaj na karti</strong></li>
                             <li>Upišite <strong>naziv</strong>, npr. „Iza kuće”</li>
-                            <li>Nađite parcelu pretragom mjesta ili gumbom <strong>Moja lokacija</strong> pa približite kartu</li>
+                            <li>Nađite parcelu pretragom adrese ili mjesta, npr. „Ferenca Kiša 15, Hrastin”, ili gumbom <strong>Moja lokacija</strong> pa približite kartu. Plava točka je pronađena adresa, ali provjerite je na snimci jer ne mora biti posve točna</li>
                             <li>Redom kliknite ili dotaknite uglove parcele. Površina se računa sama, a možete je i ispraviti</li>
                             <li>Kliknite <strong>Spremi</strong>. Dalje parcelu koristite kao i svaku drugu</li>
                         </ol>
@@ -319,7 +319,7 @@
                         <p>Čim kultura ima upisane berbe, prihod na stranici <a href="#troskovi" class="text-green-700 hover:underline">Troškovi</a> računa se iz njih, za odabrano razdoblje. Berbe bez cijene nisu uračunate, a to piše ispod tablice. Kultura bez berbi i dalje koristi ručni upis pod <strong>Prinos</strong>. Ubrani plod ne ulazi u Skladište.</p>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Trajni nasadi: voćnjak, vinograd, maslinik</h3>
                         <ul class="list-disc pl-6 space-y-1">
-                            <li>Pri dodavanju kulture označite <strong>Trajni nasad</strong>, a po želji upišite sortu, godinu sadnje i broj stabala. Oznaka se sama predloži za voćke i vinovu lozu te za parcele koje su u ARKOD-u voćnjak, vinograd ili maslinik.</li>
+                            <li>Pri dodavanju kulture prvo označite <strong>Trajni nasad</strong> na vrhu forme. Polje Godina se tada skriva jer nasad ostaje na parceli svake godine, a po želji upišite sortu, godinu sadnje i broj stabala. Oznaka se sama predloži za voćke i vinovu lozu te za parcele koje su u ARKOD-u voćnjak, vinograd ili maslinik.</li>
                             <li>Postojeću kulturu možete označiti gumbom <strong>označi kao trajni nasad</strong> uz njezin naziv, ili pod <strong>Uredi</strong>.</li>
                             <li>Nasad zauzima površinu parcele svake godine, dok ga ne označite kao <strong>iskrčen</strong>. Zapisi ostaju u evidenciji.</li>
                             <li>Gumb <strong>Troškovi i potpore</strong> upisuje potpore i ostale troškove za svaku godinu posebno, a dobit se računa po godinama.</li>
