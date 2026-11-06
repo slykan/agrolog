@@ -193,6 +193,18 @@ class UcrtanaParcelaTest extends TestCase
             ->set('kulturaForm.trajni', false)->assertSeeHtml('wire:model.live.blur="kulturaForm.godina"');
     }
 
+    public function test_kljuc_za_pretragu_ide_samo_u_kartu_i_nije_obavezan(): void
+    {
+        $u = User::factory()->create();
+
+        config(['services.arcgis.key' => null]);
+        Livewire::actingAs($u)->test(ParcelaManager::class)->call('ucrtajNaKarti')->call('novaParcela')->call('ucrtajNaKarti')->assertOk();
+
+        config(['services.arcgis.key' => 'probni-kljuc-123']);
+        Livewire::actingAs($u)->test(ParcelaManager::class)->call('novaParcela')->assertDontSeeHtml('probni-kljuc-123')
+            ->call('ucrtajNaKarti')->assertSeeHtml('probni-kljuc-123');
+    }
+
     public function test_upute_opisuju_rucno_ucrtavanje(): void
     {
         $this->get(route('docs'))->assertOk()

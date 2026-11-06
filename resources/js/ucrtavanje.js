@@ -3,10 +3,15 @@ const NAJMANJI_ZOOM = 14;
 const MAX_TOCAKA = 200;
 const NAJMANJA_SIGURNOST = 70;   // Esri ocjena pogotka, od 0 do 100
 
-async function traziEsri(upit) {
-    const adresa = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=5&countryCode=HRV&langCode=hr&outFields=Addr_type&singleLine=' + encodeURIComponent(upit);
+async function traziEsri(upit, kljuc) {
+    const adresa = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=5&countryCode=HRV&langCode=hr&outFields=Addr_type&singleLine=' + encodeURIComponent(upit)
+        + (kljuc ? '&token=' + encodeURIComponent(kljuc) : '');
     const odgovor = await fetch(adresa);
     const podaci = odgovor.ok ? await odgovor.json() : {};
+    if (podaci.error) {
+        // npr. istekao ključ: Esri vraća 200 s greškom, pa pretraga prelazi na rezervu
+        console.warn('Esri pretraga adrese:', podaci.error.code, podaci.error.message);
+    }
     const vidjeno = new Set();
 
     return (podaci.candidates || [])
@@ -32,7 +37,7 @@ async function traziOpenMeteo(upit) {
     }));
 }
 
-export function ucrtavanjeParcele(pocetne, okvir) {
+export function ucrtavanjeParcele(pocetne, okvir, kljucEsri = null) {
     // Leaflet objekti ostaju izvan Alpineove reaktivnosti
     let karta = null;
     let oblik = null;
@@ -129,7 +134,7 @@ export function ucrtavanjeParcele(pocetne, okvir) {
             }
             this.trazim = true;
             this.poruka = '';
-            const rezultati = await traziEsri(upit).catch(() => []);
+            const rezultati = await traziEsri(upit, kljucEsri).catch(() => []);
             this.rezultati = rezultati.length ? rezultati : await traziOpenMeteo(upit).catch(() => []);
             if (! this.rezultati.length) {
                 this.poruka = 'Adresa nije pronađena. Probajte samo mjesto pa pomaknite kartu.';

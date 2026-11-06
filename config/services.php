@@ -35,6 +35,11 @@ return [
         ],
     ],
 
+    // Pretraga adresa na karti. Ključ se vidi u pregledniku: smije imati samo Geocode (not stored) i ograničenje na domenu.
+    'arcgis' => [
+        'key' => env('ARCGIS_API_KEY'),
+    ],
+
     'turnstile' => [
         'site_key' => env('CF_TURNSTILE_SITE_KEY'),
         'secret'   => env('CF_TURNSTILE_SECRET'),

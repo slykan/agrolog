@@ -23,7 +23,7 @@
     </div>
     @error('rucniPoligon')<p class="text-red-600 text-sm mb-2">{{ $message }}</p>@enderror
 
-    <div wire:ignore wire:key="ucrtaj-{{ $editParcelaId ?? 'nova' }}" x-data="ucrtavanjeParcele(@js($rucniPoligon), @js($this->okvirKarte))">
+    <div wire:ignore wire:key="ucrtaj-{{ $editParcelaId ?? 'nova' }}" x-data="ucrtavanjeParcele(@js($rucniPoligon), @js($this->okvirKarte), @js(config('services.arcgis.key')))">
         <p class="mb-2 text-sm text-gray-700">Nađite parcelu na karti pa redom kliknite ili dotaknite njene uglove. Površina se računa sama.</p>
 
         <div class="relative mb-2 flex flex-wrap gap-2">
