@@ -34,7 +34,7 @@ class Izvjestaji
             ->join('kulture', 'kulture.id', '=', 'prskanja.kultura_id')
             ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
             ->orderBy('prskanja.datum_tretiranja')->orderBy('prskanja.id')
-            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_naziv', 'kulture.eppo_kod', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj')
+            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_naziv', 'kulture.eppo_kod', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj', 'parcele.rucno_ucrtana')
             ->get()
             ->each(function ($p) {
                 $p->povrsina = (float) ($p->tretirana_povrsina_ha ?? $p->posadjena_povrsina_ha);
@@ -50,7 +50,7 @@ class Izvjestaji
             ->join('kulture', 'kulture.id', '=', 'gnojidbe.kultura_id')
             ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
             ->orderBy('gnojidbe.datum')->orderBy('gnojidbe.id')
-            ->select('gnojidbe.*', 'kulture.naziv as kultura_naziv', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj')
+            ->select('gnojidbe.*', 'kulture.naziv as kultura_naziv', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj', 'parcele.rucno_ucrtana')
             ->get()
             ->each(function ($g) {
                 $g->povrsina = (float) $g->posadjena_povrsina_ha;

@@ -18,7 +18,8 @@
         <h2 class="{{ $n }}">2. Koje podatke obrađujemo</h2>
         <ul class="{{ $lista }}">
             <li><strong>Račun:</strong> ime i prezime, e-mail, lozinka (samo u šifriranom obliku), naziv gospodarstva, MIPG i OIB. Kod prijave Google računom i Googleov ID te slika profila.</li>
-            <li><strong>Parcele i kulture:</strong> ARKOD brojevi, površine, oblik parcele, kulture, sorte, broj stabala.</li>
+            <li><strong>Parcele i kulture:</strong> ARKOD brojevi, nazivi i oblici parcela koje sami ucrtate, površine, oblik parcele, kulture, sorte, broj stabala.</li>
+            <li><strong>Lokacija uređaja:</strong> koristi se samo kad pri ucrtavanju parcele kliknete gumb za lokaciju. Spremamo jedino točke koje dodate u oblik parcele.</li>
             <li><strong>Evidencija:</strong> zapisi o prskanju, gnojidbi i berbi, uključujući količine, cijene i kupce koje upišete.</li>
             <li><strong>Skladište, mehanizacija i troškovi:</strong> nabave i zalihe, strojevi, registracijske oznake, rokovi, servisi, prinosi, potpore i iznosi.</li>
             <li><strong>Pristup savjetniku:</strong> e-mail pozvane osobe, prava pristupa i povijest izmjena, uključujući ime savjetnika.</li>
@@ -54,7 +55,7 @@
             <li><strong>Ovlaštene osobe voditelja obrade,</strong> radi podrške i održavanja.</li>
             <li><strong>Pružatelji hostinga i slanja e-pošte,</strong> radi rada usluge.</li>
             <li><strong>Agencija za plaćanja u poljoprivredi, ribarstvu i ruralnom razvoju (ARKOD):</strong> ARKOD broj, radi dohvata parcele i prikaza slojeva karte.</li>
-            <li><strong>Esri (satelitska karta) i Open-Meteo (prognoza):</strong> vaš preglednik im se obraća izravno, pa vide IP adresu i područje na karti koje gledate.</li>
+            <li><strong>Esri (satelitska karta) i Open-Meteo (prognoza i pretraga mjesta):</strong> vaš preglednik im se obraća izravno, pa vide IP adresu, područje na karti koje gledate i upisani naziv mjesta.</li>
             <li><strong>Google:</strong> ako se prijavljujete Google računom, ako prihvatite oglasne kolačiće i ako push obavijesti na vašem uređaju idu preko Googlea.</li>
             <li><strong>Push servisi preglednika</strong> (Google, Apple, Microsoft, Mozilla): dostavljaju obavijest na uređaj. Sadržaj je šifriran, a vide adresu pretplate i vrijeme slanja.</li>
             <li><strong>Bunny.net (fontovi) i unpkg (biblioteka za kartu):</strong> preglednik ih dohvaća izravno, pa vide IP adresu.</li>

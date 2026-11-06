@@ -14,7 +14,7 @@ class ParcelaArkodController extends Controller
     {
         abort_unless($parcela->user_id === $request->user()->id, 404);
 
-        if (! $parcela->arkod_poligon) {
+        if (! $parcela->arkod_poligon && ! $parcela->rucno_ucrtana) {
             try {
                 $arkod = ArkodServis::dohvati($parcela->arkod_broj);
             } catch (\Throwable $e) {

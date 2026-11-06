@@ -60,7 +60,7 @@
                 <h3 class="font-semibold text-gray-800 mb-3">Parcele i kulture</h3>
                 @forelse ($parcele as $p)
                     <div class="py-2 border-b border-gray-100 last:border-0 text-sm">
-                        <span class="font-semibold text-gray-800">ARKOD {{ $p->arkod_broj }}</span>
+                        <span class="font-semibold text-gray-800">{{ $p->rucno_ucrtana ? \App\Models\Parcela::oznaka($p->arkod_broj, true) : 'ARKOD ' . $p->arkod_broj }}</span>
                         <span class="text-gray-500">· {{ $ha($p->povrsina_ha) }}</span>
                         <div class="text-gray-600 mt-0.5">
                             @forelse ($p->kulture as $kult)

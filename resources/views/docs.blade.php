@@ -46,6 +46,7 @@
                     <a href="#pocetak" class="block text-gray-600 hover:text-green-700 py-1 transition">1. Početak</a>
                     <a href="#pocetna" class="block text-gray-600 hover:text-green-700 py-1 transition">2. Početna: karta i prognoza</a>
                     <a href="#parcele" class="block text-gray-600 hover:text-green-700 py-1 transition">3. Parcele i kulture</a>
+                    <a href="#parcela-bez-arkoda" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Parcela bez ARKOD-a</a>
                     <a href="#prskanje" class="block text-gray-600 hover:text-green-700 py-1 transition">4. Evidencija prskanja</a>
                     <a href="#provjera-fis" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Provjera prema FIS-u</a>
                     <a href="#gnojidba" class="block text-gray-600 hover:text-green-700 py-1 transition">5. Evidencija gnojidbe</a>
@@ -134,6 +135,7 @@
                                 <li>u aplikaciji <strong>AGRONET</strong>, ako imate korisničko ime i zaporku.</li>
                             </ul>
                             <p>Ako parcelu ne možete pronaći, obratite se Agenciji. Više na <a href="https://www.apprrr.hr/arkod/" target="_blank" rel="noopener" class="font-medium underline">stranici Agencije o ARKOD-u</a>.</p>
+                            <p><strong>Nemate ARKOD?</strong> Parcelu možete <a href="#parcela-bez-arkoda" class="font-medium underline">ručno ucrtati na karti</a>.</p>
                         </div>
 
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Dodavanje parcele — ARKOD broj i karta</h3>
@@ -145,6 +147,17 @@
                             <li>Automatski se otvara forma za dodavanje kulture</li>
                         </ol>
                         <p>Ako ARKOD broj nije pronađen (ili servis Agencije trenutno ne odgovara), parcelu možete spremiti i bez karte — samo upišite površinu ručno. Za parcele u zoni zaštite izvorišta ili u području Natura 2000 AgroLog prikaže upozorenje.</p>
+
+                        <h3 id="parcela-bez-arkoda" class="scroll-mt-24 font-semibold text-gray-800 text-lg mt-6">Parcela bez ARKOD-a: ucrtajte je na karti</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Kliknite <strong>+ Nova parcela</strong> pa <strong>Nemam ARKOD, ucrtaj na karti</strong></li>
+                            <li>Upišite <strong>naziv</strong>, npr. „Iza kuće”</li>
+                            <li>Nađite parcelu pretragom mjesta ili gumbom <strong>Moja lokacija</strong> pa približite kartu</li>
+                            <li>Redom kliknite ili dotaknite uglove parcele. Površina se računa sama, a možete je i ispraviti</li>
+                            <li>Kliknite <strong>Spremi</strong>. Dalje parcelu koristite kao i svaku drugu</li>
+                        </ol>
+                        <p>Na mobitelu možete hodati po rubu parcele i na svakom uglu kliknuti <strong>Dodaj točku gdje stojim</strong>. Pogrešnu točku maknite gumbom <strong>Poništi zadnju točku</strong>.</p>
+                        <p>Ručno ucrtana parcela služi za vašu evidenciju i <strong>nije službena ARKOD parcela</strong>, a površina je približna. U ispisima i izvozima piše „Ručno ucrtana” uz naziv. Kad dobijete ARKOD broj, kliknite <strong>Uredi</strong> pa <strong>Imam ARKOD broj</strong> i upišite ga. Sva evidencija ostaje na parceli.</p>
 
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Karta postojeće parcele</h3>
                         <p>Uz svaki ARKOD broj u popisu parcela nalazi se <strong>ikona karte</strong>. Klikom se otvori karta parcele s usporedbom vaše i ARKOD površine. Ako ste upisali više nego što stoji u ARKOD-u, uz parcelu piše narančasto npr. „ARKOD: 2,02 ha”.</p>
@@ -565,6 +578,7 @@
                     <div class="space-y-3">
                         @foreach ([
                             ['Je li AgroLog stvarno besplatan?', 'Da. Nema pretplate, kreditne kartice ni skrivenih troškova.'],
+                            ['Nemam ARKOD. Mogu li ipak koristiti AgroLog?', 'Možete. Kod nove parcele kliknite „Nemam ARKOD, ucrtaj na karti”, upišite naziv i kliknite uglove parcele na karti. Površina se izračuna sama, a dalje parcelu koristite kao i svaku drugu.'],
                             ['ARKOD broj nije pronađen — što sad?', 'Provjerite broj u ARKOD pregledniku (preglednik.arkod.hr). Ako je ispravan, a servis Agencije trenutno ne odgovara, parcelu spremite bez karte i kasnije kliknite ikonu karte uz nju — oblik će se dohvatiti kad servis proradi.'],
                             ['Zašto je moja površina drukčija od ARKOD-a?', 'AgroLog uzima površinu iz javnog ARKOD sloja Agencije za plaćanja. Ako ste upisali više, uz parcelu piše ARKOD površina — dobro je provjeriti prije prijave potpora.'],
                             ['Sredstvo koje koristim nije u registru?', 'Provjerite točan naziv s etikete (npr. „FOLICUR EW 250”). Ako ga ipak nema, upišite naziv i registracijski broj ručno — zapis se sprema normalno.'],

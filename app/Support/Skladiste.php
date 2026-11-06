@@ -93,7 +93,7 @@ class Skladiste
                 ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
                 ->orderBy('prskanja.datum_tretiranja')->orderBy('prskanja.id')
                 ->get(['prskanja.id', 'prskanja.skladiste_id', 'prskanja.datum_tretiranja', 'prskanja.trgovacki_naziv_sredstva', 'prskanja.kolicina_sredstva_l_ha',
-                       'prskanja.tretirana_povrsina_ha', 'kulture.id as kultura_id', 'kulture.posadjena_povrsina_ha', 'kulture.naziv as kultura_naziv', 'parcele.arkod_broj']);
+                       'prskanja.tretirana_povrsina_ha', 'kulture.id as kultura_id', 'kulture.posadjena_povrsina_ha', 'kulture.naziv as kultura_naziv', 'parcele.arkod_broj', 'parcele.rucno_ucrtana']);
             foreach ($prskanja as $p) {
                 $k = ($p->skladiste_id ?? $zadano) . '|szb|' . self::kljuc($p->trgovacki_naziv_sredstva);
                 $povrsina = (float) ($p->tretirana_povrsina_ha ?? $p->posadjena_povrsina_ha);
@@ -108,7 +108,7 @@ class Skladiste
                 ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
                 ->orderBy('gnojidbe.datum')->orderBy('gnojidbe.id')
                 ->get(['gnojidbe.id', 'gnojidbe.skladiste_id', 'gnojidbe.datum', 'gnojidbe.tip_gnojiva', 'gnojidbe.kolicina_kg_ha',
-                       'kulture.id as kultura_id', 'kulture.posadjena_povrsina_ha', 'kulture.naziv as kultura_naziv', 'parcele.arkod_broj']);
+                       'kulture.id as kultura_id', 'kulture.posadjena_povrsina_ha', 'kulture.naziv as kultura_naziv', 'parcele.arkod_broj', 'parcele.rucno_ucrtana']);
             foreach ($gnojidbe as $g) {
                 $k = ($g->skladiste_id ?? $zadano) . '|gnojivo|' . self::kljuc($g->tip_gnojiva);
                 self::dodajPotrosnju($artikli, $k, $g->datum, (float) $g->kolicina_kg_ha, (float) $g->posadjena_povrsina_ha, $g);
@@ -138,7 +138,7 @@ class Skladiste
         $kolicina = round($doza * $povrsina, 3);
         $artikli[$k]['potroseno'] += $kolicina;
         $artikli[$k]['potrosnja'][] = [
-            'datum' => $datum, 'arkod' => $zapis->arkod_broj, 'kultura' => $zapis->kultura_naziv, 'kultura_id' => $zapis->kultura_id,
+            'datum' => $datum, 'arkod' => \App\Models\Parcela::oznaka($zapis->arkod_broj, $zapis->rucno_ucrtana), 'kultura' => $zapis->kultura_naziv, 'kultura_id' => $zapis->kultura_id,
             'doza' => $doza, 'povrsina' => $povrsina, 'kolicina' => $kolicina,
         ];
     }

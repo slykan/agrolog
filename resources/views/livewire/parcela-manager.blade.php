@@ -1,13 +1,16 @@
 <div>
     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h2 class="text-xl font-bold text-gray-800">Moje ARKOD parcele i kulture</h2>
-        <button wire:click="$set('showParcelaForm', true)" class="btn-primary">+ Nova parcela</button>
+        <h2 class="text-xl font-bold text-gray-800">Moje parcele i kulture</h2>
+        <button wire:click="novaParcela" class="btn-primary">+ Nova parcela</button>
     </div>
 
     {{-- Forma za parcelu --}}
     @if($showParcelaForm)
     <div class="bg-yellow-50 border border-yellow-200 rounded p-4 mb-4">
-        <h3 class="font-semibold text-gray-700 mb-3">{{ $editParcelaId ? 'Uredi parcelu' : 'Nova parcela' }}</h3>
+        <h3 class="font-semibold text-gray-700 mb-3">{{ $rucnoUnos ? 'Nova parcela bez ARKOD-a' : 'Nova parcela' }}</h3>
+        @if($rucnoUnos)
+        @include('livewire.partials.ucrtaj-parcelu')
+        @else
         <div class="flex flex-wrap gap-3 items-end">
             <div>
                 <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
@@ -22,11 +25,13 @@
             </div>
             <div class="flex gap-2">
                 <button wire:click="saveParcela" class="btn-xs-green">{{ $arkodNadjen ? 'Potvrdi i spremi' : 'Spremi' }}</button>
-                <button wire:click="$set('showParcelaForm', false)" class="btn-xs-gray">Odustani</button>
+                <button wire:click="cancelParcelaEdit" class="btn-xs-gray">Odustani</button>
             </div>
             <span wire:loading wire:target="parcelaForm.arkod_broj" class="text-xs text-gray-500">Tražim parcelu u ARKOD-u…</span>
         </div>
         @include('livewire.partials.arkod-pregled')
+        <button type="button" wire:click="ucrtajNaKarti" class="btn-xs-blue mt-3">Nemam ARKOD, ucrtaj na karti</button>
+        @endif
     </div>
     @endif
 
@@ -117,6 +122,7 @@
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
                         </button>
                         <span class="font-bold text-green-800 text-lg">{{ $parcela->arkod_broj }}</span>
+                        @if($parcela->rucno_ucrtana)<span class="text-[11px] rounded bg-gray-100 text-gray-600 px-1.5 py-0.5" title="Nije službena ARKOD parcela">ručno ucrtana</span>@endif
                     </span>
                     <span class="text-sm text-gray-600">{{ number_format($parcela->povrsina_ha, 2) }} ha</span>
                     @if($parcela->arkod_povrsina_ha !== null && (float) $parcela->povrsina_ha > (float) $parcela->arkod_povrsina_ha + 0.005)
@@ -144,6 +150,9 @@
             {{-- Inline edit forma --}}
             @if($editParcelaId === $parcela->id)
             <div class="bg-yellow-50 border-t border-yellow-200 px-4 py-3">
+                @if($rucnoUnos)
+                @include('livewire.partials.ucrtaj-parcelu')
+                @else
                 <div class="flex flex-wrap gap-3 items-end">
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">ARKOD broj</label>
@@ -161,6 +170,8 @@
                     </div>
                 </div>
                 @include('livewire.partials.arkod-pregled')
+                <button type="button" wire:click="ucrtajNaKarti" class="btn-xs-blue mt-3">Nemam ARKOD, ucrtaj na karti</button>
+                @endif
             </div>
             @endif
 
@@ -349,7 +360,7 @@
          class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4">
         <div @click.outside="otvoren = false" class="w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-xl">
             <div class="flex items-center justify-between border-b px-5 py-3">
-                <h3 class="font-semibold text-gray-800">ARKOD <span x-text="d.arkod"></span></h3>
+                <h3 class="font-semibold text-gray-800"><span x-text="d.rucno ? '' : 'ARKOD '"></span><span x-text="d.arkod"></span> <span x-show="d.rucno" class="ml-1 text-xs font-normal text-gray-500">ručno ucrtana</span></h3>
                 <button type="button" @click="otvoren = false" class="w-8 h-8 rounded-full text-gray-500 hover:bg-gray-100" aria-label="Zatvori">&#10005;</button>
             </div>
             <div x-show="d.poligon" x-ref="karta" class="h-[60vh] bg-gray-100"></div>

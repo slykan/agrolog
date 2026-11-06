@@ -27,7 +27,7 @@ class EvidencijaIzvozController extends Controller
             ->when($request->filled('do'), fn ($q) => $q->where('prskanja.datum_tretiranja', '<', $request->date('do')->addDay()->toDateString()))
             ->orderBy('prskanja.datum_tretiranja')
             ->orderBy('prskanja.id')
-            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj')
+            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj', 'parcele.rucno_ucrtana')
             ->get();
 
         $ime = 'evidencija-szb' . ($godina ? '-' . $godina : '') . '-' . now()->format('Y-m-d') . '.xlsx';
@@ -49,7 +49,7 @@ class EvidencijaIzvozController extends Controller
             ->when($request->filled('do'), fn ($q) => $q->where('prskanja.datum_tretiranja', '<', $request->date('do')->addDay()->toDateString()))
             ->orderBy('prskanja.datum_tretiranja')
             ->orderBy('prskanja.id')
-            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj')
+            ->select('prskanja.*', 'kulture.naziv as kultura_naziv', 'kulture.eppo_kod', 'parcele.arkod_broj', 'parcele.rucno_ucrtana')
             ->get();
 
         $ime = 'evidencija-szb'.($godina ? '-'.$godina : '').'-'.now()->format('Y-m-d').'.csv';
@@ -69,7 +69,7 @@ class EvidencijaIzvozController extends Controller
                     $r->datum_tretiranja?->format('d.m.Y'),
                     $r->vrijeme_od ? substr($r->vrijeme_od, 0, 5) : '',
                     $r->vrijeme_do ? substr($r->vrijeme_do, 0, 5) : '',
-                    $r->arkod_broj,
+                    \App\Models\Parcela::oznaka($r->arkod_broj, $r->rucno_ucrtana),
                     $r->kultura_naziv,
                     $broj($r->tretirana_povrsina_ha),
                     $r->trgovacki_naziv_sredstva,

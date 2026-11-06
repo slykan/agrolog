@@ -7,7 +7,9 @@ use Livewire\Attributes\Computed;
 use App\Models\Parcela;
 use App\Models\Kultura;
 use App\Support\ArkodServis;
+use App\Support\Poligon;
 use App\Support\SzbPopisi;
+use Illuminate\Validation\Rule;
 
 class ParcelaManager extends Component
 {
@@ -28,6 +30,10 @@ class ParcelaManager extends Component
     /** Parcela pronađena u javnom ARKOD-u za upisani broj (prikaz na karti i potvrda prije spremanja). */
     public ?array $arkodNadjen = null;
     public string $arkodPoruka = '';
+
+    /** Parcela bez ARKOD-a: naziv ide u parcelaForm.arkod_broj, oblik dolazi s karte. */
+    public bool $rucnoUnos = false;
+    public ?array $rucniPoligon = null;
 
     public function mount(): void
     {
@@ -58,12 +64,57 @@ class ParcelaManager extends Component
             ->values();
     }
 
+    /** Područje postojećih parcela, da karta za ucrtavanje krene od njih. */
+    #[Computed]
+    public function okvirKarte(): ?array
+    {
+        $tocke = Parcela::where('user_id', auth()->id())->whereNotNull('lat')->get(['lat', 'lng']);
+
+        return $tocke->isEmpty() ? null : [
+            [(float) $tocke->min('lat'), (float) $tocke->min('lng')],
+            [(float) $tocke->max('lat'), (float) $tocke->max('lng')],
+        ];
+    }
+
+    public function novaParcela(): void
+    {
+        $this->cancelParcelaEdit();
+        $this->showParcelaForm = true;
+    }
+
+    public function ucrtajNaKarti(): void
+    {
+        $this->resetArkod();
+        $this->clearValidation();
+        $this->rucnoUnos = true;
+        $this->rucniPoligon = null;
+        $this->parcelaForm['arkod_broj'] = '';
+    }
+
+    /** Povratak na unos broja; kod postojeće ručne parcele tako se upisuje ARKOD kad ga korisnik dobije. */
+    public function imamArkodBroj(): void
+    {
+        $this->clearValidation();
+        $this->rucnoUnos = false;
+        $this->rucniPoligon = null;
+        $this->parcelaForm['arkod_broj'] = '';
+    }
+
+    /** Nove točke s karte: površina se izračuna iznova. */
+    public function updatedRucniPoligon($tocke): void
+    {
+        $this->resetErrorBag('rucniPoligon');
+        if ($poligon = Poligon::ocisti($tocke)) {
+            $this->parcelaForm['povrsina_ha'] = max(0.01, round(Poligon::ha($poligon), 2));
+        }
+    }
+
     /** Upisani ARKOD broj: potraži parcelu u javnom ARKOD-u, pokaži je na karti i ponudi službenu površinu. */
     public function updatedParcelaFormArkodBroj($broj): void
     {
         $this->arkodNadjen = null;
         $this->arkodPoruka = '';
-        if (blank($broj)) {
+        if (blank($broj) || $this->rucnoUnos) {
             return;
         }
 
@@ -98,7 +149,7 @@ class ParcelaManager extends Component
     {
         $p = Parcela::where('user_id', auth()->id())->findOrFail($id);
 
-        if (! $p->arkod_poligon) {
+        if (! $p->arkod_poligon && ! $p->rucno_ucrtana) {
             try {
                 $arkod = ArkodServis::dohvati($p->arkod_broj);
             } catch (\Throwable $e) {
@@ -117,6 +168,7 @@ class ParcelaManager extends Component
             arkodPovrsina: $p->arkod_povrsina_ha !== null ? (float) $p->arkod_povrsina_ha : null,
             naziv: $p->arkod_naziv,
             vrsta: $p->arkod_vrsta_uporabe,
+            rucno: $p->rucno_ucrtana,
         );
     }
 
@@ -126,14 +178,53 @@ class ParcelaManager extends Component
         $this->arkodPoruka = '';
     }
 
+    /** Spremanje ručno ucrtane parcele; vraća null ako oblik ili podaci ne valjaju. */
+    private function spremiUcrtanu(): ?Parcela
+    {
+        $this->parcelaForm['arkod_broj'] = trim((string) $this->parcelaForm['arkod_broj']);
+        $this->validate([
+            'parcelaForm.arkod_broj'  => ['required', 'string', 'max:60', Rule::unique('parcele', 'arkod_broj')->where('user_id', auth()->id())->ignore($this->editParcelaId)],
+            'parcelaForm.povrsina_ha' => 'required|numeric|min:0.01',
+        ], ['parcelaForm.arkod_broj.unique' => 'Već imate parcelu pod tim nazivom.'], ['parcelaForm.arkod_broj' => 'naziv parcele', 'parcelaForm.povrsina_ha' => 'površina']);
+
+        $poligon = Poligon::ocisti($this->rucniPoligon);
+        if (! $poligon) {
+            $this->addError('rucniPoligon', 'Ucrtajte parcelu na karti: potrebne su barem tri točke.');
+            return null;
+        }
+        if (Poligon::kriziSe($poligon)) {
+            $this->addError('rucniPoligon', 'Rubovi parcele se križaju. Točke treba dodavati redom, uz rub parcele.');
+            return null;
+        }
+
+        $podaci = array_merge($this->parcelaForm, Parcela::ucrtanaPolja($poligon));
+        if ($this->editParcelaId) {
+            $parcela = Parcela::where('id', $this->editParcelaId)->where('user_id', auth()->id())->firstOrFail();
+            $parcela->update($podaci);
+
+            return $parcela;
+        }
+
+        return Parcela::create($podaci + ['user_id' => auth()->id()]);
+    }
+
     public function saveParcela(): void
     {
+        $isEdit = (bool) $this->editParcelaId;
+        if ($this->rucnoUnos) {
+            $parcela = $this->spremiUcrtanu();
+            if (! $parcela) {
+                return;
+            }
+            $this->zavrsiSpremanje($parcela, $isEdit);
+            return;
+        }
+
         $this->validate([
             'parcelaForm.arkod_broj'  => 'required|string|max:20',
             'parcelaForm.povrsina_ha' => 'required|numeric|min:0.01',
         ]);
 
-        $isEdit = (bool) $this->editParcelaId;
         $parcela = null;
 
         // ARKOD podaci samo ako je pronađena parcela baš za ovaj broj
@@ -142,7 +233,7 @@ class ParcelaManager extends Component
 
         if ($this->editParcelaId) {
             $stara = Parcela::where('id', $this->editParcelaId)->where('user_id', auth()->id())->firstOrFail();
-            $podaci = ['arkod_broj' => $this->parcelaForm['arkod_broj'], 'povrsina_ha' => $this->parcelaForm['povrsina_ha']];
+            $podaci = ['arkod_broj' => $this->parcelaForm['arkod_broj'], 'povrsina_ha' => $this->parcelaForm['povrsina_ha'], 'rucno_ucrtana' => false];
             if ($arkod) {
                 $podaci += $arkod;
             } elseif ($stara->arkod_broj !== $this->parcelaForm['arkod_broj']) {
@@ -153,7 +244,14 @@ class ParcelaManager extends Component
         } else {
             $parcela = Parcela::create(array_merge($this->parcelaForm, $arkod ?? [], ['user_id' => auth()->id()]));
         }
+        $this->zavrsiSpremanje($parcela, $isEdit);
+    }
+
+    private function zavrsiSpremanje(Parcela $parcela, bool $isEdit): void
+    {
         $this->resetArkod();
+        $this->rucnoUnos = false;
+        $this->rucniPoligon = null;
 
         $this->showParcelaForm = false;
         $this->editParcelaId = null;
@@ -187,9 +285,11 @@ class ParcelaManager extends Component
 
     public function editParcela(int $id): void
     {
-        $p = Parcela::findOrFail($id);
+        $p = Parcela::where('user_id', auth()->id())->findOrFail($id);
         $this->editParcelaId = $id;
         $this->parcelaForm = ['arkod_broj' => $p->arkod_broj, 'povrsina_ha' => $p->povrsina_ha];
+        $this->rucnoUnos = $p->rucno_ucrtana;
+        $this->rucniPoligon = $p->rucno_ucrtana ? $p->arkod_poligon : null;
         $this->resetArkod();
         $this->showParcelaForm = false;
         $this->clearValidation();
@@ -198,6 +298,9 @@ class ParcelaManager extends Component
     public function cancelParcelaEdit(): void
     {
         $this->editParcelaId = null;
+        $this->showParcelaForm = false;
+        $this->rucnoUnos = false;
+        $this->rucniPoligon = null;
         $this->resetArkod();
         $this->parcelaForm = ['arkod_broj' => '', 'povrsina_ha' => ''];
         $this->clearValidation();

@@ -34,7 +34,7 @@ class IzvjestajiController extends Controller
         return $this->csv('evidencija-gnojidbe-' . $od->format('Y-m-d') . '-' . $do->format('Y-m-d') . '.csv',
             ['Datum', 'ARKOD ID parcele', 'Kultura', 'Površina (ha)', 'Gnojivo', 'Količina (kg/ha)', 'Ukupno (kg)', 'N %', 'P2O5 %', 'K2O %', 'Stajski gnoj', 'kg N/ha', 'Ukupno kg N'],
             $redovi->map(fn ($r) => [
-                $r->datum->format('d.m.Y'), $r->arkod_broj, $r->kultura_naziv, $b($r->povrsina, 2), $r->tip_gnojiva,
+                $r->datum->format('d.m.Y'), \App\Models\Parcela::oznaka($r->arkod_broj, $r->rucno_ucrtana), $r->kultura_naziv, $b($r->povrsina, 2), $r->tip_gnojiva,
                 $b($r->kolicina_kg_ha, 2), $b($r->ukupno, 2), $b($r->n_posto, 2), $b($r->p_posto, 2), $b($r->k_posto, 2),
                 $r->organsko ? 'da' : 'ne', $b($r->kg_n_ha, 1), $b($r->kg_n, 1),
             ]));
@@ -49,7 +49,7 @@ class IzvjestajiController extends Controller
         return $this->csv('berba-' . $od->format('Y-m-d') . '-' . $do->format('Y-m-d') . '.csv',
             ['Datum', 'ARKOD ID parcele', 'Kultura', 'Sorta', 'Klasa', 'Količina (kg)', 'Cijena (€/kg)', 'Iznos (€)', 'Pobrana površina (ha)', 'Kupac', 'Napomena'],
             $redovi->map(fn ($r) => [
-                $r->datum->format('d.m.Y'), $r->kultura?->parcela?->arkod_broj, $r->kultura?->naziv, $r->sorta, $r->klasa,
+                $r->datum->format('d.m.Y'), \App\Models\Parcela::oznaka($r->kultura?->parcela?->arkod_broj, $r->kultura?->parcela?->rucno_ucrtana), $r->kultura?->naziv, $r->sorta, $r->klasa,
                 $b($r->kolicina_kg, 2), $b($r->cijena_kg, 4), $b($r->iznos, 2), $b($r->povrsina_ha, 2), $r->kupac, $r->napomena,
             ]));
     }

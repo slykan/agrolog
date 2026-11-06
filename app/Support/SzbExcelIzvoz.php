@@ -50,7 +50,7 @@ class SzbExcelIzvoz
                 self::tekst("F$red", 4, $r->datum_tretiranja ? $r->datum_tretiranja->format('d.m.Y.') : ''),
                 self::tekst("G$red", 4, $r->vrijeme_od ? substr($r->vrijeme_od, 0, 5) : ''),
                 self::tekst("H$red", 4, $r->kolicina_sredstva_l_ha !== null ? $broj($r->kolicina_sredstva_l_ha) . ' l/ha' : ''),
-                self::tekst("I$red", 4, $r->arkod_broj ? 'ARKOD ' . $r->arkod_broj : ''),
+                self::tekst("I$red", 4, $r->rucno_ucrtana ? \App\Models\Parcela::oznaka($r->arkod_broj, true) : ($r->arkod_broj ? 'ARKOD ' . $r->arkod_broj : '')),
                 self::tekst("J$red", 4, $r->tretirana_povrsina_ha !== null ? $broj($r->tretirana_povrsina_ha) . ' ha' : ''),
                 self::tekst("K$red", 4, (string) ($r->eppo_naziv ?: $r->kultura_naziv)),
                 // vrijednost umjesto VLOOKUP formule: kod ostaje i kad naziv kulture nije s popisa
