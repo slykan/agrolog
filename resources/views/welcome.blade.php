@@ -139,7 +139,7 @@
     </section>
 
     {{-- oglas ispod heroa, tamna traka se nastavlja na sljedeću sekciju --}}
-    @include('partials.oglas', ['mjesto' => 'naslovna', 'omotac' => 'bg-[#022a20] px-3 py-4 sm:px-6', 'klasa' => 'max-w-6xl mx-auto'])
+    @include('partials.oglas', ['mjesto' => 'naslovna', 'omotac' => 'bg-[#022a20] py-4', 'klasa' => 'max-w-6xl mx-auto px-6'])
 
     {{-- ZAŠTO BESPLATNO --}}
     <section class="bg-[#022a20] pb-16">
