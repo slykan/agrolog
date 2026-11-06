@@ -17,6 +17,63 @@
                 </div>
             @endforeach
 
+            @if($ja->je_savjetnik)
+                <div class="bg-white shadow rounded-lg border-t-4 border-green-600 p-4 sm:p-6">
+                    <h3 class="text-lg font-semibold text-gray-900">Pozovite svoje poljoprivrednike</h3>
+                    @if($klijenti->isEmpty())
+                        <ol class="mt-3 grid gap-3 sm:grid-cols-3 text-sm text-gray-600">
+                            <li class="rounded-lg bg-green-50 p-3"><strong class="block text-gray-900">1. Upišite e-mail</strong>Poljoprivrednik dobije poziv mailom. Nije mu potreban račun unaprijed.</li>
+                            <li class="rounded-lg bg-green-50 p-3"><strong class="block text-gray-900">2. On odlučuje</strong>Prihvaća poziv i bira: samo pregled ili pregled i unos.</li>
+                            <li class="rounded-lg bg-green-50 p-3"><strong class="block text-gray-900">3. Radite zajedno</strong>Gospodarstvo se pojavi na vašem popisu i dobijete potvrdu mailom.</li>
+                        </ol>
+                    @endif
+                    <form method="post" action="{{ route('klijenti.pozivi.posalji') }}" class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
+                        @csrf
+                        <div class="flex-1">
+                            <x-input-label for="poziv_email" value="E-mail poljoprivrednika" />
+                            <x-text-input id="poziv_email" name="email" type="email" class="mt-1 block w-full" :value="old('email')" placeholder="npr. opg.horvat@gmail.com" required />
+                        </div>
+                        <x-primary-button class="justify-center py-3">Pošalji poziv</x-primary-button>
+                    </form>
+                    <x-input-error :messages="$errors->pozivGospodarstvu->get('email')" class="mt-2" />
+                    <p class="mt-3 text-xs text-gray-500">Pozivajte samo poljoprivrednike s kojima surađujete. Dok ne prihvate, ne vidite ništa od njihovih podataka. <a href="{{ route('docs') }}#savjetnik-poziv" class="underline hover:text-gray-800">Kako to radi?</a></p>
+
+                    @if($poslaniPozivi->isNotEmpty())
+                        <h4 class="mt-5 text-sm font-semibold text-gray-800">Poslani pozivi</h4>
+                        <ul class="mt-2 divide-y divide-gray-100 rounded-lg border border-gray-200">
+                            @foreach($poslaniPozivi as $p)
+                                <li class="p-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div class="min-w-0">
+                                        <p class="font-medium text-gray-900 truncate">{{ $p->email }}</p>
+                                        <p class="text-xs text-gray-500">
+                                            {{ $p->poslano_at?->timezone('Europe/Zagreb')->format('d.m.Y.') }} ·
+                                            @if($p->status === 'odbijeno')
+                                                <span class="text-red-700 font-medium">odbijeno</span>
+                                            @else
+                                                <span class="text-amber-700 font-medium">čeka odgovor</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    @if($p->status === 'poslano')
+                                        <div class="flex flex-wrap items-center gap-3">
+                                            @if($p->smijePonovno())
+                                                <form method="post" action="{{ route('klijenti.pozivi.ponovno', $p) }}">@csrf
+                                                    <button class="text-sm text-green-700 hover:underline">Pošalji ponovno</button>
+                                                </form>
+                                            @endif
+                                            <form method="post" action="{{ route('klijenti.pozivi.povuci', $p) }}" onsubmit="return confirm('Povući poziv?')">
+                                                @csrf @method('delete')
+                                                <button class="text-sm text-red-600 hover:underline">Povuci poziv</button>
+                                            </form>
+                                        </div>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endif
+
             <div class="bg-white shadow rounded-lg overflow-hidden">
                 <div class="px-4 sm:px-6 py-4 border-b border-gray-100">
                     <h3 class="font-semibold text-gray-800">Gospodarstva kojima ste savjetnik</h3>
@@ -25,7 +82,12 @@
                 @if($klijenti->isEmpty())
                     <div class="px-6 py-10 text-center text-gray-500">
                         <p class="font-medium text-gray-700 mb-1">Još nemate klijenata.</p>
-                        <p class="text-sm">Gospodarstvo vas poziva iz svog profila (Profil → Pristup savjetniku), a vi prihvaćate poveznicom iz maila.</p>
+                        @if($ja->je_savjetnik)
+                            <p class="text-sm">Gospodarstva se ovdje pojavljuju kad prihvate vaš poziv. I gospodarstvo može pozvati vas, iz svog profila.</p>
+                        @else
+                            <p class="text-sm">Gospodarstvo vas poziva iz svog profila (Profil → Pristup savjetniku), a vi prihvaćate poveznicom iz maila.</p>
+                            <p class="text-sm mt-2">Agronom ste ili savjetnik? Označite to u <a href="{{ route('profile.edit') }}" class="text-green-700 underline hover:text-green-800">Profilu</a> pa možete sami pozivati poljoprivrednike.</p>
+                        @endif
                     </div>
                 @else
                     <div class="overflow-x-auto">

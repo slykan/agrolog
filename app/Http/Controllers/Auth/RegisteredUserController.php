@@ -54,6 +54,7 @@ class RegisteredUserController extends Controller
             'password'           => ['required', 'confirmed', Rules\Password::defaults()],
             'mipg'               => ['nullable', 'string', 'max:50'],
             'oib'                => ['nullable', 'string', 'max:11'],
+            'je_savjetnik'       => ['nullable', 'boolean'],
         ]);
 
         $user = User::create([
@@ -63,6 +64,7 @@ class RegisteredUserController extends Controller
             'password'           => Hash::make($request->password),
             'mipg'               => $request->mipg,
             'oib'                => $request->oib,
+            'je_savjetnik'       => $request->boolean('je_savjetnik'),
         ]);
 
         event(new Registered($user));
@@ -82,7 +84,7 @@ class RegisteredUserController extends Controller
             report($e);
         }
 
-        // nakon registracije s poveznice iz poziva savjetniku: natrag na poziv
-        return redirect()->intended(route('dashboard', absolute: false));
+        // nakon registracije s poveznice iz poziva: natrag na poziv
+        return redirect()->intended($user->pocetnaStranica());
     }
 }

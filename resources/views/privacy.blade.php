@@ -22,6 +22,7 @@
             <li><strong>Evidencija:</strong> zapisi o prskanju, gnojidbi i berbi, uključujući količine, cijene i kupce koje upišete.</li>
             <li><strong>Skladište, mehanizacija i troškovi:</strong> nabave i zalihe, strojevi, registracijske oznake, rokovi, servisi, prinosi, potpore i iznosi.</li>
             <li><strong>Pristup savjetniku:</strong> e-mail pozvane osobe, prava pristupa i povijest izmjena, uključujući ime savjetnika.</li>
+            <li><strong>Poziv od savjetnika:</strong> ako vas agronom ili savjetnik pozove, od njega dobivamo vašu e-mail adresu i čuvamo je uz podatak o slanju i vašem odgovoru.</li>
             <li><strong>Obavijesti:</strong> vaši odabiri za mail i push te tehnički podaci o pretplati uređaja na push.</li>
             <li><strong>Tehnički podaci:</strong> IP adresa, vrsta preglednika, podaci o sesiji i vrijeme zadnje aktivnosti.</li>
             <li><strong>Upiti:</strong> ono što nam pošaljete mailom ili kontakt obrascem: ime i prezime, e-mail, po želji naziv tvrtke i OIB te poruka.</li>
@@ -35,6 +36,7 @@
         <ul class="{{ $lista }}">
             <li><strong>Pružanje usluge</strong>, uključujući evidenciju, izvještaje, podsjetnike na rokove i pristup savjetniku: izvršenje ugovora (čl. 6. st. 1. b GDPR-a).</li>
             <li><strong>Sigurnost, sprječavanje zlouporabe i tehnička podrška:</strong> legitimni interes (čl. 6. st. 1. f).</li>
+            <li><strong>Poziv od savjetnika:</strong> legitimni interes savjetnika i poljoprivrednika da uspostave suradnju (čl. 6. st. 1. f). Poziv možete odbiti bez računa, nakon čega vam taj savjetnik ne može poslati novi. Pristup vašim podacima nastaje samo ako ga sami prihvatite.</li>
             <li><strong>Ponude za oglašavanje poslovnim kontaktima:</strong> legitimni interes predstavljanja usluge. Možete odbiti daljnje poruke odgovorom na mail, nakon čega vam više ne pišemo.</li>
             <li><strong>Odgovor na upit s kontakt obrasca:</strong> legitimni interes, odnosno radnje prije sklapanja ugovora, npr. kod upita o oglašavanju (čl. 6. st. 1. f i b). Poruku ne spremamo u aplikaciji, nego stiže na naš mail.</li>
             <li><strong>Novosti o AgroLogu mailom i pushem:</strong> legitimni interes da korisnike obavijestimo o usluzi koju koriste. Možete ih ugasiti u svakom trenutku.</li>
@@ -71,6 +73,7 @@
         <ul class="{{ $lista }}">
             <li>Podatke računa i evidencije čuvamo dok je račun aktivan.</li>
             <li>Nakon <a href="{{ route('brisanje') }}" class="{{ $a }}">brisanja računa</a> podaci se odmah brišu iz aplikacije, a preostali tragovi, npr. u sigurnosnim kopijama i zapisima poslužitelja, najkasnije u roku od 30 dana, osim ako zakon nalaže dulje čuvanje.</li>
+            <li>Zapis o pozivu od savjetnika čuvamo dok savjetnik ima račun, među ostalim i da odbijeni poziv ne bi stigao ponovno.</li>
             <li>Zapis o poslanoj ponudi čuvamo da vam ne pišemo ponovno, a adresu koja je odbila poruke da je više ne kontaktiramo.</li>
             <li>Upite čuvamo dok su potrebni za rješavanje, a duže samo ako iz njih nastane poslovni odnos ili to traži zakon.</li>
             <li>Vi ste dužni čuvati svoju evidenciju koliko propisi traže, za sredstva za zaštitu bilja najmanje tri godine. Zato je preuzmite prije brisanja računa.</li>

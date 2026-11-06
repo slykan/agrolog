@@ -8,6 +8,14 @@
     <div class="py-3 sm:py-8 lg:py-10">
         <div class="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
 
+            {{-- Savjetnik bez klijenata: jasan put do poziva --}}
+            @if(auth()->user()->je_savjetnik && ! request()->attributes->has('savjetnik') && ! \App\Models\Pristup::aktivni()->where('savjetnik_id', auth()->id())->exists())
+                <div class="rounded-xl border border-green-200 bg-green-50 p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-sm text-green-900"><strong>Još nemate klijenata.</strong> Pozovite svoje poljoprivrednike mailom, a oni sami odlučuju o pristupu.</p>
+                    <a href="{{ route('klijenti') }}" class="btn-primary whitespace-nowrap text-center">Pozovi poljoprivrednike</a>
+                </div>
+            @endif
+
             {{-- Što je novo: najnovija novost, može se zatvoriti (pamti se u pregledniku po novosti) --}}
             @php
                 $novost = \App\Http\Controllers\SadrzajController::novosti()[0] ?? null;

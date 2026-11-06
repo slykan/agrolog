@@ -114,6 +114,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/klijenti/{pristup}/otvori', [\App\Http\Controllers\PristupController::class, 'otvori'])->name('klijenti.otvori');
     Route::post('/klijenti/natrag', [\App\Http\Controllers\PristupController::class, 'zatvori'])->name('klijenti.zatvori');
 
+    // savjetnik poziva poljoprivrednike; pristup nastaje tek kad poljoprivrednik prihvati
+    Route::post('/klijenti/pozivi', [\App\Http\Controllers\PozivGospodarstvuController::class, 'posalji'])->middleware('throttle:30,1')->name('klijenti.pozivi.posalji');
+    Route::post('/klijenti/pozivi/{poziv}/ponovno', [\App\Http\Controllers\PozivGospodarstvuController::class, 'ponovno'])->middleware('throttle:30,1')->name('klijenti.pozivi.ponovno');
+    Route::delete('/klijenti/pozivi/{poziv}', [\App\Http\Controllers\PozivGospodarstvuController::class, 'povuci'])->name('klijenti.pozivi.povuci');
+    Route::post('/poziv-gospodarstvu/{token}', [\App\Http\Controllers\PozivGospodarstvuController::class, 'prihvati'])->name('poziv.gospodarstvo.prihvati');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/obavijesti', [ProfileController::class, 'obavijesti'])->name('profile.obavijesti');
@@ -125,6 +131,10 @@ Route::middleware('auth')->group(function () {
 
 // poveznica iz maila za savjetnika (radi i bez prijave: nudi prijavu ili registraciju)
 Route::get('/poziv-savjetnika/{token}', [\App\Http\Controllers\PristupController::class, 'poziv'])->name('poziv.savjetnik');
+
+// poveznica iz maila za poljoprivrednika: bez prijave nudi prijavu, registraciju ili odbijanje
+Route::get('/poziv-gospodarstvu/{token}', [\App\Http\Controllers\PozivGospodarstvuController::class, 'poziv'])->name('poziv.gospodarstvo');
+Route::post('/poziv-gospodarstvu/{token}/odbij', [\App\Http\Controllers\PozivGospodarstvuController::class, 'odbij'])->middleware('throttle:30,1')->name('poziv.gospodarstvo.odbij');
 
 // odjava od obavijesti iz maila (potpisani link; POST za jednoklik odjavu iz mail klijenta, bez CSRF-a)
 Route::match(['get', 'post'], '/obavijesti/odjava/{user}', [ObavijestController::class, 'odjava'])

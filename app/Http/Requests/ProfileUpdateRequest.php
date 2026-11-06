@@ -29,6 +29,7 @@ class ProfileUpdateRequest extends FormRequest
             'naziv_gospodarstva'  => ['required', 'string', 'max:255'],
             'mipg'                => ['nullable', 'string', 'max:50'],
             'oib'                 => ['nullable', 'string', 'max:11'],
+            'je_savjetnik'        => ['sometimes', 'boolean'],
         ];
     }
 }

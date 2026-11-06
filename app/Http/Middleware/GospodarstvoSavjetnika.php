@@ -22,10 +22,10 @@ use Symfony\Component\HttpFoundation\Response;
 class GospodarstvoSavjetnika
 {
     /** Tablice koje nisu podaci gospodarstva (sesija, cache, red čekanja, evidencija pristupa). */
-    private const SUSTAVNE = ['sessions', 'cache', 'cache_locks', 'jobs', 'failed_jobs', 'job_batches', 'pristupi', 'pristup_izmjene', 'users', 'szb_sredstva', 'oglas_statistika', 'oglasi'];
+    private const SUSTAVNE = ['sessions', 'cache', 'cache_locks', 'jobs', 'failed_jobs', 'job_batches', 'pristupi', 'pristup_izmjene', 'pozivi_gospodarstvima', 'users', 'szb_sredstva', 'oglas_statistika', 'oglasi'];
 
     /** Rute koje savjetnik ne smije otvoriti u klijentovom gospodarstvu. */
-    private const ZABRANJENE = ['profile.*', 'admin.*', 'savjetnici.*', 'push.*'];
+    private const ZABRANJENE = ['profile.*', 'admin.*', 'savjetnici.*', 'push.*', 'poziv.gospodarstvo.*'];
 
     private const NAZIVI = [
         'prskanje-table' => 'Prskanje', 'gnojidba-table' => 'Gnojidba', 'berba-table' => 'Berba', 'parcela-manager' => 'Parcele i kulture',

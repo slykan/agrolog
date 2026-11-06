@@ -4,15 +4,21 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
+        <!-- Agronom ili savjetnik -->
+        <label for="je_savjetnik" class="flex items-start gap-3 rounded-lg border border-gray-200 p-3 mb-4 cursor-pointer has-[:checked]:border-green-600 has-[:checked]:bg-green-50">
+            <input id="je_savjetnik" type="checkbox" name="je_savjetnik" value="1" class="mt-0.5 rounded border-gray-300 text-green-700 focus:ring-green-500" @checked(old('je_savjetnik'))>
+            <span class="text-sm text-gray-700"><strong class="block text-gray-900">Agronom sam ili savjetnik</strong>Nakon registracije možete pozvati svoje poljoprivrednike.</span>
+        </label>
+
         <!-- Naziv gospodarstva -->
         <div>
-            <x-input-label for="naziv_gospodarstva" value="Naziv gospodarstva" />
+            <x-input-label id="naziv-oznaka" for="naziv_gospodarstva" value="Naziv gospodarstva" />
             <x-text-input id="naziv_gospodarstva" class="block mt-1 w-full" type="text" name="naziv_gospodarstva" :value="old('naziv_gospodarstva')" required autofocus />
             <x-input-error :messages="$errors->get('naziv_gospodarstva')" class="mt-2" />
         </div>
 
         <!-- MIPG -->
-        <div class="mt-4">
+        <div id="mipg-polje" class="mt-4">
             <x-input-label for="mipg" value="MIPG broj" />
             <x-text-input id="mipg" class="block mt-1 w-full" type="text" name="mipg" :value="old('mipg')" />
             <x-input-error :messages="$errors->get('mipg')" class="mt-2" />
@@ -87,7 +93,7 @@
             <span class="mx-3 text-sm text-gray-500">ili</span>
             <div class="flex-grow border-t border-gray-300"></div>
         </div>
-        <a href="{{ route('auth.google') }}"
+        <a id="google-registracija" href="{{ route('auth.google') }}"
            class="mt-3 flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
             <svg class="h-5 w-5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -98,4 +104,19 @@
             Registracija s Google računom
         </a>
     </div>
+
+    <script>
+        (function () {
+            var kvacica = document.getElementById('je_savjetnik');
+            var google = document.getElementById('google-registracija');
+            var googleAdresa = google.getAttribute('href');
+            function primijeni() {
+                document.getElementById('naziv-oznaka').textContent = kvacica.checked ? 'Naziv tvrtke ili ime' : 'Naziv gospodarstva';
+                document.getElementById('mipg-polje').style.display = kvacica.checked ? 'none' : '';
+                google.setAttribute('href', googleAdresa + (kvacica.checked ? '?savjetnik=1' : ''));
+            }
+            kvacica.addEventListener('change', primijeni);
+            primijeni();
+        })();
+    </script>
 </x-guest-layout>

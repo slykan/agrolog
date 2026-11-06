@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'naziv_gospodarstva', 'mipg', 'oib', 'google_id', 'avatar'])]
+#[Fillable(['name', 'email', 'password', 'naziv_gospodarstva', 'mipg', 'oib', 'google_id', 'avatar', 'je_savjetnik'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -33,6 +33,7 @@ class User extends Authenticatable
             'last_seen_at' => 'datetime',
             'obavijesti_odjava_at' => 'datetime',
             'push_obavijesti' => 'boolean',
+            'je_savjetnik' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -41,6 +42,14 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return in_array(strtolower($this->email), config('app.admin_emails'), true);
+    }
+
+    /** Kamo nakon prijave: savjetnik bez vlastitih parcela kreće od Klijenata, ostali od naslovne. */
+    public function pocetnaStranica(): string
+    {
+        return $this->je_savjetnik && ! $this->parcele()->exists()
+            ? route('klijenti', absolute: false)
+            : route('dashboard', absolute: false);
     }
 
     public function parcele() { return $this->hasMany(Parcela::class); }

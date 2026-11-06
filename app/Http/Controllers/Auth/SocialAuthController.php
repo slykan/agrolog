@@ -15,6 +15,9 @@ class SocialAuthController extends Controller
 {
     public function redirect()
     {
+        // kvačica "agronom ili savjetnik" s registracije; vrijedi samo za novi račun
+        session(['registracija_savjetnik' => request()->boolean('savjetnik')]);
+
         return Socialite::driver('google')->redirect();
     }
 
@@ -40,6 +43,7 @@ class SocialAuthController extends Controller
                     'avatar'              => $googleUser->getAvatar(),
                     'naziv_gospodarstva'  => '',
                     'password'            => bcrypt(Str::random(32)),
+                    'je_savjetnik'        => (bool) session()->pull('registracija_savjetnik', false),
                 ]);
 
                 try {
@@ -59,6 +63,6 @@ class SocialAuthController extends Controller
 
         Auth::login($user, remember: true);
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended($user->pocetnaStranica());
     }
 }

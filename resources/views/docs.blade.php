@@ -528,6 +528,16 @@
                             <li>Savjetnik dobije mail s poveznicom, prijavi se ili besplatno registrira i prihvati poziv. Vi dobijete potvrdu mailom</li>
                         </ol>
                         <p>Svaku izmjenu savjetnika vidite u <strong>povijesti izmjena</strong> u profilu (tko, kada, što). Prava možete promijeniti, poziv poslati ponovno ili pristup <strong>ukinuti</strong> jednim klikom — vrijedi odmah. Savjetnik ne vidi vaš profil ni lozinku.</p>
+                        <h3 id="savjetnik-poziv" class="font-semibold text-gray-800 text-lg mt-6">Za savjetnika: pozovite svoje poljoprivrednike</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Na registraciji označite <strong>Agronom sam ili savjetnik</strong>. Ako već imate račun, označite isto u <strong>Profilu</strong></li>
+                            <li>Otvorite <strong>Klijenti</strong>, upišite e-mail poljoprivrednika i kliknite <strong>Pošalji poziv</strong></li>
+                            <li>Poljoprivrednik dobije mail. Ako nema račun, registrira se pa se vraća na poziv</li>
+                            <li>On bira <strong>samo pregled</strong> ili <strong>pregled i unos</strong> i prihvaća poziv. Gospodarstvo se tada pojavi na vašem popisu, a vi dobijete potvrdu mailom</li>
+                        </ol>
+                        <p><strong>Dok poljoprivrednik ne prihvati, ne vidite ništa od njegovih podataka</strong> i ne možete unositi za njega. Isti poziv možete poslati ponovno jednom dnevno, najviše tri puta, a ukupno možete poslati do 20 mailova s pozivima na dan. Ako poljoprivrednik odbije poziv, ne možete mu poslati novi. Pozivajte samo ljude s kojima surađujete.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Za gospodarstvo: dobili ste poziv od savjetnika</h3>
+                        <p>Otvorite poveznicu iz maila i provjerite tko vas poziva. Prihvatite samo ako tu osobu poznajete. Prava birate sami, a kasnije ih možete promijeniti ili pristup ukinuti u <strong>Profil → Pristup savjetniku</strong>. Ako ne želite suradnju, odaberite <strong>Ne želim, odbij poziv</strong>. Za odbijanje vam ne treba račun.</p>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Za savjetnika: Klijenti</h3>
                         <p>U padajućem izborniku pod imenom je <strong>Klijenti</strong> — popis gospodarstava koja su vam dala pristup, s površinom, zadnjim unosom i onim što traži pažnju. <strong>Otvori</strong> vas prebaci u gospodarstvo klijenta (na vrhu je traka „Radite u gospodarstvu …”), a <strong>Natrag na svoje</strong> vraća u vaše. Uz „samo pregled” sve vidite i ispisujete, ali ne možete mijenjati.</p>
                     </div>

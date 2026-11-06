@@ -100,6 +100,7 @@ class PristupController extends Controller
         abort_if($pristup->vlasnik_id === $ja->id, 403, 'Ne možete biti savjetnik vlastitom gospodarstvu.');
 
         $pristup->update(['savjetnik_id' => $ja->id, 'status' => 'prihvaceno', 'prihvaceno_at' => now()]);
+        $ja->forceFill(['je_savjetnik' => true])->save();
         Mail::to($pristup->vlasnik)->send(new SavjetnikPrihvatioMail($pristup->load('savjetnik')));
 
         return redirect()->route('klijenti')->with('status', 'Pristup gospodarstvu ' . ($pristup->vlasnik->naziv_gospodarstva ?: $pristup->vlasnik->name) . ' je prihvaćen.');
@@ -135,6 +136,7 @@ class PristupController extends Controller
         return view('klijenti', [
             'klijenti' => $klijenti, 'ja' => $ja,
             'pozivi' => Pristup::with('vlasnik')->where('status', 'poslano')->where('email', mb_strtolower($ja->email))->get(),
+            'poslaniPozivi' => \App\Models\PozivGospodarstvu::where('savjetnik_id', $ja->id)->whereIn('status', ['poslano', 'odbijeno'])->latest('poslano_at')->get(),
         ]);
     }
 

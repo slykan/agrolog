@@ -18,7 +18,15 @@
         @method('patch')
 
         <div>
-            <x-input-label for="naziv_gospodarstva" value="Naziv gospodarstva" />
+            <input type="hidden" name="je_savjetnik" value="0">
+            <label for="je_savjetnik" class="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer has-[:checked]:border-green-600 has-[:checked]:bg-green-50">
+                <input id="je_savjetnik" type="checkbox" name="je_savjetnik" value="1" class="mt-0.5 rounded border-gray-300 text-green-700 focus:ring-green-500" @checked(old('je_savjetnik', $user->je_savjetnik))>
+                <span class="text-sm text-gray-700"><strong class="block text-gray-900">Agronom sam ili savjetnik</strong>Na stranici Klijenti možete pozivati svoje poljoprivrednike.</span>
+            </label>
+        </div>
+
+        <div>
+            <x-input-label for="naziv_gospodarstva" :value="$user->je_savjetnik ? 'Naziv tvrtke ili ime' : 'Naziv gospodarstva'" />
             <x-text-input id="naziv_gospodarstva" name="naziv_gospodarstva" type="text" class="mt-1 block w-full" :value="old('naziv_gospodarstva', $user->naziv_gospodarstva)" required />
             <x-input-error class="mt-2" :messages="$errors->get('naziv_gospodarstva')" />
         </div>
