@@ -93,7 +93,8 @@
                             <li><strong class="text-gray-800">Što je novo</strong> — kratka obavijest o novostima u AgroLogu. Zatvorite je s ✕, a pojavit će se opet tek kad stigne nova.</li>
                             <li><strong class="text-gray-800">Prognoza za 5 dana</strong> za područje vaših parcela: vrijeme, temperatura, kiša, vjetar i oznaka je li dan povoljan za prskanje.</li>
                             <li><strong class="text-gray-800">Karta svih parcela</strong> na satelitskoj podlozi, s ARKOD brojevima. Zumirate kotačićem miša ili gumbima +/−, kartu pomičete povlačenjem, a klik na parcelu pokaže kulture na njoj. Gumbom ⛶ kartu otvorite <strong>preko cijelog zaslona</strong> (Esc ili isti gumb je zatvara).</li>
-                            <li><strong class="text-gray-800">Pregled gospodarstva</strong> ispod karte — za odabrano razdoblje (ova godina, prošla, 12 mjeseci ili od–do): broj prskanja i gnojidbi, potrošena sredstva i gnojiva, dušik i graf po mjesecima.</li>
+                            <li><strong class="text-gray-800">Pregled gospodarstva</strong> ispod karte — za odabrano razdoblje (ova godina, prošla, 12 mjeseci ili od–do): površina, parcele i kulture, broj prskanja i gnojidbi s usporedbom prema godini ranije, graf po mjesecima i što treba dopuniti za evidenciju 2027.</li>
+                            <li><strong class="text-gray-800">Kartice</strong> ispod — Parcele, Gnojidba, Prskanje, Skladište, Mehanizacija i Troškovi, svaka s brojkom i malim grafom za zadnjih 12 mjeseci. Klik vodi na tu stranicu.</li>
                             <li><strong class="text-gray-800">Zvono</strong> uz vaše ime u gornjem desnom kutu — broj pokazuje koliko stvari traži pažnju: aktivne karence, rokovi mehanizacije koji ističu, sredstva pri kraju ili u minusu na skladištu i zapisi koje treba dopuniti za evidenciju 2027. Klik otvara kratki popis, a <strong>Više</strong> vodi na stranicu gdje se to rješava.</li>
                         </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Kada je dan povoljan za prskanje</h3>
@@ -322,7 +323,7 @@
                             <li><strong>Nabava</strong> su ulazi na skladište s upisanom cijenom, po mjesecima i po vrsti (zaštita bilja, gnojivo). Prijenosi između skladišta i inventure se ne broje.</li>
                             <li><strong>Utrošak</strong> je doza × površina iz svakog zapisa prskanja i gnojidbe, pomnožena s prosječnom nabavnom cijenom tog sredstva ili gnojiva.</li>
                             <li>Tablica <strong>Trošak po parceli i kulturi</strong> pokazuje iznos za zaštitu, gnojidbu, ukupno i po hektaru. Gumbima <strong>Parcela / Kultura</strong> desno birate grupiranje, a graf ispod pokazuje isto.</li>
-                            <li><strong>Mehanizacija</strong> na dnu zbraja troškove servisa iz <a href="#mehanizacija" class="text-green-700 hover:underline">servisne knjige</a>. Gore su zbrojevi <strong>Trošak mehanizacije</strong> i <strong>Sveukupni trošak</strong>.</li>
+                            <li><strong>Mehanizacija</strong> na dnu zbraja troškove servisa iz <a href="#mehanizacija" class="text-green-700 hover:underline">servisne knjige</a> i iznose uz rokove (registracija, osiguranje…). Gore su zbrojevi <strong>Trošak mehanizacije</strong> i <strong>Sveukupni trošak</strong>.</li>
                             <li>Razdoblje birate kao i na početnoj: ova godina, prošla, 12 mjeseci ili od–do.</li>
                         </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Dobit po hektaru</h3>

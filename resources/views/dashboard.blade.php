@@ -317,24 +317,8 @@
                 </div>
             @endif
 
-            {{-- Brze veze --}}
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <a href="{{ route('parcele') }}" class="bg-white shadow-sm rounded-xl p-8 hover:shadow-md transition group border border-transparent hover:border-green-200">
-                    <div class="text-4xl mb-4">&#127807;</div>
-                    <h4 class="font-semibold text-gray-800 group-hover:text-green-700 transition mb-1">Parcele &amp; Kulture</h4>
-                    <p class="text-xs text-gray-500 leading-relaxed">Upravljajte ARCOD parcelama i kulturama koje na njima uzgajate.</p>
-                </a>
-                <a href="{{ route('gnojidba') }}" class="bg-white shadow-sm rounded-xl p-8 hover:shadow-md transition group border border-transparent hover:border-green-200">
-                    <div class="text-4xl mb-4">&#129517;</div>
-                    <h4 class="font-semibold text-gray-800 group-hover:text-green-700 transition mb-1">Evidencija gnojidbe</h4>
-                    <p class="text-xs text-gray-500 leading-relaxed">Unosite i pregledavate zapise o primjeni gnojiva po parcelama.</p>
-                </a>
-                <a href="{{ route('prskanje') }}" class="bg-white shadow-sm rounded-xl p-8 hover:shadow-md transition group border border-transparent hover:border-green-200">
-                    <div class="text-4xl mb-4">&#128167;</div>
-                    <h4 class="font-semibold text-gray-800 group-hover:text-green-700 transition mb-1">Evidencija prskanja</h4>
-                    <p class="text-xs text-gray-500 leading-relaxed">Vodite evidenciju o upotrebi sredstava za zaštitu bilja.</p>
-                </a>
-            </div>
+            {{-- Kartice: brojka i mali graf --}}
+            @include('partials.dash-kartice')
 
             {{-- Parcele i kulture --}}
 
