@@ -127,7 +127,7 @@ class OglasiTest extends TestCase
         $this->post(route('oglas.prikaz', [$o->id, 'naslovna']))->assertNoContent();
         $this->post(route('oglas.prikaz', [$o->id, 'naslovna']))->assertNoContent();
         $this->post(route('oglas.prikaz', [$o->id, 'vodici']))->assertNoContent();
-        $this->get(route('oglas.klik', [$o->id, 'naslovna']))->assertRedirect(route('contact'));
+        $this->get(route('oglas.klik', [$o->id, 'naslovna']))->assertRedirect(route('contact') . '?tema=oglasavanje#poruka');
 
         $this->assertSame(2, $this->red('naslovna')->prikazi);
         $this->assertSame(1, $this->red('naslovna')->klikovi);
@@ -152,7 +152,7 @@ class OglasiTest extends TestCase
 
         $this->withHeader('User-Agent', 'Googlebot/2.1');
         $this->post(route('oglas.prikaz', [$o->id, 'naslovna']))->assertNoContent();
-        $this->get(route('oglas.klik', [$o->id, 'naslovna']))->assertRedirect(route('contact'));
+        $this->get(route('oglas.klik', [$o->id, 'naslovna']))->assertRedirect(route('contact') . '?tema=oglasavanje#poruka');
         $this->assertSame(0, DB::table('oglas_statistika')->count());
 
         $this->withHeader('User-Agent', self::CHROME);
@@ -167,7 +167,7 @@ class OglasiTest extends TestCase
         $this->withHeader('User-Agent', self::CHROME);
         RateLimiter::clear('oglas-klik:' . sha1('127.0.0.1'));
         for ($i = 0; $i < 22; $i++) {
-            $this->get(route('oglas.klik', [$o->id, 'dashboard']))->assertRedirect(route('contact'));
+            $this->get(route('oglas.klik', [$o->id, 'dashboard']))->assertRedirect(route('contact') . '?tema=oglasavanje#poruka');
         }
         $this->assertSame(20, $this->red('dashboard')->klikovi);
     }

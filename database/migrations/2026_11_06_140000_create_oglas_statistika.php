@@ -41,7 +41,7 @@ return new class extends Migration
         });
 
         DB::table('oglasi')->insert([
-            'naziv' => 'Oglašavajte se u AgroLogu', 'url' => '/kontakt', 'rezervni' => true,
+            'naziv' => 'Oglašavajte se u AgroLogu', 'url' => '/kontakt?tema=oglasavanje#poruka', 'rezervni' => true,
             'slika' => 'images/oglasi/oglasavanje.webp', 'slika_w' => 2172, 'slika_h' => 242,
             'slika_mobitel' => 'images/oglasi/oglasavanje-mobitel.webp', 'mobitel_w' => 1080, 'mobitel_h' => 400,
             'created_at' => now(), 'updated_at' => now(),

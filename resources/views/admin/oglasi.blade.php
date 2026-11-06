@@ -34,7 +34,7 @@
                             @error('naziv')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
                         </label>
                         <label class="block text-sm text-gray-700">Poveznica
-                            <input type="text" name="url" value="{{ old('url', $f?->url ?? '/kontakt') }}" required placeholder="https://firma.hr" class="form-input w-full mt-1 block">
+                            <input type="text" name="url" value="{{ old('url', $f?->url ?? 'https://') }}" required placeholder="https://firma.hr" class="form-input w-full mt-1 block">
                             @error('url')<span class="text-xs text-red-600">{{ $message }}</span>@enderror
                         </label>
                         <label class="block text-sm text-gray-700">Slika {{ $f ? '(ostavite prazno da ostane ista)' : '' }}

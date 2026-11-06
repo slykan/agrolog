@@ -25,9 +25,8 @@ Route::get('/o-nama', function () {
     return view('about');
 })->name('about');
 
-Route::get('/kontakt', function () {
-    return view('contact');
-})->name('contact');
+Route::get('/kontakt', [\App\Http\Controllers\KontaktController::class, 'pokazi'])->name('contact');
+Route::post('/kontakt', [\App\Http\Controllers\KontaktController::class, 'posalji'])->name('contact.posalji');
 
 Route::get('/upute', function () {
     return view('docs');

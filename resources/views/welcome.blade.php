@@ -138,9 +138,6 @@
         </div>
     </section>
 
-    {{-- oglas ispod heroa, tamna traka se nastavlja na sljedeću sekciju --}}
-    @include('partials.oglas', ['mjesto' => 'naslovna', 'omotac' => 'bg-[#022a20] py-4', 'klasa' => 'max-w-6xl mx-auto px-6'])
-
     {{-- ZAŠTO BESPLATNO --}}
     <section class="bg-[#022a20] pb-16">
         <div class="max-w-6xl mx-auto px-6">
@@ -156,6 +153,9 @@
             </div>
         </div>
     </section>
+
+    {{-- oglas u bijelom dijelu, odmah ispod tamnog vrha stranice --}}
+    @include('partials.oglas', ['mjesto' => 'naslovna', 'omotac' => 'bg-white pt-12', 'klasa' => 'max-w-6xl mx-auto px-6'])
 
     {{-- NOVO U AGROLOGU: upravljanje gospodarstvom (FIS provjera, skladište, troškovi i dobit, mehanizacija, savjetnik, izvještaji) --}}
     <section class="py-20 bg-white">

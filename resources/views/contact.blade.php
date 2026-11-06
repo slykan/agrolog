@@ -37,6 +37,8 @@
 
     <main class="max-w-4xl mx-auto px-6 py-16">
 
+        @include('partials.kontakt-obrazac')
+
         {{-- Kontakt kartice --}}
         <div class="grid md:grid-cols-3 gap-6 mb-16">
 
