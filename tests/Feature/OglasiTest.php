@@ -143,6 +143,21 @@ class OglasiTest extends TestCase
         $this->get(route('oglas.klik', [$g->id, 'dashboard']))->assertRedirect('https://gnojivo.example/');
     }
 
+    public function test_rezervni_oglas_na_svim_mjestima_vodi_na_oglasavanje_a_placeni_ostaje(): void
+    {
+        $r = $this->rezervni();
+        $r->update(['url' => '/kontakt']);
+        $placeni = $this->oglas();
+
+        (require database_path('migrations/2026_11_06_220000_rezervni_oglas_vodi_na_oglasavanje.php'))->up();
+
+        foreach (array_keys(Oglasi::MJESTA) as $mjesto) {
+            $this->get(route('oglas.klik', [$r->id, $mjesto]))->assertRedirect(url('/oglasavanje'));
+        }
+        $this->assertSame($placeni->url, $placeni->fresh()->url);
+        $this->assertStringStartsWith('https://gnojivo.example', $placeni->fresh()->url);
+    }
+
     public function test_ne_broje_se_botovi_ni_nepoznate_vrijednosti(): void
     {
         $o = $this->rezervni();
