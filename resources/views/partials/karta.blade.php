@@ -12,10 +12,11 @@
             if (el._agroKarta) { el._agroKarta.remove(); }
             const map = L.map(el, Object.assign({ scrollWheelZoom: false }, opcije));
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                maxZoom: 19, attribution: 'Snimke &copy; Esri',
+                // Esri u Hrvatskoj ima snimke do zuma 18, a iznad toga šalje sivu pločicu; zato se dalje povećava zadnja snimka
+                maxNativeZoom: 18, maxZoom: 20, attribution: 'Snimke &copy; Esri',
             }).addTo(map);
             L.tileLayer.wms('https://servisi.apprrr.hr/NIPP/wms', {
-                layers: 'NIPP:hr.land_parcels', format: 'image/png', transparent: true, opacity: 0.55, minZoom: 14,
+                layers: 'NIPP:hr.land_parcels', format: 'image/png', transparent: true, opacity: 0.55, minZoom: 14, maxZoom: 20,
                 attribution: 'ARKOD &copy; Agencija za plaćanja',
             }).addTo(map);
             el._agroKarta = map;
