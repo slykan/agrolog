@@ -59,9 +59,63 @@
                 <div class="mb-4" x-show="prognoza.length" x-cloak>
                     <div class="flex items-baseline justify-between mb-2">
                         <span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Prognoza za područje na karti</span>
-                        <span class="text-[11px] text-gray-400">Prskanje povoljno: vjetar &lt; 15 km/h, kiša &lt; 40 %, bez mraza, 5–30 °C</span>
+                        <span class="hidden sm:inline text-[11px] text-gray-400">Prskanje povoljno: vjetar &lt; 15 km/h, kiša &lt; 40 %, bez mraza, 5–30 °C</span>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    {{-- mobitel: jedan veći dan, strelice, povlačenje prstom i sama se vrti svakih 7 s --}}
+                    <div class="sm:hidden" x-data="{
+                            i: 0, t: null, x0: null,
+                            init() { this.kreni() },
+                            destroy() { clearInterval(this.t) },
+                            kreni() {
+                                clearInterval(this.t);
+                                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                                this.t = setInterval(() => { if (! document.hidden && this.prognoza.length) this.i = (this.i + 1) % this.prognoza.length }, 7000);
+                            },
+                            idi(k) { const n = this.prognoza.length; if (! n) return; this.i = (this.i + k + n) % n; this.kreni() },
+                        }" x-effect="if (i >= prognoza.length) i = 0">
+                        <div class="relative">
+                            <div class="overflow-hidden rounded-2xl ring-1 ring-gray-200"
+                                 @touchstart.passive="x0 = $event.touches[0].clientX"
+                                 @touchend="if (x0 !== null) { const dx = $event.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) idi(dx < 0 ? 1 : -1); x0 = null }">
+                                <div class="flex transition-transform duration-500 ease-out" :style="'transform: translateX(-' + (i * 100) + '%)'">
+                                    <template x-for="d in prognoza" :key="'m' + d.datum">
+                                        <div class="w-full shrink-0 px-14 py-4 bg-gradient-to-br from-white to-green-50/60">
+                                            <div class="flex items-center justify-between">
+                                                <div>
+                                                    <p class="text-sm font-bold uppercase tracking-wide text-gray-700" x-text="d.dan"></p>
+                                                    <p class="text-xs text-gray-500 first-letter:uppercase" x-text="d.opis"></p>
+                                                </div>
+                                                <span class="text-5xl leading-none" :title="d.opis" x-text="d.ikona"></span>
+                                            </div>
+                                            <p class="mt-2 text-gray-900"><b class="text-3xl" x-text="d.max + '°'"></b> <span class="text-lg text-gray-400" x-text="d.min + '°'"></span></p>
+                                            <div class="mt-2 grid grid-cols-2 gap-2 text-xs text-gray-600">
+                                                <span>💧 <span x-text="d.kisa + ' mm · ' + d.vjerojatnost + ' %'"></span></span>
+                                                <span>💨 <span x-text="'vjetar ' + d.vjetar + ' km/h'"></span></span>
+                                            </div>
+                                            <div class="mt-3 text-xs font-semibold rounded-lg px-2.5 py-1 inline-block"
+                                                 :class="d.prskanje ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'"
+                                                 x-text="d.prskanje ? 'Povoljno za prskanje ✓' : 'Nije za prskanje: ' + d.razlog"></div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <button type="button" @click="idi(-1)" aria-label="Prethodni dan"
+                                    class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow ring-1 ring-black/10 flex items-center justify-center text-gray-700 active:scale-95">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                            </button>
+                            <button type="button" @click="idi(1)" aria-label="Sljedeći dan"
+                                    class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white shadow ring-1 ring-black/10 flex items-center justify-center text-gray-700 active:scale-95">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                            </button>
+                        </div>
+                        <div class="mt-2 flex justify-center gap-1.5">
+                            <template x-for="(d, k) in prognoza" :key="'t' + d.datum">
+                                <button type="button" @click="i = k; kreni()" :aria-label="d.dan"
+                                        class="h-1.5 rounded-full transition-all" :class="k === i ? 'w-6 bg-green-700' : 'w-1.5 bg-gray-300'"></button>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="hidden sm:grid grid-cols-5 gap-2">
                         <template x-for="d in prognoza" :key="d.datum">
                             <div class="rounded-lg border border-gray-200 px-3 py-2 text-sm">
                                 <div class="flex items-center justify-between">
