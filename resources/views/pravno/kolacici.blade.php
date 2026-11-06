@@ -33,7 +33,7 @@
         <p class="mb-3">Ovo ostaje samo na vašem uređaju i ne šalje se nama:</p>
         <ul class="list-disc pl-6 space-y-2">
             <li><strong>cookie_consent:</strong> vaš odabir o kolačićima,</li>
-            <li><strong>agrolog-novost-…, agrolog-instalacija-skriveno, agrolog-push-skriveno:</strong> pamti što ste zatvorili ili odgodili u aplikaciji,</li>
+            <li><strong>agrolog-novost-…, agrolog-zvono, agrolog-instalacija-skriveno, agrolog-push-skriveno:</strong> pamti što ste zatvorili, pročitali ili odgodili u aplikaciji,</li>
             <li><strong>agro-push-…:</strong> da se pretplata uređaja na obavijesti ne provjerava pri svakom otvaranju stranice,</li>
             <li><strong>spremljena stranica „Nema veze”:</strong> prikazuje se kad nema interneta. Vaša evidencija se ne sprema na uređaj.</li>
         </ul>
