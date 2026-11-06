@@ -4,8 +4,8 @@
     $oznaka = 'block text-sm font-medium text-gray-800';
     $neob = '<span class="font-normal text-gray-500">neobavezno</span>';
 @endphp
-<section id="poruka" class="scroll-mt-24 bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8 mb-16">
-    <h2 class="text-2xl font-bold text-gray-900">Pošaljite nam poruku</h2>
+<section id="poruka" class="scroll-mt-24 bg-white border border-gray-100 shadow-sm rounded-2xl p-6 sm:p-8">
+    <h2 class="text-2xl font-bold text-gray-900">{{ $naslovObrasca ?? 'Pošaljite nam poruku' }}</h2>
 
     @if(session('kontakt_poslano'))
         <div role="status" class="mt-5 rounded-xl border border-green-200 bg-green-50 p-5 text-green-900">
@@ -20,20 +20,24 @@
         <form method="post" action="{{ route('contact.posalji') }}" class="mt-5 space-y-5" novalidate>
             @csrf
             <input type="hidden" name="obrazac_od" value="{{ $obrazacOd }}">
+            @if(! empty($izvor))<input type="hidden" name="izvor" value="{{ $izvor }}">@endif
             {{-- robotima: ljudi ovo polje ne vide --}}
             <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
                 <label>Web stranica <input type="text" name="web_stranica" tabindex="-1" autocomplete="off"></label>
             </div>
 
-            <div>
+            <div x-data="{ tema: @js($odabranaTema) }">
                 <label for="k-tema" class="{{ $oznaka }}">Tema</label>
-                <select id="k-tema" name="tema" required class="{{ $polje }}">
+                <select id="k-tema" name="tema" required x-model="tema" class="{{ $polje }}">
                     <option value="">Odaberite temu…</option>
                     @foreach($teme as $k => $naziv)
                         <option value="{{ $k }}" @selected($odabranaTema === $k)>{{ $naziv }}</option>
                     @endforeach
                 </select>
                 @error('tema')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                @if(empty($izvor))
+                    <p x-show="tema === 'oglasavanje'" x-cloak class="mt-2 text-sm text-gray-700">Mjesta za oglas i tehnički uvjeti su na stranici <a href="{{ route('oglasavanje') }}" class="font-medium text-green-700 underline">Oglašavanje</a>.</p>
+                @endif
             </div>
 
             <div class="grid gap-5 sm:grid-cols-2">

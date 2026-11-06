@@ -37,8 +37,6 @@
 
     <main class="max-w-4xl mx-auto px-6 py-16">
 
-        @include('partials.kontakt-obrazac')
-
         {{-- Kontakt kartice --}}
         <div class="grid md:grid-cols-3 gap-6 mb-16">
 
@@ -90,6 +88,10 @@
                     AgroLog se stalno razvija prema potrebama korisnika. Ako vam nedostaje neka funkcionalnost, imate prijedlog za poboljšanje ili ste naišli na grešku — javite nam se. Svaki prijedlog uzimamo ozbiljno i trudimo se odgovoriti u najkraćem mogućem roku.
                 </p>
             </div>
+        </div>
+
+        <div class="mt-16">
+            @include('partials.kontakt-obrazac')
         </div>
 
     </main>

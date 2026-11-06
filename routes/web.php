@@ -26,6 +26,7 @@ Route::get('/o-nama', function () {
 })->name('about');
 
 Route::get('/kontakt', [\App\Http\Controllers\KontaktController::class, 'pokazi'])->name('contact');
+Route::get('/oglasavanje', [\App\Http\Controllers\KontaktController::class, 'oglasavanje'])->name('oglasavanje');
 Route::post('/kontakt', [\App\Http\Controllers\KontaktController::class, 'posalji'])->name('contact.posalji');
 
 Route::get('/upute', function () {
@@ -44,6 +45,7 @@ Route::get('/sitemap.xml', function () {
         ['loc' => route('home'),    'priority' => '1.0', 'changefreq' => 'weekly'],
         ['loc' => route('about'),   'priority' => '0.7', 'changefreq' => 'monthly'],
         ['loc' => route('contact'), 'priority' => '0.6', 'changefreq' => 'monthly'],
+        ['loc' => route('oglasavanje'), 'priority' => '0.5', 'changefreq' => 'monthly'],
         ['loc' => route('docs'),    'priority' => '0.8', 'changefreq' => 'monthly'],
         ['loc' => route('privacy'), 'priority' => '0.3', 'changefreq' => 'yearly'],
         ['loc' => route('uvjeti'), 'priority' => '0.3', 'changefreq' => 'yearly'],

@@ -126,6 +126,46 @@ class KontaktTest extends TestCase
         $this->post('/kontakt', $this->podaci())->assertSessionHas('kontakt_greska')->assertSessionHasInput('poruka');
     }
 
+    public function test_stranica_oglasavanje_i_povratak_na_nju(): void
+    {
+        Mail::fake();
+        $this->get('/oglasavanje')->assertOk()->assertSee('Cijena na upit')->assertSee('Sponzorirani članak')->assertSee('2172 × 242')->assertSee('<option value="oglasavanje" selected', false)
+            ->assertDontSee('Gospodarstava s parcelama');   // premalo za objavu
+        $this->get('/kontakt')->assertSee(route('oglasavanje'));
+        $this->get('/sitemap.xml')->assertSee(route('oglasavanje'));
+
+        $this->post('/kontakt', $this->podaci(['izvor' => 'oglasavanje']))->assertRedirect(route('oglasavanje') . '#poruka');
+        $this->post('/kontakt', $this->podaci(['izvor' => 'oglasavanje', 'poruka' => 'x']))->assertRedirect(route('oglasavanje') . '#poruka')->assertSessionHasErrors('poruka');
+        $this->post('/kontakt', $this->podaci(['izvor' => 'https://evil.example']))->assertRedirect(route('contact') . '#poruka');
+    }
+
+    public function test_brojke_se_vide_tek_kad_ih_je_dovoljno(): void
+    {
+        foreach (User::factory()->count(20)->create() as $i => $u) {
+            \App\Models\Parcela::create(['user_id' => $u->id, 'arkod_broj' => (string) (1000 + $i), 'povrsina_ha' => 10]);
+        }
+        $this->get('/oglasavanje')->assertSee('Gospodarstava s parcelama')->assertSee('200')->assertDontSee('Prikaza bannera');
+        \DB::table('oglas_statistika')->insert(['oglas_id' => \App\Models\Oglas::first()->id, 'mjesto' => 'naslovna', 'datum' => now()->toDateString(), 'prikazi' => 1500, 'klikovi' => 3]);
+        $this->get('/oglasavanje')->assertSee('Prikaza bannera')->assertSee('1.500');
+    }
+
+    public function test_poruke_su_na_hrvatskom(): void
+    {
+        $this->assertSame('hr', app()->getLocale());
+        $this->from('/register')->post('/register', ['email' => 'nije'])->assertSessionHasErrors();
+        $greske = session('errors')->getBag('default')->all();
+        foreach ($greske as $g) {
+            $this->assertDoesNotMatchRegularExpression('/\b(field|must|required)\b/i', $g);
+        }
+        $v = IlluminateSupportFacadesValidator::make(['email' => 'nije', 'password' => ''], ['email' => 'email', 'password' => 'required']);
+        $this->assertSame('Polje e-mail adresa mora biti ispravna e-mail adresa.', $v->errors()->first('email'));
+        $this->assertSame('Polje lozinka je obavezno.', $v->errors()->first('password'));
+
+        $this->from('/login')->post('/login', ['email' => 'nema@example.com', 'password' => 'x'])->assertSessionHasErrors(['email' => 'E-mail adresa ili lozinka nisu točni.']);
+        $this->get('/login')->assertSee('Zaboravljena lozinka?')->assertSee('Zapamti me')->assertDontSee('Remember me');
+        $this->get('/register')->assertSee('Već imate račun?')->assertDontSee('Already registered?');
+    }
+
     public function test_prijavljenom_su_podaci_vec_upisani(): void
     {
         $u = User::factory()->create(['name' => 'Ivo Ratar', 'email' => 'ivo@example.com', 'naziv_gospodarstva' => 'OPG Ratar']);

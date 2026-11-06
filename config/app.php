@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => 'hr',   // aplikacija je samo na hrvatskom, bez obzira na APP_LOCALE u .env
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 

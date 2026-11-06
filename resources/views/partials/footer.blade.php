@@ -10,6 +10,7 @@
             <a href="{{ route('docs') }}" class="hover:text-white transition">Upute</a>
             <a href="{{ route('about') }}" class="hover:text-white transition">O nama</a>
             <a href="{{ route('contact') }}" class="hover:text-white transition">Kontakt</a>
+            <a href="{{ route('oglasavanje') }}" class="hover:text-white transition">Oglašavanje</a>
             <a href="{{ route('login') }}" class="hover:text-white transition">Prijava</a>
             <a href="{{ route('register') }}" class="hover:text-white transition">Registracija</a>
         </div>

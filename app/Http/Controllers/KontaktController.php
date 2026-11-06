@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Mail\KontaktMail;
+use App\Models\Parcela;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 /**
@@ -22,6 +26,10 @@ class KontaktController extends Controller
     private const MIN_SEKUNDI = 3;
     private const MAX_POVEZNICA = 3;
 
+    /** Brojke na stranici Oglašavanje vide se tek kad su dovoljno velike da govore u našu korist. */
+    private const MIN_GOSPODARSTAVA = 20;
+    private const MIN_PRIKAZA = 1000;
+
     public function pokazi(Request $request): View
     {
         $tema = $request->query('tema');
@@ -35,16 +43,32 @@ class KontaktController extends Controller
         ]);
     }
 
+    public function oglasavanje(Request $request): View
+    {
+        $gospodarstava = User::whereHas('parcele')->count();
+        $prikazi = (int) DB::table('oglas_statistika')->where('datum', '>=', now()->subDays(29)->toDateString())->sum('prikazi');
+        $korisnik = $request->attributes->get('pristup') ? null : $request->user();
+
+        return view('oglasavanje', [
+            'gospodarstava' => $gospodarstava >= self::MIN_GOSPODARSTAVA ? $gospodarstava : null,
+            'hektara' => (float) Parcela::sum('povrsina_ha'),
+            'prikazi' => $prikazi >= self::MIN_PRIKAZA ? $prikazi : null,
+            'teme' => self::TEME, 'odabranaTema' => old('tema', 'oglasavanje'), 'korisnik' => $korisnik,
+            'obrazacOd' => Crypt::encryptString((string) time()),
+        ]);
+    }
+
     public function posalji(Request $request): RedirectResponse
     {
-        $natrag = fn () => redirect()->to(route('contact') . '#poruka')->withInput();
+        $povratak = ($request->input('izvor') === 'oglasavanje' ? route('oglasavanje') : route('contact')) . '#poruka';
+        $natrag = fn () => redirect()->to($povratak)->withInput();
 
         // robot je popunio skriveno polje: izgleda kao uspjeh, ali se ništa ne šalje
         if ($request->filled('web_stranica')) {
-            return redirect()->to(route('contact') . '#poruka')->with('kontakt_poslano', true);
+            return redirect()->to($povratak)->with('kontakt_poslano', true);
         }
 
-        $d = $request->validate([
+        $provjera = Validator::make($request->all(), [
             'tema' => ['required', 'in:' . implode(',', array_keys(self::TEME))],
             'ime' => 'required|string|max:120',
             'tvrtka' => 'nullable|string|max:150',
@@ -66,6 +90,10 @@ class KontaktController extends Controller
             'email.required' => 'Upišite e-mail adresu.', 'email.email' => 'Upišite ispravnu e-mail adresu.', 'email.max' => 'E-mail adresa je preduga.',
             'poruka.required' => 'Upišite poruku.', 'poruka.min' => 'Poruka je prekratka, upišite barem 10 znakova.', 'poruka.max' => 'Poruka je preduga, najviše 5.000 znakova.',
         ]);
+        if ($provjera->fails()) {
+            return $natrag()->withErrors($provjera);   // natrag na obrazac, ne na vrh stranice
+        }
+        $d = $provjera->validated();
 
         if ($this->prebrzo((string) $request->input('obrazac_od'))) {
             return $natrag()->with('kontakt_greska', 'Poruka nije poslana. Pričekajte trenutak i pošaljite je ponovno.');
@@ -100,7 +128,7 @@ class KontaktController extends Controller
             }
         }
 
-        return redirect()->to(route('contact') . '#poruka')->with('kontakt_poslano', true);
+        return redirect()->to($povratak)->with('kontakt_poslano', true);
     }
 
     private function prebrzo(string $token): bool
