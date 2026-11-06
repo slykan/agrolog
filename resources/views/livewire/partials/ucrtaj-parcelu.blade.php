@@ -41,7 +41,7 @@
             </ul>
         </div>
 
-        <div x-ref="karta" class="h-[60vh] min-h-[320px] max-h-[560px] rounded-lg ring-1 ring-gray-200 bg-gray-100"></div>
+        <div x-ref="karta" class="isolate h-[60vh] min-h-[320px] max-h-[560px] rounded-lg ring-1 ring-gray-200 bg-gray-100"></div>
 
         <p x-show="poruka" x-cloak x-text="poruka" class="mt-2 text-sm text-amber-800" role="status"></p>
 
