@@ -157,7 +157,7 @@ class KontaktTest extends TestCase
         foreach ($greske as $g) {
             $this->assertDoesNotMatchRegularExpression('/\b(field|must|required)\b/i', $g);
         }
-        $v = IlluminateSupportFacadesValidator::make(['email' => 'nije', 'password' => ''], ['email' => 'email', 'password' => 'required']);
+        $v = \Illuminate\Support\Facades\Validator::make(['email' => 'nije', 'password' => ''], ['email' => 'email', 'password' => 'required']);
         $this->assertSame('Polje e-mail adresa mora biti ispravna e-mail adresa.', $v->errors()->first('email'));
         $this->assertSame('Polje lozinka je obavezno.', $v->errors()->first('password'));
 
