@@ -44,8 +44,6 @@
              'opis' => 'Aktivnosti po mjesecima, usporedba s prošlom godinom i popis onoga što treba dopuniti za evidenciju 2027. — na mobitelu, usred polja.'],
         ];
     @endphp
-    {{-- oglas odmah ispod izbornika, tamna traka se nastavlja na hero --}}
-    @include('partials.oglas', ['mjesto' => 'naslovna', 'omotac' => 'bg-[#022a20] px-3 pt-3 sm:px-6', 'klasa' => 'max-w-6xl mx-auto'])
     <section class="relative overflow-hidden bg-[#022a20] text-white"
              x-data="{
                  i: 0, n: {{ count($slajdovi) }}, timer: null,
@@ -139,6 +137,9 @@
             </div>
         </div>
     </section>
+
+    {{-- oglas ispod heroa, tamna traka se nastavlja na sljedeću sekciju --}}
+    @include('partials.oglas', ['mjesto' => 'naslovna', 'omotac' => 'bg-[#022a20] px-3 py-4 sm:px-6', 'klasa' => 'max-w-6xl mx-auto'])
 
     {{-- ZAŠTO BESPLATNO --}}
     <section class="bg-[#022a20] pb-16">
