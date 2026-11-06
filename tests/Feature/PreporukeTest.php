@@ -289,6 +289,12 @@ class PreporukeTest extends TestCase
         $this->assertSame(0, Preporuka::count());
     }
 
+    public function test_novost_postoji_i_prva_je_na_popisu(): void
+    {
+        $this->assertSame('preporuke-savjetnika', \App\Http\Controllers\SadrzajController::novosti()[0]['slug']);
+        $this->get(route('novost', 'preporuke-savjetnika'))->assertOk()->assertSee('Evidencija ostaje točna');
+    }
+
     public function test_upute_opisuju_preporuke(): void
     {
         $this->get(route('docs'))->assertOk()->assertSee('id="preporuke"', false)->assertSee('href="#preporuke"', false)->assertSee('Napravljeno, unesi u evidenciju');

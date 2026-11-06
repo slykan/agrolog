@@ -157,6 +157,51 @@
     {{-- oglas u bijelom dijelu, odmah ispod tamnog vrha stranice --}}
     @include('partials.oglas', ['mjesto' => 'naslovna', 'omotac' => 'bg-white pt-12', 'klasa' => 'max-w-6xl mx-auto px-6'])
 
+    {{-- PREPORUKE: agronom i gospodarstvo na istom mjestu --}}
+    <section id="agronomi" class="scroll-mt-24 pt-16 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="relative overflow-hidden rounded-3xl bg-[#022a20] text-white p-7 md:p-12">
+                <div class="absolute -left-20 -bottom-24 w-72 h-72 rounded-full bg-[#86bc25]/15 blur-3xl" aria-hidden="true"></div>
+                <div class="relative grid gap-10 lg:grid-cols-2 lg:items-center">
+                    <div>
+                        <span class="text-[11px] font-extrabold uppercase tracking-wider bg-[#86bc25] text-[#022a20] rounded-full px-2.5 py-1">Novo · za agronome i gospodarstva</span>
+                        <h2 class="mt-4 text-3xl md:text-4xl font-extrabold tracking-tight leading-tight">Od agronomove preporuke do zapisa u evidenciji</h2>
+                        <p class="mt-4 text-white/80 text-lg leading-relaxed">Agronom jednim slanjem javi preporuku svim klijentima s tom kulturom. Gospodarstvo odgovori, a kad posao obavi, zapis je već popunjen.</p>
+                        <ul class="mt-6 space-y-2.5 text-white/90">
+                            @foreach(['Provjera sredstva u registru FIS-a prije slanja', 'Prihvaćanje, odbijanje ili pitanje izravno uz preporuku', 'Obavijest u aplikaciji, mailom i na mobitel', 'Popunjen unos u evidenciju kad je posao stvarno obavljen'] as $stavka)
+                                <li class="flex gap-3"><span class="text-[#86bc25] font-bold" aria-hidden="true">✓</span><span>{{ $stavka }}</span></li>
+                            @endforeach
+                        </ul>
+                        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-xl bg-[#86bc25] px-6 py-3 font-bold text-[#022a20] transition hover:bg-[#9ad033]">Registrirajte se besplatno</a>
+                            <a href="{{ route('novost', 'preporuke-savjetnika') }}" class="font-semibold text-white underline underline-offset-4 hover:text-[#cfe6a9]">Kako radi?</a>
+                        </div>
+                    </div>
+                    {{-- primjer preporuke, ne stvarni podaci --}}
+                    <div class="rounded-2xl bg-white text-gray-800 p-5 shadow-2xl ring-1 ring-black/5 text-sm" aria-label="Primjer preporuke">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs text-gray-500">Ana Kovač, agronom · 06.11.2026.</p>
+                                <p class="mt-0.5 text-base font-bold text-gray-900">Gnojidba: KAN</p>
+                            </div>
+                            <span class="flex-none rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800">čeka odgovor</span>
+                        </div>
+                        <p class="mt-3 text-gray-700">Pšenica · ARKOD 1515224 · 200 kg/ha</p>
+                        <p class="mt-1 text-gray-600">Prihrana prije kiše.</p>
+                        <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold" aria-hidden="true">
+                            <span class="rounded bg-[#4f9a3a] px-3 py-1.5 text-white">Prihvaćam</span>
+                            <span class="rounded bg-blue-500 px-3 py-1.5 text-white">Imam pitanje</span>
+                            <span class="rounded bg-red-500 px-3 py-1.5 text-white">Ne prihvaćam</span>
+                        </div>
+                        <div class="mt-4 border-t border-gray-100 pt-3">
+                            <p class="flex gap-2 font-medium text-green-800"><span aria-hidden="true">✓</span> Napravljeno: zapis je popunjen, provjerite i spremite.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- NOVO U AGROLOGU: upravljanje gospodarstvom (FIS provjera, skladište, troškovi i dobit, mehanizacija, savjetnik, izvještaji) --}}
     <section class="py-20 bg-white">
         <div class="max-w-6xl mx-auto px-6">
