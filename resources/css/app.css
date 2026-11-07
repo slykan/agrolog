@@ -121,11 +121,11 @@
 @media print {
     .no-print { display: none !important; }
     nav, header, footer { display: none !important; }
-    body { font-size: 9px; background: #fff !important; }
+    body { font-size: 11px; background: #fff !important; }
     .overflow-x-auto { overflow: visible !important; }
-    .agrolog-table, .form-header-table { width: 100% !important; border-collapse: collapse; table-layout: auto; font-size: 9px !important; }
-    .agrolog-table th, .agrolog-table td { border: 1px solid #000 !important; padding: 2px 4px !important; min-width: 0 !important; word-break: break-word; }
-    .agrolog-table th { font-size: 8px !important; letter-spacing: 0 !important; }
+    .agrolog-table, .form-header-table { width: 100% !important; border-collapse: collapse; table-layout: auto; font-size: 11px !important; }
+    .agrolog-table th, .agrolog-table td { border: 1px solid #000 !important; padding: 3px 5px !important; min-width: 0 !important; word-break: break-word; }
+    .agrolog-table th { font-size: 10px !important; letter-spacing: 0 !important; }
     .agrolog-table tr { break-inside: avoid; }
     .agrolog-table thead { display: table-header-group; background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .shadow, .rounded-lg { box-shadow: none !important; border-radius: 0 !important; }

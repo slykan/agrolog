@@ -8,22 +8,22 @@
     <style>
         @page { size: A4 landscape; margin: 10mm; }
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #111; font-size: 10px; background: #f3f4f6; }
+        body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #111; font-size: 12px; background: #f3f4f6; }
         .list { background: #fff; max-width: 297mm; margin: 16px auto; padding: 12mm; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
         .zaglavlje { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #111; padding-bottom: 6px; margin-bottom: 8px; }
-        .mala { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: #555; font-weight: bold; }
-        h1 { margin: 2px 0 0; font-size: 18px; font-weight: normal; font-family: Georgia, 'Times New Roman', serif; }
-        .desno { text-align: right; font-size: 11px; }
-        .podaci { display: flex; gap: 24px; font-size: 10px; margin-bottom: 8px; color: #333; }
+        .mala { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #555; font-weight: bold; }
+        h1 { margin: 2px 0 0; font-size: 22px; font-weight: normal; font-family: Georgia, 'Times New Roman', serif; }
+        .desno { text-align: right; font-size: 13px; }
+        .podaci { display: flex; gap: 24px; font-size: 12px; margin-bottom: 8px; color: #333; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #999; padding: 3px 4px; vertical-align: top; }
-        th { background: #eee; font-size: 8.5px; text-align: left; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        th, td { border: 1px solid #999; padding: 4px 6px; vertical-align: top; }
+        th { background: #eee; font-size: 10.5px; text-align: left; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         td.br { text-align: right; white-space: nowrap; }
         tr { break-inside: avoid; }
         thead { display: table-header-group; }
         tfoot td { font-weight: bold; background: #f7f7f7; }
-        .podnozje { margin-top: 10px; display: flex; justify-content: space-between; font-size: 9px; color: #555; }
-        .potpis { margin-top: 24px; font-size: 10px; }
+        .podnozje { margin-top: 10px; display: flex; justify-content: space-between; font-size: 11px; color: #555; }
+        .potpis { margin-top: 24px; font-size: 12px; }
         .alati { max-width: 297mm; margin: 16px auto 0; display: flex; gap: 8px; align-items: center; font-size: 13px; }
         .alati button { background: #19653a; color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
         .prazno { padding: 30px; text-align: center; color: #666; font-size: 12px; }
