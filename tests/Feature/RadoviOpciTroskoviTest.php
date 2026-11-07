@@ -148,6 +148,46 @@ class RadoviOpciTroskoviTest extends TestCase
         $this->assertSame($v->id, OpciTrosak::first()->klijent_id);
     }
 
+    public function test_rad_na_vise_kultura_dijeli_trosak_po_hektarima(): void
+    {
+        $u = User::factory()->create();
+        $a = $this->kultura($u, 'Kukuruz', 3);
+        $b = $this->kultura($u, 'Pšenica', 1);
+        $tudja = $this->kultura(User::factory()->create());
+        $this->actingAs($u);
+
+        // tuđa kultura u popisu se odbija
+        Livewire::test(RadoviTable::class)->call('dodaj')->call('naViseKultura')->set('odabrane', [(string) $a->id, (string) $tudja->id])
+            ->set('form.vrsta', 'Oranje')->call('spremi')->assertHasErrors('odabrane.1');
+
+        // vlastiti rad: 40 L × 1,5 € + 8 h × 10 € = 140 €, podijeljeno 3 : 1
+        $c = Livewire::test(RadoviTable::class)->call('dodaj')->call('naViseKultura')->set('odabrane', [(string) $a->id, (string) $b->id])
+            ->set('form.vrsta', 'Oranje')->set('form.gorivo_l', 40)->set('form.cijena_goriva', 1.5)->set('form.radni_sati', 8)->set('form.cijena_sata', 10);
+        $this->assertEquals(140, $c->get('izracun'));
+        $c->call('spremi')->assertHasNoErrors();
+        $this->assertEquals(105, (float) Rad::where('kultura_id', $a->id)->value('trosak'));
+        $this->assertEquals(35, (float) Rad::where('kultura_id', $b->id)->value('trosak'));
+        $this->assertEquals(30, (float) Rad::where('kultura_id', $a->id)->value('gorivo_l'));
+        $this->assertStringContainsString('zajednički rad na 2 kulture', Rad::where('kultura_id', $b->id)->value('napomena'));
+
+        // usluga ukupno 200 € dijeli se, usluga po ha ostaje po ha
+        Livewire::test(RadoviTable::class)->call('dodaj')->call('naViseKultura')->set('odabrane', [(string) $a->id, (string) $b->id])
+            ->set('form.vrsta', 'Sjetva')->set('form.izvedba', 'usluga')->set('form.usluga_cijena', 200)->set('form.usluga_po', 'ukupno')->call('spremi');
+        $this->assertEquals(150, (float) Rad::where('vrsta', 'Sjetva')->where('kultura_id', $a->id)->value('trosak'));
+        Livewire::test(RadoviTable::class)->call('dodaj')->call('naViseKultura')->set('odabrane', [(string) $a->id, (string) $b->id])
+            ->set('form.vrsta', 'Valjanje')->set('form.izvedba', 'usluga')->set('form.usluga_cijena', 20)->set('form.usluga_po', 'ha')->call('spremi');
+        $this->assertEquals(60, (float) Rad::where('vrsta', 'Valjanje')->where('kultura_id', $a->id)->value('trosak'));
+        $this->assertEquals(20, (float) Rad::where('vrsta', 'Valjanje')->where('kultura_id', $b->id)->value('trosak'));
+    }
+
+    public function test_upozorenje_kad_se_voznja_upise_kao_rad(): void
+    {
+        $u = User::factory()->create();
+        $this->actingAs($u);
+        Livewire::test(RadoviTable::class)->call('dodaj')->set('form.vrsta', 'Put do voćnjaka')->assertSee('Opći troškovi → + Vožnja')
+            ->set('form.vrsta', 'Prijevoz uroda')->assertDontSee('Opći troškovi → + Vožnja');
+    }
+
     public function test_kultura_s_radovima_se_ne_brise(): void
     {
         $u = User::factory()->create();

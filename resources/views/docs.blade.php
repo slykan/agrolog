@@ -435,6 +435,9 @@
                             <li><strong>Vlastiti rad:</strong> po želji odaberite stroj iz Mehanizacije i sate rada, a za trošak upišite gorivo (L × €/L) i rad (radni sati × €/h). Dva radnika po 8 sati su 16 radnih sati. Cijene goriva i sata pamte se za sljedeći unos.</li>
                             <li><strong>Usluga:</strong> kad posao radi netko drugi, npr. susjed ore za 60 €/ha. Upišite cijenu po hektaru ili ukupno i po želji izvođača. Po hektaru se računa na obrađenu površinu ili, ako je ne upišete, na cijelu površinu kulture.</li>
                             <li>Gumb <strong>Kopiraj</strong> upisuje isti rad s današnjim datumom, npr. drugu košnju.</li>
+                            <li><strong>Rad na više kultura odjednom</strong>, npr. oranje tri parcele u jednom danu: uz polje Kultura kliknite <strong>rad na više kultura</strong> i označite kulture (ili <strong>označi sve</strong>). Gorivo, radne sate i ukupnu cijenu upišite za cijeli posao, a AgroLog ih raspodijeli po hektarima i spremi zaseban zapis za svaku kulturu. Usluga po hektaru ostaje ista cijena po hektaru za svaku kulturu.</li>
+                            <li><strong>Krivo upisan rad</strong> ispravite gumbom <strong>Uredi</strong> ili obrišite s ✕. Vlastita vrsta nestaje s popisa ponuđenih kad više nijedan zapis nema taj naziv.</li>
+                            <li>Vožnja autom do parcele nije rad na parceli. Upisuje se pod <a href="#opci-troskovi" class="text-green-700 hover:underline">Opći troškovi</a>, a AgroLog vas na to upozori ako je upišete među radove.</li>
                         </ul>
                         <p>Trošak radova ulazi u stupac <strong>Radovi i ostalo</strong> na stranici <a href="#troskovi" class="text-green-700 hover:underline">Troškovi</a>, u €/ha kulture i u dobit.</p>
                     </div>
@@ -458,7 +461,8 @@
                             <li>Kliknite <strong>+ Vožnja</strong>, upišite kamo ste išli i kilometre u jednom smjeru. Uz <strong>Tamo i natrag</strong> računa se dvostruko: 25 km postaje 50 km.</li>
                             <li>Iznos se računa sam, km × cijena po km. Prvi put se predlaže 0,50 €/km, a možete upisati svoju cijenu, npr. stvarni trošak goriva. AgroLog pamti zadnju upisanu.</li>
                             <li>Označite <strong>Zapamti kao rutu</strong> i sljedeći put samo kliknite rutu, npr. „Voćnjak Hrastin · 25 km”. Otvori se popunjena vožnja, a vi provjerite datum i spremite.</li>
-                            <li>Imate li samo jedan voćnjak, vožnju vežite na njega i vidjet ćete točan trošak po hektaru. S više parcela je ostavite na cijelom gospodarstvu.</li>
+                            <li>Imate li samo jedan voćnjak, vožnju vežite na njega i vidjet ćete točan trošak po hektaru. Ako istim putem idete na više kultura, ostavite <strong>cijelo gospodarstvo</strong>.</li>
+                            <li>Krivo spremljenu rutu obrišite klikom na <strong>×</strong> uz njezin naziv. Upisane vožnje ostaju. Krivo upisanu vožnju ispravite s <strong>Uredi</strong> ili obrišite s ✕.</li>
                         </ul>
                         <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
                             <strong>Za agronome i savjetnike:</strong> u svom računu (ne u klijentovom gospodarstvu) uz trošak ili vožnju odaberite <strong>Klijenta</strong>. Na dnu se vidi zbroj stavki, kilometara i iznosa po klijentu za godinu, korisno za obračun obilazaka.

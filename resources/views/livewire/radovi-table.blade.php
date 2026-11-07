@@ -27,15 +27,42 @@
         <div class="rounded-lg border border-green-200 bg-green-50 p-4">
             <p class="text-sm font-semibold text-gray-800 mb-3">{{ $editId ? 'Uredi rad' : 'Novi rad' }}</p>
             <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <label class="block text-xs text-gray-600 sm:col-span-2">Kultura
-                    <select wire:model.live="form.kultura_id" class="form-input w-full mt-1 block">
-                        <option value="">Odaberite…</option>
-                        @foreach($kulture as $k)
-                            <option value="{{ $k->id }}">{{ $k->arkod_broj }} · {{ $k->naziv }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
-                        @endforeach
-                    </select>
-                    @error('form.kultura_id')<span class="text-red-500">{{ $message }}</span>@enderror
-                </label>
+                @if($viseKultura)
+                    <div class="block text-xs text-gray-600 sm:col-span-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <span>Kulture ({{ count($odabrane) }} odabrano · {{ number_format($odabraniHa, 2, ',', '.') }} ha)</span>
+                            <span class="flex gap-3">
+                                <button type="button" wire:click="oznaciSve" class="text-green-700 underline">označi sve</button>
+                                <button type="button" wire:click="jednaKultura" class="text-gray-600 underline">jedna kultura</button>
+                            </span>
+                        </div>
+                        <div class="mt-1 max-h-48 overflow-y-auto rounded-md border border-gray-300 bg-white p-2 space-y-1">
+                            @foreach($kulture as $k)
+                                @php $oznacena = in_array((string) $k->id, array_map('strval', $odabrane), true); @endphp
+                                <label wire:key="vk-{{ $k->id }}-{{ $oznacena ? 1 : 0 }}" class="flex items-center gap-2 text-sm text-gray-800">
+                                    <input type="checkbox" wire:model.live="odabrane" value="{{ $k->id }}" @checked($oznacena) class="rounded border-gray-300 text-green-700">
+                                    {{ $k->arkod_broj }} · {{ $k->naziv }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('odabrane')<span class="text-red-500">{{ $message }}</span>@enderror
+                        @error('odabrane.*')<span class="text-red-500">{{ $message }}</span>@enderror
+                    </div>
+                @else
+                    <label class="block text-xs text-gray-600 sm:col-span-2">
+                        <span class="flex items-center justify-between gap-2">
+                            <span>Kultura</span>
+                            @unless($editId)<button type="button" wire:click="naViseKultura" class="text-green-700 underline">rad na više kultura</button>@endunless
+                        </span>
+                        <select wire:model.live="form.kultura_id" class="form-input w-full mt-1 block">
+                            <option value="">Odaberite…</option>
+                            @foreach($kulture as $k)
+                                <option value="{{ $k->id }}">{{ $k->arkod_broj }} · {{ $k->naziv }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
+                            @endforeach
+                        </select>
+                        @error('form.kultura_id')<span class="text-red-500">{{ $message }}</span>@enderror
+                    </label>
+                @endif
                 <label class="block text-xs text-gray-600">Datum
                     <input type="date" wire:model="form.datum" class="form-input w-full mt-1 block">
                     @error('form.datum')<span class="text-red-500">{{ $message }}</span>@enderror
@@ -48,6 +75,13 @@
                     @error('form.vrsta')<span class="text-red-500">{{ $message }}</span>@enderror
                 </label>
             </div>
+
+            @if($jeVoznja)
+                <p class="mt-3 flex gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                    <span aria-hidden="true">💡</span>
+                    <span>Vožnju autom do parcele upišite pod <a href="{{ route('troskovi') }}#opci-troskovi" class="font-medium underline">Troškovi → Opći troškovi → + Vožnja</a>. Tamo se računa po kilometrima, može se spremiti ruta, a kultura nije obavezna.</span>
+                </p>
+            @endif
 
             {{-- brzi izbor vrste prema kulturi --}}
             <div class="mt-3">
@@ -80,7 +114,7 @@
                         </div>
                         @error('form.usluga_cijena')<span class="text-red-500">{{ $message }}</span>@enderror
                     </div>
-                    <label class="block text-xs text-gray-600">Obrađena površina (ha) <span class="text-gray-400">neob.</span>
+                    <label class="block text-xs text-gray-600 {{ $viseKultura ? 'hidden' : '' }}">Obrađena površina (ha) <span class="text-gray-400">neob.</span>
                         <input type="number" step="0.01" wire:model.live.debounce.400ms="form.povrsina_ha" placeholder="{{ $haKulture !== null ? 'cijela: ' . number_format($haKulture, 2, ',', '.') : '' }}" class="form-input w-full mt-1 block">
                         @error('form.povrsina_ha')<span class="text-red-500">{{ $message }}</span>@enderror
                     </label>
@@ -102,7 +136,7 @@
                         <input type="number" step="0.1" wire:model="form.sati" class="form-input w-full mt-1 block">
                         @error('form.sati')<span class="text-red-500">{{ $message }}</span>@enderror
                     </label>
-                    <label class="block text-xs text-gray-600">Obrađena površina (ha) <span class="text-gray-400">neob.</span>
+                    <label class="block text-xs text-gray-600 {{ $viseKultura ? 'hidden' : '' }}">Obrađena površina (ha) <span class="text-gray-400">neob.</span>
                         <input type="number" step="0.01" wire:model="form.povrsina_ha" placeholder="{{ $haKulture !== null ? 'cijela: ' . number_format($haKulture, 2, ',', '.') : '' }}" class="form-input w-full mt-1 block">
                         @error('form.povrsina_ha')<span class="text-red-500">{{ $message }}</span>@enderror
                     </label>
@@ -133,7 +167,7 @@
             </div>
 
             <p class="mt-3 text-sm text-gray-700">
-                Trošak: <strong class="text-gray-900">{{ $this->izracun !== null ? $eur($this->izracun) : '—' }}</strong>
+                Trošak: <strong class="text-gray-900">{{ $this->izracun !== null ? $eur($this->izracun) : '—' }}</strong>@if($viseKultura && count($odabrane) > 1) <span class="text-xs text-gray-500">za sve odabrane kulture, raspodijeljeno po hektarima</span>@endif
                 @if($this->izracun === null)<span class="text-xs text-gray-500">(rad se može spremiti i bez troška)</span>@endif
             </p>
 
