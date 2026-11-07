@@ -16,6 +16,7 @@ class DashKartice
 {
     public const GNOJIDBA = '#008300';   // iste boje kao u Pregledu gospodarstva
     public const PRSKANJE = '#2a78d6';
+    public const RADOVI = '#a24ea8';     // ostali radovi i opći troškovi (provjereno uz plavu i zelenu za daltonizam)
     public const BERBA = '#86bc25';
 
     public static function za(User $user): array
@@ -157,8 +158,9 @@ class DashKartice
         $t = Troskovi::izracun($user, $od, $do);
         $szb = (float) $t['redovi']->sum('szb');
         $gnojivo = (float) $t['redovi']->sum('gnojivo');
+        $radovi = (float) $t['redovi']->sum('radovi') + $t['opci_nevezano'];
         $meh = (float) Troskovi::mehanizacija($user, $od, $do)['ukupno'];
-        $ukupno = $szb + $gnojivo + $meh;
+        $ukupno = $szb + $gnojivo + $radovi + $meh;
 
         return [
             'ruta' => 'troskovi', 'naslov' => 'Troškovi', 'opis' => 'Trošak po parceli i kulturi, dobit po hektaru.', 'ikona' => 'troskovi',
@@ -168,6 +170,7 @@ class DashKartice
             'segmenti' => [
                 ['naziv' => 'zaštita', 'broj' => $szb, 'boja' => self::PRSKANJE],
                 ['naziv' => 'gnojidba', 'broj' => $gnojivo, 'boja' => self::GNOJIDBA],
+                ['naziv' => 'radovi i ostalo', 'broj' => $radovi, 'boja' => self::RADOVI],
                 ['naziv' => 'mehanizacija', 'broj' => $meh, 'boja' => '#6b7280'],
             ],
             'prazno' => $ukupno <= 0 ? 'Upišite cijene uz nabavu →' : null,

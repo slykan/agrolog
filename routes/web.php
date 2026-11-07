@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/gnojidba', fn() => view('gnojidba'))->name('gnojidba');
     Route::get('/prskanje', fn() => view('prskanje'))->name('prskanje');
     Route::get('/berba', fn() => view('berba'))->name('berba');
+    Route::get('/radovi', fn() => view('radovi'))->name('radovi');
     Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
     Route::get('/parcele/{parcela}/arkod', ParcelaArkodController::class)->name('parcela.arkod');
     Route::get('/skladiste', fn() => view('skladiste'))->name('skladiste');

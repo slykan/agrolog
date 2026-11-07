@@ -56,6 +56,8 @@
                     <a href="#kopiranje" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kopiranje zapisa</a>
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
                     <a href="#troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Troškovi i dobit</a>
+                    <a href="#ostali-radovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Ostali radovi</a>
+                    <a href="#opci-troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Opći troškovi i vožnja</a>
                     <a href="#mehanizacija" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Mehanizacija</a>
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
@@ -402,15 +404,66 @@
                         <ul class="list-disc pl-6 space-y-1">
                             <li><strong>Nabava</strong> su ulazi na skladište s upisanom cijenom, po mjesecima i po vrsti (zaštita bilja, gnojivo). Prijenosi između skladišta i inventure se ne broje.</li>
                             <li><strong>Utrošak</strong> je doza × površina iz svakog zapisa prskanja i gnojidbe, pomnožena s prosječnom nabavnom cijenom tog sredstva ili gnojiva.</li>
-                            <li>Tablica <strong>Trošak po parceli i kulturi</strong> pokazuje iznos za zaštitu, gnojidbu, ukupno i po hektaru. Gumbima <strong>Parcela / Kultura</strong> desno birate grupiranje, a graf ispod pokazuje isto.</li>
-                            <li><strong>Mehanizacija</strong> na dnu zbraja troškove servisa iz <a href="#mehanizacija" class="text-green-700 hover:underline">servisne knjige</a> i iznose uz rokove (registracija, osiguranje…). Gore su zbrojevi <strong>Trošak mehanizacije</strong> i <strong>Sveukupni trošak</strong>.</li>
+                            <li><strong>Radovi i ostalo</strong> su <a href="#ostali-radovi" class="text-green-700 hover:underline">ostali radovi</a> (oranje, rezidba, košnja…) i <a href="#opci-troskovi" class="text-green-700 hover:underline">opći troškovi</a> koje ste vezali uz kulturu.</li>
+                            <li>Tablica <strong>Trošak po parceli i kulturi</strong> pokazuje iznos za zaštitu, gnojidbu, radove i ostalo, ukupno i po hektaru. Gumbima <strong>Parcela / Kultura</strong> desno birate grupiranje, a graf ispod pokazuje isto.</li>
+                            <li><strong>Mehanizacija</strong> na dnu zbraja troškove servisa iz <a href="#mehanizacija" class="text-green-700 hover:underline">servisne knjige</a> i iznose uz rokove (registracija, osiguranje…). Gore su zbrojevi <strong>Trošak mehanizacije</strong>, <strong>Opći troškovi</strong> i <strong>Sveukupni trošak</strong> (parcele + mehanizacija + opći troškovi).</li>
                             <li>Razdoblje birate kao i na početnoj: ova godina, prošla, 12 mjeseci ili od–do.</li>
                         </ul>
                         <h3 class="font-semibold text-gray-800 text-lg mt-6">Dobit po hektaru</h3>
-                        <p>Kod kulture (Parcele &amp; Kulture) kliknite <strong class="text-gray-800">Prinos</strong> i upišite prinos (t), prodajnu cijenu (€/t), potpore i po želji ostale troškove (sjeme, gorivo, najam). Na Troškovima se tada vidi <strong>prihod, trošak i dobit po kulturi i po hektaru</strong>, a gubitak je označen crveno.</p>
+                        <p>Kod kulture (Parcele &amp; Kulture) kliknite <strong class="text-gray-800">Prinos</strong> i upišite prinos (t), prodajnu cijenu (€/t), potpore i po želji sjeme i ostale troškove. Radove i vožnje upišite posebno, pod <a href="#ostali-radovi" class="text-green-700 hover:underline">Ostali radovi</a> i <a href="#opci-troskovi" class="text-green-700 hover:underline">Opći troškovi</a>, da se ne zbroje dvaput. Na Troškovima se tada vidi <strong>prihod, trošak i dobit po kulturi i po hektaru</strong>, a gubitak je označen crveno.</p>
                         <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800">
                             <strong>Savjet:</strong> brojke su točne samo ako uz nabavu upišete cijenu. Ako neko sredstvo nema cijenu, ispod tablice piše koliko zapisa nije uračunato.
                         </div>
+                    </div>
+                </section>
+
+                {{-- OSTALI RADOVI --}}
+                <section id="ostali-radovi" class="scroll-mt-24">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Ostali radovi: oranje, rezidba, košnja…</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Osim prskanja, gnojidbe i berbe, na parceli se radi još puno toga. Upišite i te radove pa će Troškovi pokazati pravu cijenu proizvodnje po hektaru.</p>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>U izborniku <strong>Aktivnosti → Ostali radovi</strong> kliknite <strong>+ Dodaj rad</strong></li>
+                            <li>Odaberite kulturu i datum</li>
+                            <li>Kliknite vrstu rada. AgroLog nudi radove prema kulturi: za ratarske kulture oranje, tanjuranje, sjetvu, valjanje…, za vinograd rezidbu, vezanje, zelenu rezidbu…, za maslinik i voćnjak rezidbu, košnju, usitnjavanje granja… Ako vaše vrste nema, <strong>upišite svoju</strong>, a ona vam se nudi i sljedeći put</li>
+                            <li>Odaberite tko je radio i upišite trošak (može i bez troška)</li>
+                        </ol>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>Vlastiti rad:</strong> po želji odaberite stroj iz Mehanizacije i sate rada, a za trošak upišite gorivo (L × €/L) i rad (radni sati × €/h). Dva radnika po 8 sati su 16 radnih sati. Cijene goriva i sata pamte se za sljedeći unos.</li>
+                            <li><strong>Usluga:</strong> kad posao radi netko drugi, npr. susjed ore za 60 €/ha. Upišite cijenu po hektaru ili ukupno i po želji izvođača. Po hektaru se računa na obrađenu površinu ili, ako je ne upišete, na cijelu površinu kulture.</li>
+                            <li>Gumb <strong>Kopiraj</strong> upisuje isti rad s današnjim datumom, npr. drugu košnju.</li>
+                        </ul>
+                        <p>Trošak radova ulazi u stupac <strong>Radovi i ostalo</strong> na stranici <a href="#troskovi" class="text-green-700 hover:underline">Troškovi</a>, u €/ha kulture i u dobit.</p>
+                    </div>
+                </section>
+
+                {{-- OPĆI TROŠKOVI --}}
+                <section id="opci-troskovi" class="scroll-mt-24">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Opći troškovi i vožnja</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Neki troškovi nisu rad na parceli: vožnja do udaljene parcele, zakup zemlje, osiguranje usjeva, članarine, struja, knjigovodstvo. Upisuju se na dnu stranice <strong>Troškovi</strong>, pod <strong>Opći troškovi</strong>.</p>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Kliknite <strong>+ Dodaj trošak</strong>, odaberite vrstu ili upišite svoju</li>
+                            <li>Upišite datum, iznos i po želji opis</li>
+                            <li><strong>Kultura je neobavezna.</strong> Bez kulture trošak ulazi samo u ukupni trošak gospodarstva. Ako odaberete kulturu, ulazi i u njezin €/ha i dobit.</li>
+                        </ol>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Vožnja</h3>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Kliknite <strong>+ Vožnja</strong>, upišite kamo ste išli i kilometre u jednom smjeru. Uz <strong>Tamo i natrag</strong> računa se dvostruko: 25 km postaje 50 km.</li>
+                            <li>Iznos se računa sam, km × cijena po km. Prvi put se predlaže 0,50 €/km, a možete upisati svoju cijenu, npr. stvarni trošak goriva. AgroLog pamti zadnju upisanu.</li>
+                            <li>Označite <strong>Zapamti kao rutu</strong> i sljedeći put samo kliknite rutu, npr. „Voćnjak Hrastin · 25 km”. Otvori se popunjena vožnja, a vi provjerite datum i spremite.</li>
+                            <li>Imate li samo jedan voćnjak, vožnju vežite na njega i vidjet ćete točan trošak po hektaru. S više parcela je ostavite na cijelom gospodarstvu.</li>
+                        </ul>
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+                            <strong>Za agronome i savjetnike:</strong> u svom računu (ne u klijentovom gospodarstvu) uz trošak ili vožnju odaberite <strong>Klijenta</strong>. Na dnu se vidi zbroj stavki, kilometara i iznosa po klijentu za godinu, korisno za obračun obilazaka.
+                        </div>
+                        <p class="text-sm">AgroLog samo zbraja ono što upišete i ne vodi službeni putni nalog ni porezni obračun naknade.</p>
                     </div>
                 </section>
 

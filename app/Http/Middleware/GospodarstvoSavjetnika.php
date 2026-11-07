@@ -29,7 +29,7 @@ class GospodarstvoSavjetnika
 
     private const NAZIVI = [
         'prskanje-table' => 'Prskanje', 'gnojidba-table' => 'Gnojidba', 'berba-table' => 'Berba', 'parcela-manager' => 'Parcele i kulture',
-        'skladiste-manager' => 'Skladište', 'mehanizacija-manager' => 'Mehanizacija',
+        'skladiste-manager' => 'Skladište', 'mehanizacija-manager' => 'Mehanizacija', 'radovi-table' => 'Ostali radovi', 'opci-troskovi' => 'Opći troškovi',
     ];
     private const AKCIJE = [
         'saveNew' => 'novi zapis', 'saveMultiple' => 'više zapisa odjednom', 'saveEdit' => 'izmjena zapisa', 'deleteRow' => 'brisanje zapisa',
@@ -38,6 +38,7 @@ class GospodarstvoSavjetnika
         'spremiPrinos' => 'prinos i prihod', 'oznaciTrajni' => 'označen trajni nasad', 'spremi' => 'spremljeno', 'obrisi' => 'brisanje', 'spremiInventuru' => 'inventura', 'prenesi' => 'prijenos između skladišta',
         'spremiSkladiste' => 'skladište spremljeno', 'obrisiSkladiste' => 'skladište obrisano', 'spremiStroj' => 'stroj spremljen', 'obrisiStroj' => 'stroj obrisan',
         'spremiRok' => 'rok spremljen', 'obrisiRok' => 'rok obrisan', 'spremiServis' => 'servis upisan', 'obrisiServis' => 'servis obrisan',
+        'obrisiRutu' => 'ruta obrisana',
     ];
 
     public function handle(Request $request, Closure $next): Response

@@ -3,6 +3,8 @@
 namespace App\Support;
 
 use App\Models\Kultura;
+use App\Models\OpciTrosak;
+use App\Models\Rad;
 use App\Models\SkladisteUlaz;
 use App\Models\StrojRok;
 use App\Models\StrojServis;
@@ -11,10 +13,14 @@ use Illuminate\Support\Carbon;
 
 /**
  * Troškovi iz skladišta: nabava (ulazi s cijenom) i utrošak (potrošnja iz prskanja i gnojidbe × prosječna cijena po jedinici).
- * Prijenosi između skladišta i inventure nisu nabava. Utrošak po kulturi = zbroj potrošnje svih zapisa te kulture u razdoblju.
+ * Prijenosi između skladišta i inventure nisu nabava. Utrošak po kulturi = zbroj potrošnje svih zapisa te kulture u razdoblju,
+ * plus ostali radovi i opći troškovi vezani uz kulturu. Opći troškovi bez kulture ulaze samo u ukupni trošak.
  */
 class Troskovi
 {
+    /** Trošak kulture po vrsti: zaštita, gnojivo, ostali radovi, opći troškovi vezani uz kulturu. */
+    private const PRAZNO = ['szb' => 0.0, 'gnojivo' => 0.0, 'radovi' => 0.0, 'ostalo' => 0.0];
+
     /**
      * Troškovi mehanizacije u razdoblju: servisi (datum servisa) i iznosi uz rokove — registracija, osiguranje,
      * tehnički, pregled… (datum plaćanja = početak valjanosti, tj. datum isteka minus razdoblje roka).
@@ -87,7 +93,7 @@ class Troskovi
                 }
                 $iznos = $p['kolicina'] * $cijena;
                 $k = $p['kultura_id'];
-                $poKulturi[$k] ??= ['szb' => 0.0, 'gnojivo' => 0.0];
+                $poKulturi[$k] ??= self::PRAZNO;
                 $poKulturi[$k][$a['vrsta']] += $iznos;
                 $art = $a['vrsta'] . '|' . Skladiste::kljuc($a['naziv']);
                 $poArtiklu[$art] ??= ['naziv' => $a['naziv'], 'vrsta' => $a['vrsta'], 'jedinica' => $a['jedinica'], 'kolicina' => 0.0, 'iznos' => 0.0];
@@ -96,22 +102,36 @@ class Troskovi
             }
         }
 
+        // ostali radovi i opći troškovi vezani uz kulturu
+        foreach (Rad::where('user_id', $user->id)->whereNotNull('trosak')->where('datum', '>=', $odS)->where('datum', '<', $doS)->get() as $r) {
+            $poKulturi[$r->kultura_id] ??= self::PRAZNO;
+            $poKulturi[$r->kultura_id]['radovi'] += (float) $r->trosak;
+        }
+        $opci = OpciTrosak::where('user_id', $user->id)->where('datum', '>=', $odS)->where('datum', '<', $doS)->get();
+        foreach ($opci->whereNotNull('kultura_id') as $o) {
+            $poKulturi[$o->kultura_id] ??= self::PRAZNO;
+            $poKulturi[$o->kultura_id]['ostalo'] += (float) $o->iznos;
+        }
+
         $kulture = Kultura::with('parcela')->whereIn('id', array_keys($poKulturi))->get()->keyBy('id');
         $redovi = collect($poKulturi)->map(function ($t, $id) use ($kulture) {
             $k = $kulture[$id] ?? null;
             $ha = (float) ($k?->posadjena_povrsina_ha ?? 0);
-            $ukupno = $t['szb'] + $t['gnojivo'];
+            $ukupno = $t['szb'] + $t['gnojivo'] + $t['radovi'] + $t['ostalo'];
 
             return [
                 'kultura_id' => $id, 'parcela_id' => $k?->parcela_id, 'parcela_ha' => (float) ($k?->parcela?->povrsina_ha ?? 0),
                 'arkod' => $k?->parcela?->arkod_broj, 'kultura' => $k?->naziv, 'godina' => $k?->godina, 'ha' => $ha,
-                'szb' => round($t['szb'], 2), 'gnojivo' => round($t['gnojivo'], 2), 'ukupno' => round($ukupno, 2),
+                'szb' => round($t['szb'], 2), 'gnojivo' => round($t['gnojivo'], 2), 'radovi' => round($t['radovi'] + $t['ostalo'], 2),
+                'ukupno' => round($ukupno, 2),
                 'po_ha' => $ha > 0 ? round($ukupno / $ha, 2) : null,
             ];
         })->sortByDesc('ukupno')->values();
 
         return [
             'nabava' => $nabava,
+            'opci_ukupno' => round((float) $opci->sum('iznos'), 2),
+            'opci_nevezano' => round((float) $opci->whereNull('kultura_id')->sum('iznos'), 2),
             'redovi' => $redovi,
             'artikli' => collect($poArtiklu)->sortByDesc('iznos')->values(),
             'bez_cijene' => $bezCijene,

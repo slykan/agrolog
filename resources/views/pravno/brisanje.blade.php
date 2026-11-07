@@ -32,7 +32,8 @@
         <h2 class="{{ $n }}">Što se briše</h2>
         <ul class="{{ $lista }}">
             <li>podaci računa i profila,</li>
-            <li>parcele, kulture i nasadi te evidencija prskanja, gnojidbe i berbe,</li>
+            <li>parcele, kulture i nasadi te evidencija prskanja, gnojidbe, berbe i ostalih radova,</li>
+            <li>opći troškovi, vožnje i spremljene rute,</li>
             <li>skladište, mehanizacija, rokovi, servisi, prinosi i troškovi,</li>
             <li>pristupi koje ste dali savjetnicima i koje su drugi dali vama,</li>
             <li>pretplate uređaja na push obavijesti.</li>

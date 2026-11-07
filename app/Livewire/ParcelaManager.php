@@ -324,9 +324,10 @@ class ParcelaManager extends Component
         $kultureIds = Kultura::where('parcela_id', $parcela->id)->pluck('id');
         $imaZapise = \App\Models\Gnojidba::whereIn('kultura_id', $kultureIds)->exists()
             || \App\Models\Prskanje::whereIn('kultura_id', $kultureIds)->exists()
-            || \App\Models\Berba::whereIn('kultura_id', $kultureIds)->exists();
+            || \App\Models\Berba::whereIn('kultura_id', $kultureIds)->exists()
+            || \App\Models\Rad::whereIn('kultura_id', $kultureIds)->exists();
         if ($imaZapise) {
-            $this->poruka = "Parcela {$parcela->arkod_broj} ima zapise gnojidbe, prskanja ili berbe i ne može se obrisati — evidenciju je obvezno čuvati.";
+            $this->poruka = "Parcela {$parcela->arkod_broj} ima zapise gnojidbe, prskanja, berbe ili radova i ne može se obrisati — evidenciju je obvezno čuvati.";
             return;
         }
 
@@ -552,7 +553,7 @@ class ParcelaManager extends Component
 
         // Brisanje bi kaskadno obrisalo i evidenciju gnojidbe/prskanja, koju je obvezno čuvati
         if ($k->imaZapise()) {
-            $this->poruka = "Kultura „{$k->naziv}\" ima zapise gnojidbe, prskanja ili berbe i ne može se obrisati. Označi je završenom ili je zamijeni novom kulturom.";
+            $this->poruka = "Kultura „{$k->naziv}\" ima zapise gnojidbe, prskanja, berbe ili radova i ne može se obrisati. Označi je završenom ili je zamijeni novom kulturom.";
             return;
         }
 

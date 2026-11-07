@@ -21,7 +21,7 @@
             <li><strong>Parcele i kulture:</strong> ARKOD brojevi, nazivi i oblici parcela koje sami ucrtate, površine, oblik parcele, kulture, sorte, broj stabala.</li>
             <li><strong>Lokacija uređaja:</strong> koristi se samo kad pri ucrtavanju parcele kliknete gumb za lokaciju. Spremamo jedino točke koje dodate u oblik parcele.</li>
             <li><strong>Evidencija:</strong> zapisi o prskanju, gnojidbi i berbi, uključujući količine, cijene i kupce koje upišete.</li>
-            <li><strong>Skladište, mehanizacija i troškovi:</strong> nabave i zalihe, strojevi, registracijske oznake, rokovi, servisi, prinosi, potpore i iznosi.</li>
+            <li><strong>Skladište, mehanizacija i troškovi:</strong> nabave i zalihe, strojevi, registracijske oznake, rokovi, servisi, ostali radovi, opći troškovi i vožnje (odredište i kilometri koje upišete), prinosi, potpore i iznosi.</li>
             <li><strong>Pristup savjetniku:</strong> e-mail pozvane osobe, prava pristupa i povijest izmjena, uključujući ime savjetnika.</li>
             <li><strong>Preporuke savjetnika:</strong> sadržaj preporuke, kultura i parcela na koju se odnosi, vaš odgovor i pitanja. Vidite ih vi i savjetnik koji ih je poslao.</li>
             <li><strong>Poziv od savjetnika:</strong> ako vas agronom ili savjetnik pozove, od njega dobivamo vašu e-mail adresu i čuvamo je uz podatak o slanju i vašem odgovoru.</li>

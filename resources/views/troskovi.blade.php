@@ -7,6 +7,9 @@
             <div class="bg-white shadow rounded-lg p-4 sm:p-6">
                 <livewire:troskovi-pregled />
             </div>
+            <div class="mt-4 sm:mt-6">
+                <livewire:opci-troskovi />
+            </div>
         </div>
     </div>
 </x-app-layout>

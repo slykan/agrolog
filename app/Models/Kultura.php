@@ -48,6 +48,7 @@ class Kultura extends Model
     public function gnojidbe() { return $this->hasMany(Gnojidba::class); }
     public function prskanja() { return $this->hasMany(Prskanje::class); }
     public function berbe() { return $this->hasMany(Berba::class); }
+    public function radovi() { return $this->hasMany(Rad::class); }
 
     /** Kulture koje su još na parceli (nisu požnjevene ni zamijenjene). */
     public function scopeAktivne($q) { return $q->whereNull('kulture.zavrsena_at'); }
@@ -63,6 +64,6 @@ class Kultura extends Model
 
     public function imaZapise(): bool
     {
-        return $this->gnojidbe()->exists() || $this->prskanja()->exists() || $this->berbe()->exists();
+        return $this->gnojidbe()->exists() || $this->prskanja()->exists() || $this->berbe()->exists() || $this->radovi()->exists();
     }
 }
