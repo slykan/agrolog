@@ -12,12 +12,13 @@ deploy() {
     git checkout -- public/build
     git clean -fdq -- public/build
 
-    # Server mora biti čist. Ručno kopirane ili izmijenjene datoteke (npr. deploy mimo gita)
-    # bi merge prepisao ili zbog njih pao, pa se tada ne radi ništa dok se ne srede.
-    if ! git diff --quiet || ! git diff --cached --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
-        echo "STOP: na serveru ima izmjena mimo gita. Ništa nije promijenjeno."
-        git status --short
-        echo "Te izmjene prvo treba komitati u repo (lokalno, pa push) ili maknuti sa servera."
+    # Datoteke koje git prati ne smiju biti ručno mijenjane na serveru (npr. deploy mimo gita):
+    # tada se ne radi ništa dok se ne srede. Datoteke kojih nema u gitu (error_log, .well-known,
+    # slike…) smiju postojati; ako bi ih merge prepisao, merge sam odbije i skripta stane.
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+        echo "STOP: na serveru su ručno izmijenjene datoteke iz gita. Ništa nije promijenjeno."
+        git status --short --untracked-files=no
+        echo "Te izmjene prvo treba komitati u repo (lokalno, pa push) ili vratiti na serveru (git checkout -- <datoteka>)."
         exit 1
     fi
 
