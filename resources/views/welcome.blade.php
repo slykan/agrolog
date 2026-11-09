@@ -106,6 +106,25 @@
                     @endauth
                 </div>
 
+                {{-- mobilne aplikacije: još nisu u trgovinama, pa namjerno nisu poveznice (i bez službenih Google Play / App Store oznaka) --}}
+                <div class="mt-5 flex flex-wrap items-center gap-3">
+                    @foreach ([['Android', 'Aplikacija za Android'], ['iPhone', 'Aplikacija za iPhone']] as [$sustav, $opis])
+                        <span title="{{ $opis }}: uskoro"
+                              class="relative inline-flex items-center gap-2.5 rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-white/55 cursor-not-allowed select-none">
+                            @if ($sustav === 'Android')
+                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7.2 9.5h9.6c.4 0 .7.3.7.7v6.6c0 .6-.5 1.1-1.1 1.1h-.8v2.4a1 1 0 01-2 0v-2.4h-3.2v2.4a1 1 0 01-2 0v-2.4h-.8c-.6 0-1.1-.5-1.1-1.1v-6.6c0-.4.3-.7.7-.7zM4.6 9.6a1 1 0 011 1v4.6a1 1 0 01-2 0v-4.6a1 1 0 011-1zm14.8 0a1 1 0 011 1v4.6a1 1 0 01-2 0v-4.6a1 1 0 011-1zM8.6 4.2l-.9-1.5a.3.3 0 01.5-.3l.9 1.6A6 6 0 0112 3.4c1 0 2 .2 2.9.6l.9-1.6a.3.3 0 01.5.3l-.9 1.5A5 5 0 0117.6 8.7H6.4a5 5 0 012.2-4.5zM10 6.3a.6.6 0 100 1.2.6.6 0 000-1.2zm4 0a.6.6 0 100 1.2.6.6 0 000-1.2z"/></svg>
+                            @else
+                                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path stroke-linecap="round" d="M10.5 5h3M11 18.5h2"/></svg>
+                            @endif
+                            <span class="leading-tight">
+                                <span class="block text-[10px] uppercase tracking-wider text-white/45">Aplikacija za</span>
+                                <span class="block text-sm font-semibold">{{ $sustav }}</span>
+                            </span>
+                            <span class="ml-1 rounded-full bg-[#86bc25] px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-[#022a20]">Uskoro</span>
+                        </span>
+                    @endforeach
+                </div>
+
                 <ul class="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-y-5 sm:divide-x sm:divide-white/15 text-sm">
                     <li class="flex items-center gap-2.5 sm:pr-4">
                         <svg class="w-8 h-8 flex-none text-[#86bc25]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M5 21c0-9 5-15 15-17-1 10-6 15-15 17zm0 0l7-7"/></svg>
