@@ -6,6 +6,7 @@
         [$gnojivaV, $gnojivaJ] = $masa($gnojiva);
         $gumb = 'inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 whitespace-nowrap';
         $oznaka = 'inline-block rounded-md border border-gray-300 px-2 py-0.5 text-xs font-semibold text-gray-600';
+        $mobilni = \App\Support\Uredjaj::jeMobilni();   // na mobitelu i u aplikaciji samo preuzimanje PDF-a
     @endphp
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -45,7 +46,8 @@
                     <p class="text-xs text-gray-500">{{ $brojPrskanja }} {{ $brojPrskanja === 1 ? 'prskanje' : 'prskanja' }}</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <a href="{{ route('izvjestaji.ispis', ['vrsta' => 'prskanje'] + $upit) }}" target="_blank" class="{{ $gumb }}">🖨 Ispis / PDF</a>
+                    <a href="{{ route('izvjestaji.pdf', ['vrsta' => 'prskanje'] + $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">PDF</span> Preuzmi</a>
+                    @unless($mobilni)<a href="{{ route('izvjestaji.ispis', ['vrsta' => 'prskanje'] + $upit) }}" target="_blank" class="{{ $gumb }}">🖨 Ispis</a>@endunless
                     <a href="{{ route('prskanje.xlsx', $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">XLSX</span> Excel (Ministarstvo)</a>
                     <a href="{{ route('prskanje.csv', $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">CSV</span> Preuzmi</a>
                 </div>
@@ -56,7 +58,8 @@
                     <p class="text-xs text-gray-500">{{ $brojGnojidbi }} {{ $brojGnojidbi === 1 ? 'gnojidba' : 'gnojidbi' }}, s N-P-K i kg dušika</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <a href="{{ route('izvjestaji.ispis', ['vrsta' => 'gnojidba'] + $upit) }}" target="_blank" class="{{ $gumb }}">🖨 Ispis / PDF</a>
+                    <a href="{{ route('izvjestaji.pdf', ['vrsta' => 'gnojidba'] + $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">PDF</span> Preuzmi</a>
+                    @unless($mobilni)<a href="{{ route('izvjestaji.ispis', ['vrsta' => 'gnojidba'] + $upit) }}" target="_blank" class="{{ $gumb }}">🖨 Ispis</a>@endunless
                     <a href="{{ route('izvjestaji.gnojidba.csv', $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">CSV</span> Preuzmi</a>
                 </div>
             </li>
@@ -66,7 +69,8 @@
                     <p class="text-xs text-gray-500">Zapisa: {{ $brojBerbi }}, s količinom, cijenom i kupcem</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <a href="{{ route('izvjestaji.ispis', ['vrsta' => 'berba'] + $upit) }}" target="_blank" class="{{ $gumb }}">🖨 Ispis / PDF</a>
+                    <a href="{{ route('izvjestaji.pdf', ['vrsta' => 'berba'] + $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">PDF</span> Preuzmi</a>
+                    @unless($mobilni)<a href="{{ route('izvjestaji.ispis', ['vrsta' => 'berba'] + $upit) }}" target="_blank" class="{{ $gumb }}">🖨 Ispis</a>@endunless
                     <a href="{{ route('izvjestaji.berba.csv', $upit) }}" class="{{ $gumb }}"><span class="{{ $oznaka }}">CSV</span> Preuzmi</a>
                 </div>
             </li>
@@ -86,7 +90,7 @@
             </li>
         </ul>
         <p class="px-4 py-3 text-xs text-gray-500 border-t border-gray-100 bg-gray-50">
-            Ispis se otvara u novoj kartici: u dijalogu ispisa odaberite „Spremi kao PDF” ili pisač (A4 položeno).
+            <strong>PDF</strong> se preuzme kao datoteka (A4 položeno) i možete ga poslati ili ispisati.@unless($mobilni) <strong>Ispis</strong> otvara evidenciju u novoj kartici za pisač.@endunless
             CSV se otvara u Excelu s ispravnim slovima (č, ć, š, ž, đ) i decimalnim zarezom.
         </p>
     </div>

@@ -3,18 +3,23 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    @include('partials.favicon')
+    @unless($pdf ?? false)
+        @include('partials.favicon')
+    @endunless
     <title>{{ ['prskanje' => 'Evidencija SZB', 'gnojidba' => 'Evidencija gnojidbe', 'berba' => 'Evidencija berbe'][$vrsta] }} {{ $od->format('d.m.Y.') }}–{{ $do->format('d.m.Y.') }}</title>
     <style>
         @page { size: A4 landscape; margin: 10mm; }
         * { box-sizing: border-box; }
         body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #111; font-size: 12px; background: #f3f4f6; }
         .list { background: #fff; max-width: 297mm; margin: 16px auto; padding: 12mm; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
-        .zaglavlje { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #111; padding-bottom: 6px; margin-bottom: 8px; }
+        /* zaglavlje i podnožje su tablice (ne flex): isti predložak ide i u PDF (dompdf ne zna flexbox) */
+        .zaglavlje { width: 100%; border-collapse: collapse; border-bottom: 2px solid #111; margin-bottom: 8px; }
+        .zaglavlje td { border: 0; padding: 0 0 6px; vertical-align: bottom; }
         .mala { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #555; font-weight: bold; }
         h1 { margin: 2px 0 0; font-size: 22px; font-weight: normal; font-family: Georgia, 'Times New Roman', serif; }
         .desno { text-align: right; font-size: 13px; }
-        .podaci { display: flex; gap: 24px; font-size: 12px; margin-bottom: 8px; color: #333; }
+        .podaci { font-size: 12px; margin-bottom: 8px; color: #333; }
+        .podaci span { margin-right: 24px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid #999; padding: 4px 6px; vertical-align: top; }
         th { background: #eee; font-size: 10.5px; text-align: left; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -22,31 +27,44 @@
         tr { break-inside: avoid; }
         thead { display: table-header-group; }
         tfoot td { font-weight: bold; background: #f7f7f7; }
-        .podnozje { margin-top: 10px; display: flex; justify-content: space-between; font-size: 11px; color: #555; }
+        .podnozje { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 11px; color: #555; }
+        .podnozje td { border: 0; padding: 0; }
         .potpis { margin-top: 24px; font-size: 12px; }
         .alati { max-width: 297mm; margin: 16px auto 0; display: flex; gap: 8px; align-items: center; font-size: 13px; }
         .alati button { background: #19653a; color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
         .prazno { padding: 30px; text-align: center; color: #666; font-size: 12px; }
         @media print { body { background: #fff; } .list { box-shadow: none; margin: 0; padding: 0; max-width: none; } .alati { display: none; } }
+        @if($pdf ?? false)
+            body { background: #fff; font-family: 'DejaVu Sans', sans-serif; font-size: 10px; }
+            h1 { font-family: 'DejaVu Serif', serif; font-size: 18px; }
+            .list { box-shadow: none; margin: 0; padding: 0; max-width: none; }
+            th { font-size: 8.5px; }
+            th, td { padding: 3px 4px; }
+            .desno { font-size: 11px; }
+        @endif
     </style>
 </head>
 <body>
+    @unless($pdf ?? false)
     <div class="alati">
         <button onclick="window.print()">🖨 Ispis / Spremi kao PDF</button>
         <span>U dijalogu ispisa odaberite „Spremi kao PDF” ili pisač.</span>
     </div>
+    @endunless
 
     <div class="list">
-        <div class="zaglavlje">
-            <div>
-                <div class="mala">Evidencija</div>
-                <h1>{{ ['prskanje' => 'Primjena sredstava za zaštitu bilja', 'gnojidba' => 'Gnojidba', 'berba' => 'Berba i žetva'][$vrsta] }}</h1>
-            </div>
-            <div class="desno">
-                <strong>{{ $user->naziv_gospodarstva ?: $user->name }}</strong><br>
-                {{ $od->format('d.m.Y.') }} – {{ $do->format('d.m.Y.') }}
-            </div>
-        </div>
+        <table class="zaglavlje">
+            <tr>
+                <td>
+                    <div class="mala">Evidencija</div>
+                    <h1>{{ ['prskanje' => 'Primjena sredstava za zaštitu bilja', 'gnojidba' => 'Gnojidba', 'berba' => 'Berba i žetva'][$vrsta] }}</h1>
+                </td>
+                <td class="desno">
+                    <strong>{{ $user->naziv_gospodarstva ?: $user->name }}</strong><br>
+                    {{ $od->format('d.m.Y.') }} – {{ $do->format('d.m.Y.') }}
+                </td>
+            </tr>
+        </table>
         <div class="podaci">
             <span>Korisnik: <strong>{{ $user->name }}</strong></span>
             @if($user->mipg)<span>MIPG: <strong>{{ $user->mipg }}</strong></span>@endif
@@ -162,13 +180,15 @@
         @endif
 
         <div class="potpis">Potpis odgovorne osobe: ______________________________</div>
-        <div class="podnozje">
-            <span>Broj zapisa: {{ $redovi->count() }}</span>
-            <span>Izrađeno u AgroLogu {{ now()->format('d.m.Y.') }}</span>
-        </div>
+        <table class="podnozje">
+            <tr>
+                <td>Broj zapisa: {{ $redovi->count() }}</td>
+                <td style="text-align: right">Izrađeno u AgroLogu {{ now()->format('d.m.Y.') }}</td>
+            </tr>
+        </table>
     </div>
 
-    @if($automatski)
+    @if($automatski && ! ($pdf ?? false))
         <script>window.addEventListener('load', () => setTimeout(() => window.print(), 400));</script>
     @endif
 </body>

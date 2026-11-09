@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Support\Izvjestaji;
 use App\Support\SzbPopisi;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -13,16 +14,46 @@ class IzvjestajiController extends Controller
 {
     public function ispis(Request $request, string $vrsta): View
     {
+        return view('izvjestaji.ispis', $this->podaci($request, $vrsta) + ['automatski' => ! $request->boolean('bez_ispisa'), 'pdf' => false]);
+    }
+
+    /** Isti ispis kao PDF datoteka (za mobitel i Android aplikaciju, gdje ispis iz preglednika nije praktičan). */
+    public function pdf(Request $request, string $vrsta): Response
+    {
+        $podaci = $this->podaci($request, $vrsta);
+        $html = view('izvjestaji.ispis', $podaci + ['automatski' => false, 'pdf' => true])->render();
+
+        $opcije = new \Dompdf\Options();
+        $opcije->set('defaultFont', 'DejaVu Sans');
+        $opcije->set('isRemoteEnabled', false);   // nikad ne dohvaća vanjske adrese
+        $opcije->set('tempDir', storage_path('framework/cache'));
+        $opcije->set('fontCache', storage_path('framework/cache'));
+        $dompdf = new \Dompdf\Dompdf($opcije);
+        $dompdf->loadHtml($html, 'UTF-8');
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $ime = ['prskanje' => 'evidencija-szb', 'gnojidba' => 'evidencija-gnojidbe', 'berba' => 'evidencija-berbe'][$vrsta]
+            . '-' . $podaci['od']->format('Y-m-d') . '-' . $podaci['do']->format('Y-m-d') . '.pdf';
+
+        return response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $ime . '"',
+            'Cache-Control' => 'private, no-store',
+        ]);
+    }
+
+    private function podaci(Request $request, string $vrsta): array
+    {
         abort_unless(in_array($vrsta, ['prskanje', 'gnojidba', 'berba'], true), 404);
         [$od, $do] = Izvjestaji::razdoblje($request);
         $user = $request->user();
 
-        return view('izvjestaji.ispis', [
+        return [
             'vrsta' => $vrsta, 'od' => $od, 'do' => $do, 'user' => $user,
             'redovi' => match ($vrsta) { 'prskanje' => Izvjestaji::prskanja($user, $od, $do), 'gnojidba' => Izvjestaji::gnojidbe($user, $od, $do), 'berba' => Izvjestaji::berbe($user, $od, $do) },
             'vrste' => SzbPopisi::VRSTE_UPORABE_KRATKO, 'sustavi' => SzbPopisi::SUSTAVI,
-            'automatski' => ! $request->boolean('bez_ispisa'),
-        ]);
+        ];
     }
 
     public function gnojidbeCsv(Request $request): StreamedResponse

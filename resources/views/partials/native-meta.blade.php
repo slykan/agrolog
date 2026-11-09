@@ -10,7 +10,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="agro-native-push" data-user="{{ $nativeKorisnik?->id }}" data-enabled="{{ $nativeKorisnik && $nativeKorisnik->push_obavijesti ? '1' : '0' }}">
 <script>
-    // Android aplikacija: window.print() u WebViewu ne radi ništa, pa ispis ide preko posebne adrese koju aplikacija presretne
+    // Android aplikacija: ispis iz WebViewa ne radi ništa, pa ide preko posebne adrese koju aplikacija presretne
     // (samo od verzije 0.5, starija aplikacija tu adresu ne zna presresti)
     (function () {
         var v = /AgroLogNative\/(\d+)\.(\d+)/.exec(navigator.userAgent);

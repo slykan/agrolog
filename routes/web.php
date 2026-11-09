@@ -98,6 +98,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/troskovi', fn() => view('troskovi'))->name('troskovi');
     Route::get('/izvjestaji', fn() => view('izvjestaji'))->name('izvjestaji');
     Route::get('/izvjestaji/ispis/{vrsta}', [\App\Http\Controllers\IzvjestajiController::class, 'ispis'])->name('izvjestaji.ispis');
+    Route::get('/izvjestaji/pdf/{vrsta}', [\App\Http\Controllers\IzvjestajiController::class, 'pdf'])->middleware('throttle:20,1')->name('izvjestaji.pdf');
     Route::get('/izvjestaji/gnojidba.csv', [\App\Http\Controllers\IzvjestajiController::class, 'gnojidbeCsv'])->name('izvjestaji.gnojidba.csv');
     Route::get('/izvjestaji/berba.csv', [\App\Http\Controllers\IzvjestajiController::class, 'berbeCsv'])->name('izvjestaji.berba.csv');
     Route::get('/izvjestaji/skladiste.csv', [\App\Http\Controllers\IzvjestajiController::class, 'skladisteCsv'])->name('izvjestaji.skladiste.csv');

@@ -14,7 +14,12 @@
     <div class="flex flex-wrap items-center justify-end gap-2 mb-4 no-print">
         <div class="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
             <button wire:click="addRow" class="btn-primary">+ Dodaj</button>
-            <button onclick="window.print()" class="btn-secondary">&#128424; Print / PDF</button>
+            @if(\App\Support\Uredjaj::jeMobilni())
+                {{-- mobitel i aplikacija: PDF datoteka umjesto ispisa iz preglednika (za druga razdoblja: Izvještaji) --}}
+                <a href="{{ route('izvjestaji.pdf', ['vrsta' => 'prskanje']) }}" class="btn-secondary text-center" title="Evidencija za {{ date('Y') }}. kao PDF datoteka">&#11015; PDF {{ date('Y') }}.</a>
+            @else
+                <button onclick="window.print()" class="btn-secondary">&#128424; Print / PDF</button>
+            @endif
             <a href="{{ route('prskanje.xlsx') }}" class="btn-secondary" title="Ministarstvov predložak „Evidencija SBZ.xlsx” (EU 2023/564), popunjen vašim zapisima">&#11015; Excel (Ministarstvo)</a>
             <a href="{{ route('prskanje.csv') }}" class="btn-secondary" title="Evidencija u strojno čitljivom obliku (CSV za Excel)">&#11015; Izvoz CSV</a>
         </div>
