@@ -13,6 +13,7 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Admin &mdash; korisnici</h2>
             <div class="flex flex-wrap gap-2">
+                <a href="{{ route('admin.gospodarstva') }}" class="btn-secondary">Gospodarstva</a>
                 <a href="{{ route('admin.oglasi') }}" class="btn-secondary">Oglasi</a>
                 <a href="{{ route('admin.obavijesti') }}" class="btn-primary">&#9993; Obavijest svima</a>
             </div>

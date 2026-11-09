@@ -98,6 +98,9 @@
                             <x-dropdown-link :href="route('admin.obavijesti')">
                                 Obavijesti korisnicima
                             </x-dropdown-link>
+                            <x-dropdown-link :href="route('admin.gospodarstva')">
+                                Gospodarstva{{ ($naPregledu = \App\Models\Prezentacija::where('vidljivo', true)->whereNull('odobreno_at')->whereNull('odbijeno_razlog')->count()) ? ' (' . $naPregledu . ' čeka)' : '' }}
+                            </x-dropdown-link>
                         @endcan
 
                         <!-- Authentication -->
@@ -176,6 +179,9 @@
                     </x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('admin.obavijesti')" :active="request()->routeIs('admin.obavijesti*')">
                         Obavijesti korisnicima
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.gospodarstva')" :active="request()->routeIs('admin.gospodarstva*')">
+                        Gospodarstva na popisu
                     </x-responsive-nav-link>
                 @endcan
 

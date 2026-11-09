@@ -13,6 +13,12 @@
                 </div>
             </div>
 
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg scroll-mt-4" id="prezentacija">
+                <div class="max-w-2xl">
+                    @include('profile.partials.prezentacija')
+                </div>
+            </div>
+
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg" id="obavijesti">
                 <div class="max-w-2xl">
                     @include('profile.partials.obavijesti')

@@ -64,6 +64,10 @@ Route::get('/sitemap.xml', function () {
     foreach (SadrzajController::vodici() as $v) {
         $urls[] = ['loc' => route('vodic', $v['slug']), 'priority' => '0.8', 'changefreq' => 'monthly'];
     }
+    $urls[] = ['loc' => route('gospodarstva'), 'priority' => '0.8', 'changefreq' => 'daily'];
+    foreach (\App\Models\Prezentacija::javne()->pluck('slug') as $s) {
+        $urls[] = ['loc' => route('gospodarstvo', $s), 'priority' => '0.6', 'changefreq' => 'weekly'];
+    }
     return response()->view('sitemap', compact('urls'))
         ->header('Content-Type', 'application/xml');
 })->name('sitemap');

@@ -62,6 +62,7 @@
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
                     <a href="#profil" class="block text-gray-600 hover:text-green-700 py-1 transition">8. Profil i obavijesti</a>
+                    <a href="#gospodarstva" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Gospodarstvo na javnom popisu</a>
                     <a href="#obavijesti" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Push i mail obavijesti</a>
                     <a href="#savjetnik" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Pristup savjetniku</a>
                     <a href="#preporuke" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Preporuke savjetnika</a>
@@ -542,10 +543,39 @@
                         <ul class="list-disc pl-6 space-y-1">
                             <li>Naziv gospodarstva, MIPG broj, OIB</li>
                             <li>Ime i prezime, e-mail adresa, lozinka</li>
+                            <li><a href="#gospodarstva" class="text-green-700 hover:underline">Prezentacija na AgroLogu</a>: po želji javno predstavljanje gospodarstva</li>
                         </ul>
                         <p>U istom padajućem izborniku pod imenom su i ove <strong>Upute</strong>, a u profilu i <a href="#savjetnik" class="text-green-700 hover:underline">pristup savjetniku</a>.</p>
 
                         <p>O obavijestima mailom i na mobitel pročitajte u poglavlju <a href="#obavijesti" class="text-green-700 hover:underline">Push i mail obavijesti</a>. Sve novosti su i na stranici <a href="{{ route('novosti') }}" class="text-green-700 hover:underline font-medium">Novosti</a>.</p>
+                    </div>
+                </section>
+
+                {{-- GOSPODARSTVO NA JAVNOM POPISU --}}
+                <section id="gospodarstva" class="scroll-mt-24">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Gospodarstvo na javnom popisu</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Na stranici <a href="{{ route('gospodarstva') }}" class="text-green-700 hover:underline font-medium">Gospodarstva</a> kupci traže proizvođače po mjestu, županiji i onome što nude. Predstavljanje je besplatno i dobrovoljno.</p>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Otvorite <strong>Profil</strong> i pronađite sekciju <strong>Prezentacija na AgroLogu</strong>, odmah ispod podataka o gospodarstvu</li>
+                            <li>Označite <strong>Želim da moje gospodarstvo bude na javnom popisu</strong>. Tek tada se pojave polja</li>
+                            <li>Obavezno upišite naziv, mjesto i županiju, opis (barem 50 znakova), odaberite što nudite (do 8 oznaka) i kontakt telefon</li>
+                            <li>Po želji dodajte sliku, e-mail, adresu, WhatsApp ili Viber, prodaju na kućnom pragu s vremenom kada se može doći te poveznice na web, Facebook i Instagram</li>
+                            <li>Kliknite <strong>Spremi prezentaciju</strong></li>
+                        </ol>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>Prva objava ide na pregled.</strong> Kad je odobrimo, javimo vam mailom. Ako nešto treba doraditi, u mailu i u profilu piše razlog. Izmjene već objavljene prezentacije vidljive su odmah.</li>
+                            <li><strong>Broj telefona</strong> nije ispisan na stranici, nego se prikaže klikom na <strong>Prikaži broj</strong>. Tako ga roboti teže skupljaju.</li>
+                            <li><strong>Na karti</strong> se gospodarstvo prikazuje približno, oko sredine vaših parcela (na oko 1 km), nikad na točnoj adresi. Bez parcela nema ga na karti.</li>
+                            <li>Ako u zadnjih godinu dana vodite evidenciju prskanja, gnojidbe ili berbe, uz prezentaciju piše <strong>Vodi evidenciju u AgroLogu</strong>. Sama evidencija nikad nije javna.</li>
+                            <li>Kad maknete kvačicu i spremite, gospodarstvo odmah nestaje s popisa, a podaci ostaju za kasnije. Gumb <strong>Obriši prezentaciju</strong> briše sve, i sliku.</li>
+                        </ul>
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+                            Sve što upišete u prezentaciju je <strong>javno</strong>. Objavite samo svoje fotografije i podatke koje želite da kupci vide.
+                        </div>
                     </div>
                 </section>
 
