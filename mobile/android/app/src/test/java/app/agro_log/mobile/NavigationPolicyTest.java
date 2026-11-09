@@ -16,4 +16,19 @@ public class NavigationPolicyTest {
         };
         for (String url : rejected) assertFalse(String.valueOf(url), NavigationPolicy.isInternal(url));
     }
+
+    @Test public void printRequestOnlyOnOwnOrigin() {
+        assertTrue(NavigationPolicy.isPrintRequest("https://agro-log.app/__aplikacija/ispis"));
+        assertFalse(NavigationPolicy.isPrintRequest("https://evil.test/__aplikacija/ispis"));
+        assertFalse(NavigationPolicy.isPrintRequest("https://agro-log.app/prskanje"));
+    }
+
+    @Test public void externalSchemesAreAllowListed() {
+        String[] allowed = {"https://wa.me/385912345678", "viber://chat?number=%2B385912345678", "whatsapp://send?phone=385",
+            "tel:+385912345678", "mailto:info@agro-log.app", "sms:+385912345678", "geo:45.5,18.7"};
+        for (String url : allowed) assertTrue(url, NavigationPolicy.isAllowedExternal(url));
+        String[] rejected = {"intent://scan/#Intent;scheme=zxing;end", "javascript:alert(1)", "file:///sdcard/x",
+            "content://x/y", "data:text/html,x", "http://agro-log.app/", "market://details?id=x", "", null};
+        for (String url : rejected) assertFalse(String.valueOf(url), NavigationPolicy.isAllowedExternal(url));
+    }
 }

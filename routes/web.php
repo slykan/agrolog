@@ -8,7 +8,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SadrzajController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/', function (\Illuminate\Http\Request $request) {
+    // u mobilnoj aplikaciji prijavljeni korisnik s naslovnice (logo, poveznice) ide na Početnu; u pregledniku ostaje naslovnica
+    if ($request->user() && str_contains((string) $request->userAgent(), 'AgroLogNative/')) {
+        return redirect()->route('dashboard');
+    }
+
     return view('welcome');
 })->name('home');
 

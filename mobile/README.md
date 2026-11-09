@@ -1,4 +1,14 @@
-# AgroLog mobilna aplikacija — prototip 0.4
+# AgroLog mobilna aplikacija — prototip 0.5
+
+Verzija 0.5 (9. 11. 2026.):
+
+- **Odabir datoteka** u WebViewu: slika gospodarstva, proizvoda na Tržnici i admin oglasa.
+- **Lokacija** za gumb „Moja lokacija” pri ucrtavanju parcele (Android dopuštenje traži se tek pri kliku, samo za agro-log.app).
+- **Ispis / PDF**: web od 0.5 umjesto `window.print()` otvara `/__aplikacija/ispis`, a aplikacija pokreće Androidov ispis (A4 položeno). Starije verzije aplikacije web ne preusmjerava.
+- **Vanjske poveznice** s popisa dopuštenih: https, mailto, tel, sms, viber, whatsapp, geo. Nikad intent://, javascript:, file:, content: ni data:.
+- Serverski ispravak (ne traži novi APK): oznaka `agro-native-push` i `csrf-token` sada su na svim stranicama, i javnima. Prije je otvaranje Tržnice, Gospodarstava ili Uputa brisalo korisnika iz push postavki aplikacije i njegove obavijesti.
+
+**Objava samo kroz git** (`deploy.sh`), nikad izravnim kopiranjem datoteka na server.
 
 Verzija 0.4 povezuje Android FCM push s postojećim obavijestima. Android konfiguracija za projekt `agrolog-4e3e7` uključena je u APK, serverski dio je objavljen, a Firebase dry-run provjera ovlasti vraća HTTP 200. **Stvarna dostava na mobitel još treba potvrdu.** Nakon instalacije i dopuštenja za obavijesti, u Profil → Obavijesti dostupan je gumb za probnu notifikaciju. Detalji su u [FIREBASE-SETUP.md](FIREBASE-SETUP.md).
 

@@ -36,6 +36,12 @@ public class MainActivity extends Activity {
     private boolean splashReady;
     private final Handler launchHandler = new Handler(Looper.getMainLooper());
     private final Runnable releaseSplash = () -> splashReady = true;
+    // odabir datoteke (<input type="file">) i dopuštenje za lokaciju (navigator.geolocation)
+    private static final int REQUEST_FILE = 45;
+    private static final int REQUEST_LOCATION = 46;
+    private android.webkit.ValueCallback<Uri[]> fileCallback;
+    private android.webkit.GeolocationPermissions.Callback geoCallback;
+    private String geoOrigin;
 
     @Override public void onCreate(Bundle state) {
         setTheme(R.style.AppTheme);
@@ -96,15 +102,50 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        settings.setGeolocationEnabled(true);
         settings.setUserAgentString(settings.getUserAgentString() + " AgroLogNative/" + BuildConfig.VERSION_NAME + " Android");
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().setAcceptThirdPartyCookies(web, false);
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
-        web.setWebChromeClient(new android.webkit.WebChromeClient());
+        web.setWebChromeClient(new android.webkit.WebChromeClient() {
+            // slika gospodarstva, proizvoda na Tržnici, oglasa: sistemski odabir datoteke
+            @Override public boolean onShowFileChooser(WebView view, android.webkit.ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (!NavigationPolicy.isInternal(view.getUrl())) { callback.onReceiveValue(null); return true; }
+                if (fileCallback != null) fileCallback.onReceiveValue(null);
+                fileCallback = callback;
+                try {
+                    startActivityForResult(params.createIntent(), REQUEST_FILE);
+                } catch (ActivityNotFoundException e) {
+                    fileCallback = null;
+                    callback.onReceiveValue(null);
+                    toast("Nema aplikacije za odabir datoteke.");
+                }
+                return true;
+            }
+
+            // ucrtavanje parcele "Moja lokacija": samo za agro-log.app, uz Androidovo dopuštenje
+            @Override public void onGeolocationPermissionsShowPrompt(String origin, android.webkit.GeolocationPermissions.Callback callback) {
+                if (!NavigationPolicy.isInternal(origin)) { callback.invoke(origin, false, false); return; }
+                if (hasLocationPermission()) { callback.invoke(origin, true, false); return; }
+                geoOrigin = origin;
+                geoCallback = callback;
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+            }
+
+            @Override public void onGeolocationPermissionsHidePrompt() {
+                geoCallback = null;
+                geoOrigin = null;
+            }
+        });
         web.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
                 if (!request.isForMainFrame()) return !NavigationPolicy.isInternal(uri.toString());
+                if (NavigationPolicy.isPrintRequest(uri.toString())) {
+                    printPage();
+                    return true;
+                }
                 if (NavigationPolicy.isInternal(uri.toString())) {
                     if ("/auth/google".equals(uri.getPath())) {
                         Uri prepare = Uri.parse(NavigationPolicy.ORIGIN + "/auth/mobile/google").buildUpon()
@@ -120,9 +161,14 @@ public class MainActivity extends Activity {
                     }
                     return false;
                 }
-                if ("https".equals(uri.getScheme()) || "mailto".equals(uri.getScheme()) || "tel".equals(uri.getScheme())) {
+                if (NavigationPolicy.isAllowedExternal(uri.toString())) {
                     try { startActivity(new Intent(Intent.ACTION_VIEW, uri).addCategory(Intent.CATEGORY_BROWSABLE)); }
-                    catch (ActivityNotFoundException e) { toast("Nema aplikacije za otvaranje poveznice."); }
+                    catch (ActivityNotFoundException e) {
+                        String scheme = uri.getScheme() == null ? "" : uri.getScheme();
+                        toast("viber".equals(scheme) ? "Viber nije instaliran na ovom mobitelu."
+                            : "whatsapp".equals(scheme) ? "WhatsApp nije instaliran na ovom mobitelu."
+                            : "Nema aplikacije za otvaranje poveznice.");
+                    }
                 }
                 return true;
             }
@@ -189,6 +235,30 @@ public class MainActivity extends Activity {
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
         super.onRequestPermissionsResult(requestCode, permissions, results);
         if (requestCode == 44) nativePush.sync(web);
+        if (requestCode == REQUEST_LOCATION && geoCallback != null) {
+            geoCallback.invoke(geoOrigin, hasLocationPermission(), false);
+            geoCallback = null;
+            geoOrigin = null;
+        }
+    }
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQUEST_FILE || fileCallback == null) return;
+        fileCallback.onReceiveValue(android.webkit.WebChromeClient.FileChooserParams.parseResult(resultCode, data));
+        fileCallback = null;
+    }
+    private boolean hasLocationPermission() {
+        return checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+            || checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED;
+    }
+    /** Ispis / spremanje u PDF trenutne stranice (web od 0.5 umjesto window.print() otvara /__aplikacija/ispis). */
+    private void printPage() {
+        android.print.PrintManager manager = (android.print.PrintManager) getSystemService(PRINT_SERVICE);
+        String naslov = web.getTitle() == null || web.getTitle().isEmpty() ? "AgroLog" : web.getTitle();
+        android.print.PrintAttributes atributi = new android.print.PrintAttributes.Builder()
+            .setMediaSize(android.print.PrintAttributes.MediaSize.ISO_A4.asLandscape()).build();
+        try { manager.print(naslov, web.createPrintDocumentAdapter(naslov), atributi); }
+        catch (RuntimeException e) { toast("Ispis nije uspio. Pokušajte ponovno."); }
     }
     @Override protected void onResume() {
         super.onResume();
