@@ -3,7 +3,8 @@
     $greske = $errors->getBag('prezentacija');
     $iz = fn ($polje, $zadano = null) => old($polje, $p?->{$polje} ?? $zadano);
     $odabrane = old('oznake', $p?->oznake ?? []);
-    $uklj = (bool) old('vidljivo', $p?->vidljivo ?? false);
+    $uvod = $uvod ?? false;   // stranica odmah nakon registracije
+    $uklj = (bool) old('vidljivo', $p?->vidljivo ?? $uvod);
     $status = $p?->status();
     $centar = \App\Models\Prezentacija::priblizno($user->id);
     $pin = old('lat') !== null && old('lng') !== null ? [(float) old('lat'), (float) old('lng')] : ($p?->lat !== null ? [(float) $p->lat, (float) $p->lng] : null);
@@ -30,11 +31,13 @@
                 <strong>{{ $oznakaStatusa[1] }}</strong> · {{ $oznakaStatusa[2] }}
                 @if($status === 'javno')<a href="{{ route('gospodarstvo', $p->slug) }}" target="_blank" class="ml-1 font-medium underline">Pogledaj stranicu →</a>@endif
             </div>
+            <a href="{{ route('trznica.moji') }}" class="mt-2 inline-block text-sm font-medium text-green-700 underline">Dodaj proizvode na Tržnicu →</a>
         @endif
     @endif
 
     <form method="post" action="{{ route('profile.prezentacija') }}" enctype="multipart/form-data" class="mt-6 space-y-5">
         @csrf
+        @if($uvod)<input type="hidden" name="natrag" value="uvod">@endif
         <input type="hidden" name="vidljivo" value="0">
         <label for="vidljivo" class="flex items-start gap-3 rounded-lg border border-gray-200 p-3 cursor-pointer has-[:checked]:border-green-600 has-[:checked]:bg-green-50">
             <input id="vidljivo" type="checkbox" name="vidljivo" value="1" x-model="uklj" class="mt-0.5 rounded border-gray-300 text-green-700 focus:ring-green-500">

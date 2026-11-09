@@ -10,6 +10,12 @@
             <span class="text-sm text-gray-700"><strong class="block text-gray-900">Agronom sam ili savjetnik</strong>Nakon registracije možete pozvati svoje poljoprivrednike.</span>
         </label>
 
+        <!-- Predstavljanje na javnom popisu Gospodarstva -->
+        <label id="prezentacija-polje" for="zeli_prezentaciju" class="flex items-start gap-3 rounded-lg border border-gray-200 p-3 mb-4 cursor-pointer has-[:checked]:border-green-600 has-[:checked]:bg-green-50">
+            <input id="zeli_prezentaciju" type="checkbox" name="zeli_prezentaciju" value="1" class="mt-0.5 rounded border-gray-300 text-green-700 focus:ring-green-500" @checked(old('zeli_prezentaciju'))>
+            <span class="text-sm text-gray-700"><strong class="block text-gray-900">Želim besplatno predstaviti gospodarstvo</strong>Kupci vas pronađu na popisu <a href="{{ route('gospodarstva') }}" target="_blank" class="text-green-700 underline">Gospodarstva</a> po mjestu i onome što nudite, a proizvode možete staviti na Tržnicu. Podatke upisujete nakon registracije, a objavljujemo ih tek kad ih pregledamo.</span>
+        </label>
+
         <!-- Naziv gospodarstva -->
         <div>
             <x-input-label id="naziv-oznaka" for="naziv_gospodarstva" value="Naziv gospodarstva" />
@@ -110,12 +116,19 @@
             var kvacica = document.getElementById('je_savjetnik');
             var google = document.getElementById('google-registracija');
             var googleAdresa = google.getAttribute('href');
+            var prezentacija = document.getElementById('zeli_prezentaciju');
             function primijeni() {
                 document.getElementById('naziv-oznaka').textContent = kvacica.checked ? 'Naziv tvrtke ili ime' : 'Naziv gospodarstva';
                 document.getElementById('mipg-polje').style.display = kvacica.checked ? 'none' : '';
-                google.setAttribute('href', googleAdresa + (kvacica.checked ? '?savjetnik=1' : ''));
+                // savjetnik se ne predstavlja kao gospodarstvo
+                document.getElementById('prezentacija-polje').style.display = kvacica.checked ? 'none' : '';
+                var parametri = [];
+                if (kvacica.checked) parametri.push('savjetnik=1');
+                else if (prezentacija.checked) parametri.push('prezentacija=1');
+                google.setAttribute('href', googleAdresa + (parametri.length ? '?' + parametri.join('&') : ''));
             }
             kvacica.addEventListener('change', primijeni);
+            prezentacija.addEventListener('change', primijeni);
             primijeni();
         })();
     </script>

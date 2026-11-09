@@ -55,6 +55,7 @@ class RegisteredUserController extends Controller
             'mipg'               => ['nullable', 'string', 'max:50'],
             'oib'                => ['nullable', 'string', 'max:11'],
             'je_savjetnik'       => ['nullable', 'boolean'],
+            'zeli_prezentaciju'  => ['nullable', 'boolean'],
         ]);
 
         $user = User::create([
@@ -65,6 +66,7 @@ class RegisteredUserController extends Controller
             'mipg'               => $request->mipg,
             'oib'                => $request->oib,
             'je_savjetnik'       => $request->boolean('je_savjetnik'),
+            'zeli_prezentaciju'  => ! $request->boolean('je_savjetnik') && $request->boolean('zeli_prezentaciju'),
         ]);
 
         event(new Registered($user));

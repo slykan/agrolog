@@ -16,6 +16,17 @@
                 </div>
             @endif
 
+            {{-- Kvačica s registracije "želim predstaviti gospodarstvo", a prezentacija još nije poslana --}}
+            @if(auth()->user()->zeli_prezentaciju && ! request()->attributes->has('savjetnik') && ! auth()->user()->prezentacija()->where('vidljivo', true)->exists())
+                <div class="rounded-xl border border-green-200 bg-green-50 p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-sm text-green-900"><strong>Dovršite predstavljanje gospodarstva.</strong> Kupci vas tada pronađu na popisu Gospodarstva, a proizvode možete staviti na Tržnicu.</p>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <a href="{{ route('profile.edit') }}#prezentacija" class="btn-primary whitespace-nowrap text-center">Predstavi gospodarstvo</a>
+                        <form method="post" action="{{ route('profile.prezentacija.odustani') }}">@csrf<button class="text-sm text-gray-600 underline whitespace-nowrap">Ne želim</button></form>
+                    </div>
+                </div>
+            @endif
+
             {{-- Što je novo: najnovija novost, može se zatvoriti (pamti se u pregledniku po novosti) --}}
             @php
                 $novost = \App\Http\Controllers\SadrzajController::novosti()[0] ?? null;

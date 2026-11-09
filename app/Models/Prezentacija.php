@@ -30,6 +30,7 @@ class Prezentacija extends Model
         'Vukovarsko-srijemska', 'Zadarska', 'Zagrebačka'];
 
     public function user() { return $this->belongsTo(User::class); }
+    public function proizvodi() { return $this->hasMany(Proizvod::class); }
 
     public function scopeJavne($q)
     {

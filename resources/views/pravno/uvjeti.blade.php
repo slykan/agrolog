@@ -74,7 +74,7 @@
     <section>
         <h2 class="{{ $n }}">10. Sadržaj i oglasi</h2>
         <p>Tekstovi, izgled, logotip i kod AgroLoga zaštićeni su i ne smiju se kopirati bez dopuštenja. Vodiči su opće informacije. U AgroLogu, uključujući početnu stranicu aplikacije, mogu se prikazivati oglasi, označeni kao oglas. Za proizvode i usluge oglašivača odgovara oglašivač, a prikaz oglasa ne znači da ih preporučujemo.</p>
-        <p class="mt-3">Prezentaciju na popisu Gospodarstva objavljuje samo gospodarstvo i odgovara za njezin sadržaj: točnost podataka, prava na fotografije i ponudu. Prvu objavu pregledavamo, a prezentaciju koja je netočna, neprimjerena ili protivna zakonu možemo skinuti s popisa. AgroLog ne posreduje u prodaji i nije strana u dogovoru između kupca i gospodarstva.</p>
+        <p class="mt-3">Prezentaciju na popisu Gospodarstva i oglase na Tržnici objavljuje samo gospodarstvo i odgovara za njihov sadržaj: točnost podataka i cijena, prava na fotografije, proizvode i njihovu usklađenost s propisima. Prvu objavu pregledavamo, a prezentaciju koja je netočna, neprimjerena ili protivna zakonu kao i takav oglas, možemo skinuti. AgroLog ne prodaje, ne posreduje u prodaji i nije strana u dogovoru između kupca i gospodarstva.</p>
     </section>
 
     <section>

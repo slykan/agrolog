@@ -108,7 +108,8 @@ public class MainActivity extends Activity {
                 if (NavigationPolicy.isInternal(uri.toString())) {
                     if ("/auth/google".equals(uri.getPath())) {
                         Uri prepare = Uri.parse(NavigationPolicy.ORIGIN + "/auth/mobile/google").buildUpon()
-                            .appendQueryParameter("savjetnik", uri.getQueryParameter("savjetnik")).build();
+                            .appendQueryParameter("savjetnik", uri.getQueryParameter("savjetnik"))
+                            .appendQueryParameter("prezentacija", uri.getQueryParameter("prezentacija")).build();
                         web.loadUrl(prepare.toString());
                         return true;
                     }

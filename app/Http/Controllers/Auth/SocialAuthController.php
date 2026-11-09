@@ -18,7 +18,7 @@ class SocialAuthController extends Controller
     {
         session()->forget('mobile_google_browser_state');
         // kvačica "agronom ili savjetnik" s registracije; vrijedi samo za novi račun
-        session(['registracija_savjetnik' => request()->boolean('savjetnik')]);
+        session(['registracija_savjetnik' => request()->boolean('savjetnik'), 'registracija_prezentacija' => request()->boolean('prezentacija')]);
 
         return Socialite::driver('google')->redirect();
     }
@@ -61,7 +61,8 @@ class SocialAuthController extends Controller
                     'avatar'              => $googleUser->getAvatar(),
                     'naziv_gospodarstva'  => '',
                     'password'            => bcrypt(Str::random(32)),
-                    'je_savjetnik'        => (bool) session()->pull('registracija_savjetnik', false),
+                    'je_savjetnik'        => $savjetnik = (bool) session()->pull('registracija_savjetnik', false),
+                    'zeli_prezentaciju'   => ! $savjetnik && (bool) session()->pull('registracija_prezentacija', false),
                 ]);
 
                 try {

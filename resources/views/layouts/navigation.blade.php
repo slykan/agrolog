@@ -17,7 +17,7 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-6 2xl:space-x-8 xl:-my-px xl:ms-8 2xl:ms-10 xl:flex">
+                <div class="hidden space-x-4 2xl:space-x-6 xl:-my-px xl:ms-6 2xl:ms-8 xl:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         Početna
                     </x-nav-link>
@@ -51,6 +51,20 @@
                     <x-nav-link :href="route('izvjestaji')" :active="request()->routeIs('izvjestaji*')">
                         Izvještaji
                     </x-nav-link>
+                    {{-- Tržnica: svi oglasi (javno) i moji proizvodi --}}
+                    <div class="relative inline-flex" x-data="{ trz: false }" @click.outside="trz = false" @keydown.escape.window="trz = false">
+                        <button type="button" @click="trz = ! trz" :aria-expanded="trz"
+                                class="inline-flex items-center gap-1 px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out {{ request()->routeIs('trznica*') ? 'border-green-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
+                            Tržnica
+                            <svg class="h-4 w-4 transition" :class="trz && 'rotate-180'" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        </button>
+                        <div x-show="trz" x-cloak x-transition.origin.top.left
+                             class="absolute left-0 top-full z-50 mt-1 w-52 rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5">
+                            <a href="{{ route('trznica') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('trznica') ? 'bg-green-50 text-green-800 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">Svi oglasi</a>
+                            <a href="{{ route('trznica.moji') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('trznica.moji*') ? 'bg-green-50 text-green-800 font-medium' : 'text-gray-700 hover:bg-gray-100' }}">Moji proizvodi</a>
+                            <a href="{{ route('gospodarstva') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Gospodarstva</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -144,6 +158,10 @@
             <x-responsive-nav-link :href="route('mehanizacija')" :active="request()->routeIs('mehanizacija')">Mehanizacija</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('troskovi')" :active="request()->routeIs('troskovi')">Troškovi</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('izvjestaji')" :active="request()->routeIs('izvjestaji*')">Izvještaji</x-responsive-nav-link>
+            <div class="ps-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Tržnica</div>
+            <x-responsive-nav-link :href="route('trznica')" :active="request()->routeIs('trznica')" class="ps-7">Svi oglasi</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('trznica.moji')" :active="request()->routeIs('trznica.moji*')" class="ps-7">Moji proizvodi</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('gospodarstva')" class="ps-7">Gospodarstva</x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

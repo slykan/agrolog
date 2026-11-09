@@ -22,6 +22,7 @@ class MobileGoogleController extends Controller
         $launch = URL::temporarySignedRoute('auth.mobile.google.launch', now()->addMinutes(10), [
             'state' => $state,
             'savjetnik' => $request->boolean('savjetnik') ? 1 : 0,
+            'prezentacija' => $request->boolean('prezentacija') ? 1 : 0,
         ]);
 
         return response()->view('auth.mobile-google-prepare', compact('launch'))
@@ -33,6 +34,7 @@ class MobileGoogleController extends Controller
         $data = $request->validate(['state' => ['required', 'regex:/\A[a-f0-9]{64}\z/']]);
         $request->session()->put('mobile_google_browser_state', $data['state']);
         $request->session()->put('registracija_savjetnik', $request->boolean('savjetnik'));
+        $request->session()->put('registracija_prezentacija', $request->boolean('prezentacija'));
 
         return Socialite::driver('google')->redirect();
     }

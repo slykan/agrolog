@@ -6,7 +6,8 @@
         </a>
 
         {{-- Desktop nav --}}
-        <nav class="hidden md:flex items-center gap-3">
+        <nav class="hidden lg:flex items-center gap-3 whitespace-nowrap">
+            <a href="{{ route('trznica') }}" class="text-sm font-medium transition {{ $active === 'trznica' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Tržnica</a>
             <a href="{{ route('gospodarstva') }}" class="text-sm font-medium transition {{ $active === 'gospodarstva' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Gospodarstva</a>
             <a href="{{ route('alati') }}" class="text-sm font-medium transition {{ $active === 'alati' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Alati</a>
             <a href="{{ route('novosti') }}" class="text-sm font-medium transition {{ $active === 'novosti' ? 'text-green-700' : 'text-gray-600 hover:text-green-700' }}">Novosti</a>
@@ -23,7 +24,7 @@
         </nav>
 
         {{-- Hamburger --}}
-        <button @click="open = !open" class="md:hidden p-2 rounded-lg text-gray-600 hover:text-green-700 hover:bg-gray-100 transition">
+        <button @click="open = !open" class="lg:hidden p-2 rounded-lg text-gray-600 hover:text-green-700 hover:bg-gray-100 transition">
             <svg x-show="!open" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
@@ -42,8 +43,9 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-2"
-        class="md:hidden border-t border-gray-100 bg-white px-6 py-4 space-y-1"
+        class="lg:hidden border-t border-gray-100 bg-white px-6 py-4 space-y-1"
     >
+        <a href="{{ route('trznica') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'trznica' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Tržnica</a>
         <a href="{{ route('gospodarstva') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'gospodarstva' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Gospodarstva</a>
         <a href="{{ route('alati') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'alati' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Alati</a>
         <a href="{{ route('novosti') }}" class="flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition {{ $active === 'novosti' ? 'text-green-700 bg-green-50' : 'text-gray-700 hover:bg-gray-50' }}">Novosti</a>

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'naziv_gospodarstva', 'mipg', 'oib', 'google_id', 'avatar', 'je_savjetnik'])]
+#[Fillable(['name', 'email', 'password', 'naziv_gospodarstva', 'mipg', 'oib', 'google_id', 'avatar', 'je_savjetnik', 'zeli_prezentaciju'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -35,6 +35,9 @@ class User extends Authenticatable
             'obavijesti_odjava_at' => 'datetime',
             'push_obavijesti' => 'boolean',
             'je_savjetnik' => 'boolean',
+            'zeli_prezentaciju' => 'boolean',
+            'prezentacija_ponudjena_at' => 'datetime',
+            'prezentacija_pozvan_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -45,15 +48,23 @@ class User extends Authenticatable
         return in_array(strtolower($this->email), config('app.admin_emails'), true);
     }
 
-    /** Kamo nakon prijave: savjetnik bez vlastitih parcela kreće od Klijenata, ostali od naslovne. */
+    /**
+     * Kamo nakon prijave: tko je na registraciji označio predstavljanje gospodarstva jednom dobije obrazac;
+     * savjetnik bez vlastitih parcela kreće od Klijenata, ostali od naslovne.
+     */
     public function pocetnaStranica(): string
     {
+        if ($this->zeli_prezentaciju && $this->prezentacija_ponudjena_at === null && ! $this->prezentacija()->exists()) {
+            return route('prezentacija.uvod', absolute: false);
+        }
+
         return $this->je_savjetnik && ! $this->parcele()->exists()
             ? route('klijenti', absolute: false)
             : route('dashboard', absolute: false);
     }
 
     public function parcele() { return $this->hasMany(Parcela::class); }
+    public function prezentacija() { return $this->hasOne(Prezentacija::class); }
     public function kulture() { return $this->hasMany(Kultura::class); }
     public function gnojidbe() { return $this->hasMany(Gnojidba::class); }
     public function prskanja() { return $this->hasMany(Prskanje::class); }

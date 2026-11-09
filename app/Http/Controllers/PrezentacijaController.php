@@ -91,6 +91,10 @@ class PrezentacijaController extends Controller
 
         $this->javiAdminu($p, $nova);
 
+        if ($request->input('natrag') === 'uvod') {
+            return redirect()->route('dashboard')->with('status', 'Prezentacija je poslana na pregled. Javit ćemo vam mailom kad bude objavljena.');
+        }
+
         return redirect()->to(route('profile.edit') . '#prezentacija')->with('status', $nova ? 'prezentacija-na-pregledu' : 'prezentacija-spremljena');
     }
 
@@ -99,10 +103,48 @@ class PrezentacijaController extends Controller
         $p = Prezentacija::where('user_id', $request->user()->id)->first();
         if ($p) {
             Prezentacija::obrisiSliku($p->slika);
-            $p->delete();
+            $p->proizvodi()->pluck('slika')->each(fn ($s) => Prezentacija::obrisiSliku($s));
+            $p->delete();   // proizvodi se brišu kaskadno
         }
 
         return redirect()->to(route('profile.edit') . '#prezentacija')->with('status', 'prezentacija-obrisana');
+    }
+
+    /** Obrazac odmah nakon registracije (kvačica "želim predstaviti gospodarstvo"); nudi se samo jednom. */
+    public function uvod(Request $request): View
+    {
+        $user = $request->user();
+        if ($user->prezentacija_ponudjena_at === null) {
+            $user->forceFill(['prezentacija_ponudjena_at' => now()])->save();
+        }
+
+        return view('gospodarstva.uvod', ['user' => $user]);
+    }
+
+    /** "Ne želim" na podsjetniku: kvačica s registracije se gasi. */
+    public function odustani(Request $request): RedirectResponse
+    {
+        $request->user()->forceFill(['zeli_prezentaciju' => false])->save();
+
+        return back();
+    }
+
+    /** Admin: mail korisniku s pozivom da se predstavi na popisu (najviše jednom). */
+    public function pozovi(\App\Models\User $user): RedirectResponse
+    {
+        if ($user->prezentacija_pozvan_at !== null || $user->prezentacija()->exists()) {
+            return back()->with('status', 'Korisnik je već pozvan ili ima prezentaciju.');
+        }
+        Mail::to($user->email)->send(new PreporukaMail(
+            predmet: 'Predstavite svoje gospodarstvo na AgroLogu',
+            naslov: 'Predstavite gospodarstvo kupcima',
+            uvod: 'Na AgroLogu postoji besplatan javni popis gospodarstava i Tržnica. Kupci vas pronađu po mjestu i onome što nudite te vam se javljaju izravno. Prezentaciju uključujete u profilu, a objavljujemo je kad je pregledamo.',
+            stavke: ['Opis gospodarstva, slika i kontakt', 'Lokacija na karti i upute za dolazak', 'Proizvodi s cijenom na Tržnici'],
+            link: route('profile.edit') . '#prezentacija', gumb: 'Uključi prezentaciju',
+        ));
+        $user->forceFill(['prezentacija_pozvan_at' => now(), 'zeli_prezentaciju' => true])->save();
+
+        return back()->with('status', 'Poziv je poslan na ' . $user->email . '.');
     }
 
     private function javiAdminu(Prezentacija $p, bool $nova): void
@@ -163,7 +205,8 @@ class PrezentacijaController extends Controller
     {
         $p = Prezentacija::javne()->where('slug', $slug)->firstOrFail();
 
-        return view('gospodarstva.show', ['p' => $p, 'evidencija' => $p->vodiEvidenciju()]);
+        return view('gospodarstva.show', ['p' => $p, 'evidencija' => $p->vodiEvidenciju(),
+            'proizvodi' => $p->proizvodi()->where('dostupno', true)->latest('updated_at')->get()]);
     }
 
     /** Broj telefona na klik "Prikaži broj". */

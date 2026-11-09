@@ -65,6 +65,10 @@ Route::get('/sitemap.xml', function () {
         $urls[] = ['loc' => route('vodic', $v['slug']), 'priority' => '0.8', 'changefreq' => 'monthly'];
     }
     $urls[] = ['loc' => route('gospodarstva'), 'priority' => '0.8', 'changefreq' => 'daily'];
+    $urls[] = ['loc' => route('trznica'), 'priority' => '0.8', 'changefreq' => 'daily'];
+    foreach (\App\Models\Proizvod::javni()->pluck('id') as $id) {
+        $urls[] = ['loc' => route('trznica.proizvod', $id), 'priority' => '0.5', 'changefreq' => 'weekly'];
+    }
     foreach (\App\Models\Prezentacija::javne()->pluck('slug') as $s) {
         $urls[] = ['loc' => route('gospodarstvo', $s), 'priority' => '0.6', 'changefreq' => 'weekly'];
     }

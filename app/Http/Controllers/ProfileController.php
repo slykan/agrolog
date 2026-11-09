@@ -74,7 +74,10 @@ class ProfileController extends Controller
         Auth::logout();
 
         // javna slika gospodarstva leži u public/, pa je baza ne briše sama
-        \App\Models\Prezentacija::obrisiSliku(\App\Models\Prezentacija::where('user_id', $user->id)->value('slika'));
+        if ($pz = \App\Models\Prezentacija::where('user_id', $user->id)->first()) {
+            \App\Models\Prezentacija::obrisiSliku($pz->slika);
+            $pz->proizvodi()->pluck('slika')->each(fn ($s) => \App\Models\Prezentacija::obrisiSliku($s));
+        }
         $user->delete();
 
         $request->session()->invalidate();

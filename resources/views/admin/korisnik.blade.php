@@ -36,6 +36,25 @@
                             </div>
                         @endforeach
                     </dl>
+                    @php $pz = \App\Models\Prezentacija::where('user_id', $user->id)->first(); @endphp
+                    <div class="mt-4 border-t border-gray-100 pt-3 text-sm">
+                        <p class="text-gray-500">Javni popis:
+                            @if($pz)
+                                <strong class="text-gray-800">{{ ['javno' => 'objavljen', 'na_pregledu' => 'čeka odobrenje', 'odbijeno' => 'odbijen', 'skriveno' => 'skriven'][$pz->status()] ?? $pz->status() }}</strong>
+                                <a href="{{ route('admin.gospodarstva') }}" class="text-green-700 underline ml-1">Gospodarstva</a>
+                            @elseif($user->prezentacija_pozvan_at)
+                                pozvan {{ $vrijeme($user->prezentacija_pozvan_at) }}
+                            @else
+                                nije na popisu{{ $user->zeli_prezentaciju ? ' (označio na registraciji)' : '' }}
+                            @endif
+                        </p>
+                        @if(! $pz && ! $user->prezentacija_pozvan_at && ! $user->je_savjetnik)
+                            <form method="post" action="{{ route('admin.korisnik.pozovi-popis', $user) }}" class="mt-2" onsubmit="return confirm('Poslati korisniku mail s pozivom na javni popis i Tržnicu?')">
+                                @csrf
+                                <button class="btn-secondary">✉ Pozovi na popis</button>
+                            </form>
+                        @endif
+                    </div>
                 </div>
 
                 {{-- Brojke --}}

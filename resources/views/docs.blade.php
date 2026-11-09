@@ -63,6 +63,7 @@
                     <a href="#zamjena" class="block text-gray-600 hover:text-green-700 py-1 transition">7. Zamjena kulture</a>
                     <a href="#profil" class="block text-gray-600 hover:text-green-700 py-1 transition">8. Profil i obavijesti</a>
                     <a href="#gospodarstva" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Gospodarstvo na javnom popisu</a>
+                    <a href="#trznica" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Tržnica</a>
                     <a href="#obavijesti" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Push i mail obavijesti</a>
                     <a href="#savjetnik" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Pristup savjetniku</a>
                     <a href="#preporuke" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Preporuke savjetnika</a>
@@ -577,6 +578,28 @@
                         <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
                             Sve što upišete u prezentaciju je <strong>javno</strong>. Objavite samo svoje fotografije i podatke koje želite da kupci vide.
                         </div>
+                    </div>
+                </section>
+
+                {{-- TRŽNICA --}}
+                <section id="trznica" class="scroll-mt-24">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Tržnica: oglasi za proizvode</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Na <a href="{{ route('trznica') }}" class="text-green-700 hover:underline font-medium">Tržnici</a> gospodarstva besplatno oglašavaju svoje proizvode s cijenom. Kupac klikne oglas i vidi tko prodaje, sve kontakte i gumb <strong>Svi oglasi ovog prodavača</strong>. Dogovor ide izravno s gospodarstvom, bez košarice i plaćanja preko AgroLoga.</p>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Prvo uključite <a href="#gospodarstva" class="text-green-700 hover:underline">prezentaciju gospodarstva</a> u profilu. Oglas uvijek pokazuje prodavača, pa bez nje nema oglasa</li>
+                            <li>U izborniku otvorite <strong>Tržnica → Moji proizvodi</strong></li>
+                            <li>Upišite naziv, vrstu, cijenu i jedinicu (€/kg, €/L, €/kom, €/staklenka…), a po želji opis i sliku, pa kliknite <strong>Dodaj proizvod</strong></li>
+                        </ol>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>Proizvodi se na Tržnici pojave kad je prezentacija odobrena. Dodati ih možete i dok čeka odobrenje.</li>
+                            <li><strong>Sakrij / Prikaži</strong> gasi proizvod izvan sezone bez brisanja. Uz cijenu piše kada je zadnji put ažurirana.</li>
+                            <li>Proizvodi se vide i na stranici vašeg gospodarstva. Gospodarstvo može imati do 40 proizvoda.</li>
+                        </ul>
+                        <p>Na registraciji možete odmah označiti <strong>Želim besplatno predstaviti gospodarstvo</strong>. Nakon registracije otvori se obrazac za prezentaciju, a možete ga ispuniti i kasnije, iz podsjetnika na početnoj ili u profilu.</p>
                     </div>
                 </section>
 
