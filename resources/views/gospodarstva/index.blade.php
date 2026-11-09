@@ -41,7 +41,6 @@
         <div class="mt-6 rounded-2xl overflow-hidden border border-gray-200 isolate">
             <div id="karta-gospodarstava" class="h-72 sm:h-96" role="region" aria-label="Karta gospodarstava"></div>
         </div>
-        <p class="mt-1 text-xs text-gray-500">Lokacije su približne (oko 1 km).</p>
     @endif
 
     {{-- kartice --}}
@@ -87,7 +86,7 @@
             (function () {
                 const tocke = @json($karta);
                 const map = L.map('karta-gospodarstava', { scrollWheelZoom: false });
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 13, attribution: '&copy; OpenStreetMap' }).addTo(map);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
                 const e = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
                 const granice = [];
                 tocke.forEach(t => {
@@ -95,7 +94,7 @@
                         .addTo(map).bindPopup('<a href="' + e(t.u) + '" style="font-weight:700;color:#19653a">' + e(t.n) + '</a><br>' + e(t.m));
                     granice.push([t.lat, t.lng]);
                 });
-                if (granice.length === 1) map.setView(granice[0], 10); else map.fitBounds(granice, { padding: [30, 30], maxZoom: 10 });
+                if (granice.length === 1) map.setView(granice[0], 11); else map.fitBounds(granice, { padding: [30, 30], maxZoom: 12 });
             })();
         </script>
     @endif

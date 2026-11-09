@@ -39,7 +39,10 @@ class PrezentacijaController extends Controller
             'oznake.*' => [Rule::in(Prezentacija::OZNAKE)],
             'telefon' => ['required', 'string', 'max:30', 'regex:/^\+?[0-9 \/\-()]{6,}$/'],
             'email' => 'nullable|email|max:150',
-            'adresa' => 'nullable|string|max:200',
+            'adresa' => 'required|string|min:5|max:200',
+            // pin koji je vlasnik postavio na karti (Hrvatska i malo oko nje)
+            'lat' => 'required|numeric|between:42,47',
+            'lng' => 'required|numeric|between:13,20',
             'radno_vrijeme' => 'nullable|string|max:150',
             'web' => $url, 'facebook' => $url, 'instagram' => $url,
             'slika' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:8192',
@@ -48,23 +51,25 @@ class PrezentacijaController extends Controller
             'opis.min' => 'Opišite gospodarstvo s barem 50 znakova: što proizvodite, gdje i kako se može kupiti.',
             'oznake.required' => 'Odaberite barem jednu oznaku: što proizvodite ili nudite.',
             'telefon.regex' => 'Upišite ispravan broj telefona, npr. 091 234 5678.',
+            'lat.required' => 'Označite na karti gdje se gospodarstvo nalazi: potražite adresu pa kliknite na svoje dvorište.',
+            'lng.required' => 'Označite na karti gdje se gospodarstvo nalazi.',
+            'lat.between' => 'Lokacija mora biti u Hrvatskoj.', 'lng.between' => 'Lokacija mora biti u Hrvatskoj.',
         ], [
             'naziv' => 'naziv', 'mjesto' => 'mjesto', 'zupanija' => 'županija', 'opis' => 'opis', 'oznake' => 'oznake', 'telefon' => 'telefon',
-            'web' => 'web stranica', 'radno_vrijeme' => 'radno vrijeme', 'slika' => 'slika',
+            'web' => 'web stranica', 'radno_vrijeme' => 'radno vrijeme', 'slika' => 'slika', 'adresa' => 'adresa', 'lat' => 'lokacija', 'lng' => 'lokacija',
         ]);
 
         $poveznica = fn ($u) => blank($u) ? null : (preg_match('#^https?://#i', $u) ? trim($u) : 'https://' . trim($u));
-        [$lat, $lng] = Prezentacija::priblizno($user->id);
         $podaci = [
             'vidljivo' => true,
             'naziv' => trim($v['naziv']), 'mjesto' => trim($v['mjesto']), 'zupanija' => $v['zupanija'], 'opis' => trim($v['opis']),
             'oznake' => array_values(array_intersect(Prezentacija::OZNAKE, $v['oznake'])),
             'telefon' => trim($v['telefon']), 'whatsapp' => $request->boolean('whatsapp'), 'viber' => $request->boolean('viber'),
-            'email' => $v['email'] ?? null, 'adresa' => blank($v['adresa'] ?? null) ? null : trim($v['adresa']),
+            'email' => $v['email'] ?? null, 'adresa' => trim($v['adresa']),
             'kucni_prag' => $request->boolean('kucni_prag'),
             'radno_vrijeme' => $request->boolean('kucni_prag') && filled($v['radno_vrijeme'] ?? null) ? trim($v['radno_vrijeme']) : null,
             'web' => $poveznica($v['web'] ?? null), 'facebook' => $poveznica($v['facebook'] ?? null), 'instagram' => $poveznica($v['instagram'] ?? null),
-            'lat' => $lat, 'lng' => $lng,
+            'lat' => round((float) $v['lat'], 7), 'lng' => round((float) $v['lng'], 7),
         ];
         if ($request->hasFile('slika')) {
             Prezentacija::obrisiSliku($p?->slika);
@@ -102,15 +107,29 @@ class PrezentacijaController extends Controller
 
     private function javiAdminu(Prezentacija $p, bool $nova): void
     {
-        foreach (config('app.admin_emails') as $email) {
-            Mail::to($email)->queue(new PreporukaMail(
-                predmet: ($nova ? 'Nova prezentacija za odobrenje: ' : 'Izmijenjena prezentacija: ') . $p->naziv,
-                naslov: $nova ? 'Prezentacija čeka odobrenje' : 'Prezentacija je izmijenjena',
-                uvod: $nova ? 'Gospodarstvo želi biti na javnom popisu. Pregledajte podatke i odobrite ili odbijte.'
-                    : 'Odobrena prezentacija je izmijenjena i već je javna. Pogledajte je li sve u redu.',
-                stavke: [$p->naziv . ' · ' . $p->mjesto, implode(', ', $p->oznake ?? []), \Illuminate\Support\Str::limit($p->opis, 200)],
-                link: route('admin.gospodarstva'), gumb: 'Otvori popis',
-            ));
+        // kao obavijest o registraciji: odmah (bez reda čekanja) na slynetwork@gmail.com, uz ostale admine
+        $primatelji = array_unique(array_merge(['slynetwork@gmail.com'], config('app.admin_emails')));
+        $vlasnik = $p->user;
+        $mail = new PreporukaMail(
+            predmet: ($nova ? 'Gospodarstvo na pregledu: ' : 'Izmijenjena prezentacija: ') . $p->naziv,
+            naslov: $nova ? 'Gospodarstvo čeka odobrenje' : 'Prezentacija je izmijenjena',
+            uvod: $nova ? 'Gospodarstvo je poslalo prezentaciju na pregled za javni popis. Pregledajte podatke i odobrite ili odbijte.'
+                : 'Odobrena prezentacija je izmijenjena i već je javna. Pogledajte je li sve u redu.',
+            stavke: array_filter([
+                $p->naziv . ' · ' . $p->mjesto . ' (' . $p->zupanija . ')',
+                $vlasnik ? 'Korisnik: ' . $vlasnik->name . ' · ' . $vlasnik->email : null,
+                'Adresa: ' . $p->adresa . ' · tel. ' . $p->telefon,
+                'Nudi: ' . implode(', ', $p->oznake ?? []),
+                \Illuminate\Support\Str::limit($p->opis, 300),
+            ]),
+            link: route('admin.gospodarstva'), gumb: 'Otvori i odobri',
+        );
+        foreach ($primatelji as $email) {
+            try {
+                Mail::to($email)->send($mail);
+            } catch (\Throwable $e) {
+                report($e);   // spremanje prezentacije ne pada zbog maila
+            }
         }
     }
 

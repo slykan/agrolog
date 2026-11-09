@@ -5,7 +5,8 @@
     $odabrane = old('oznake', $p?->oznake ?? []);
     $uklj = (bool) old('vidljivo', $p?->vidljivo ?? false);
     $status = $p?->status();
-    $mjesta = \App\Models\Prezentacija::priblizno($user->id);
+    $centar = \App\Models\Prezentacija::priblizno($user->id);
+    $pin = old('lat') !== null && old('lng') !== null ? [(float) old('lat'), (float) old('lng')] : ($p?->lat !== null ? [(float) $p->lat, (float) $p->lng] : null);
 @endphp
 <section x-data="{ uklj: @js($uklj), prag: @js((bool) $iz('kucni_prag', false)) }">
     <header>
@@ -117,11 +118,37 @@
                     <x-input-error class="mt-2" :messages="$greske->get('email')" />
                 </div>
                 <div class="sm:col-span-2">
-                    <x-input-label for="pz_adresa" value="Adresa (neobavezno)" />
-                    <x-text-input id="pz_adresa" name="adresa" type="text" class="mt-1 block w-full" maxlength="200" :value="$iz('adresa')" placeholder="npr. Kiš Ferenca 15, Hrastin" />
-                    <p class="mt-1 text-xs text-gray-500">Upišite je ako kupci dolaze k vama. Na karti se gospodarstvo ionako prikazuje samo približno.</p>
+                    <x-input-label for="pz_adresa" value="Adresa *" />
+                    <x-text-input id="pz_adresa" name="adresa" type="text" class="mt-1 block w-full" maxlength="200" :value="$iz('adresa')" x-bind:required="uklj" placeholder="npr. Kiš Ferenca 15, Hrastin" />
                     <x-input-error class="mt-2" :messages="$greske->get('adresa')" />
                 </div>
+            </div>
+
+            {{-- točna lokacija: pretraga samo približi kartu, pin postavlja korisnik --}}
+            <div x-data="lokacijaGospodarstva(@js($pin), @js($centar[0] !== null ? $centar : null), @js(config('services.arcgis.key')))"
+                 x-effect="if (uklj) $nextTick(() => pokreni())">
+                <x-input-label value="Lokacija na karti *" />
+                <p class="mt-1 text-xs text-gray-500">Potražite adresu, a zatim <strong>kliknite točno na svoje dvorište</strong> ili mjesto prodaje. Pin možete i povući. Kupci ga vide na karti i dobiju upute za dolazak.</p>
+                <div class="relative mt-2">
+                    <div class="flex gap-2">
+                        <input type="search" x-model="trazi" @keydown.enter.prevent="traziAdresu()" placeholder="npr. Hrastin, Kiš Ferenca 15" aria-label="Pretraga adrese" class="form-input flex-1 min-w-0">
+                        <button type="button" @click="traziAdresu()" :disabled="trazim" class="btn-secondary shrink-0" x-text="trazim ? 'Tražim…' : 'Traži'"></button>
+                        <button type="button" x-show="! trazi" @click="trazi = document.getElementById('pz_adresa').value; traziAdresu()" class="btn-secondary shrink-0 hidden sm:inline-flex">Iz adrese</button>
+                    </div>
+                    <ul x-show="rezultati.length > 1" x-cloak class="absolute z-[1100] mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg max-h-60 overflow-y-auto">
+                        <template x-for="r in rezultati" :key="r.id">
+                            <li><button type="button" @click="idiNa(r)" class="block w-full px-3 py-2 text-left text-sm hover:bg-green-50"><span class="font-medium text-gray-900" x-text="r.naziv"></span> <span class="text-gray-500" x-text="r.opis"></span></button></li>
+                        </template>
+                    </ul>
+                </div>
+                <p x-show="poruka" x-cloak x-text="poruka" class="mt-2 text-sm text-amber-800"></p>
+                <div class="mt-2 rounded-lg overflow-hidden border border-gray-300 isolate">
+                    <div x-ref="karta" class="h-72 sm:h-80"></div>
+                </div>
+                <p class="mt-1 text-xs" :class="lat !== null ? 'text-green-800' : 'text-gray-500'" x-text="lat !== null ? '✓ Lokacija je označena.' : 'Lokacija još nije označena.'"></p>
+                <input type="hidden" name="lat" :value="lat ?? ''">
+                <input type="hidden" name="lng" :value="lng ?? ''">
+                <x-input-error class="mt-2" :messages="$greske->get('lat') ?: $greske->get('lng')" />
             </div>
 
             <div class="rounded-lg border border-gray-200 p-3 space-y-3">
@@ -143,14 +170,7 @@
                 @endforeach
             </div>
 
-            <p class="text-xs text-gray-500">
-                @if($mjesta[0] !== null)
-                    Na karti popisa gospodarstvo se prikazuje približno, oko sredine vaših parcela (na oko 1 km), nikad na točnoj adresi.
-                @else
-                    Kad dodate parcele, gospodarstvo će se prikazati i na karti, približno (na oko 1 km).
-                @endif
-                Prvu objavu pregledavamo prije nego što postane javna.
-            </p>
+            <p class="text-xs text-gray-500">Prvu objavu pregledavamo prije nego što postane javna.</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-4">

@@ -22,6 +22,7 @@ class PrezentacijaTest extends TestCase
             'opis' => 'Obiteljsko gospodarstvo s voćnjakom jabuka i kruški. Prodajemo sok i ocat na kućnom pragu.',
             'oznake' => ['Jabuke', 'Džemovi i sokovi'], 'telefon' => '091 234 5678', 'whatsapp' => '1', 'viber' => '0',
             'kucni_prag' => '1', 'radno_vrijeme' => 'pon–sub 8–18 h', 'web' => 'opg-horvat.hr',
+            'adresa' => 'Kiš Ferenca 15, Hrastin', 'lat' => '45.5712345', 'lng' => '18.7054321',
         ];
     }
 
@@ -43,7 +44,7 @@ class PrezentacijaTest extends TestCase
     {
         $u = User::factory()->create();
         $this->actingAs($u)->post(route('profile.prezentacija'), ['vidljivo' => '1', 'opis' => 'prekratko'])
-            ->assertSessionHasErrorsIn('prezentacija', ['naziv', 'mjesto', 'zupanija', 'opis', 'oznake', 'telefon']);
+            ->assertSessionHasErrorsIn('prezentacija', ['naziv', 'mjesto', 'zupanija', 'opis', 'oznake', 'telefon', 'adresa', 'lat', 'lng']);
         $this->assertSame(0, Prezentacija::count());
     }
 
@@ -58,11 +59,13 @@ class PrezentacijaTest extends TestCase
         $p = Prezentacija::first();
         $this->assertSame('opg-horvat-hrastin', $p->slug);
         $this->assertSame('https://opg-horvat.hr', $p->web);
-        $this->assertEquals([45.57, 18.71], [(float) $p->lat, (float) $p->lng]);   // približno, iz parcela
+        $this->assertEquals([45.5712345, 18.7054321], [(float) $p->lat, (float) $p->lng]);   // pin koji je postavio vlasnik
         $this->assertSame('na_pregledu', $p->status());
         [$w] = getimagesize(public_path($p->slika));
         $this->assertSame(1600, $w);
-        Mail::assertQueued(PreporukaMail::class, fn ($m) => $m->hasTo('admin@agro-log.app') && str_contains($m->predmet, 'odobrenje'));
+        Mail::assertSent(PreporukaMail::class, fn ($m) => $m->hasTo('slynetwork@gmail.com') && str_contains($m->predmet, 'na pregledu') && in_array('Adresa: Kiš Ferenca 15, Hrastin · tel. 091 234 5678', $m->stavke, true));
+        Mail::assertSent(PreporukaMail::class, fn ($m) => $m->hasTo('admin@agro-log.app'));
+        Mail::assertNotQueued(PreporukaMail::class, fn ($m) => $m->hasTo('slynetwork@gmail.com'));
 
         // prije odobrenja nije javno
         auth()->logout();
@@ -77,7 +80,7 @@ class PrezentacijaTest extends TestCase
 
         $this->get(route('gospodarstva', ['oznaka' => 'Džemovi i sokovi']))->assertOk()->assertSee('OPG Horvat');
         $this->get(route('gospodarstva', ['oznaka' => 'Med']))->assertOk()->assertDontSee('OPG Horvat');
-        $stranica = $this->get(route('gospodarstvo', $p->slug))->assertOk()->assertSee('Prikaži broj')->assertSee('pon–sub 8–18 h');
+        $stranica = $this->get(route('gospodarstvo', $p->slug))->assertOk()->assertSee('Prikaži broj')->assertSee('pon–sub 8–18 h')->assertSee('Upute za dolazak')->assertSee('destination=45.5712345,18.7054321', false);
         $this->assertStringNotContainsString('234 5678', $stranica->getContent());   // broj nije u HTML-u
         $this->getJson(route('gospodarstvo.telefon', $p->slug))->assertOk()
             ->assertJson(['telefon' => '091 234 5678', 'tel' => '+385912345678', 'whatsapp' => 'https://wa.me/385912345678', 'viber' => null]);
@@ -90,6 +93,13 @@ class PrezentacijaTest extends TestCase
         $this->assertNotNull($p->fresh()->opis);
 
         Prezentacija::obrisiSliku($p->fresh()->slika);
+    }
+
+    public function test_lokacija_izvan_hrvatske_odbijena(): void
+    {
+        $this->actingAs(User::factory()->create())->post(route('profile.prezentacija'), $this->podaci(['lat' => '51.5', 'lng' => '-0.12']))
+            ->assertSessionHasErrorsIn('prezentacija', ['lat', 'lng']);
+        $this->assertSame(0, Prezentacija::count());
     }
 
     public function test_odbijanje_i_ponovno_slanje(): void

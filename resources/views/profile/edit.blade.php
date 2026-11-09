@@ -44,4 +44,5 @@
             </div>
         </div>
     </div>
+    @include('partials.karta')
 </x-app-layout>

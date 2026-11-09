@@ -562,14 +562,15 @@
                         <ol class="list-decimal pl-6 space-y-1">
                             <li>Otvorite <strong>Profil</strong> i pronađite sekciju <strong>Prezentacija na AgroLogu</strong>, odmah ispod podataka o gospodarstvu</li>
                             <li>Označite <strong>Želim da moje gospodarstvo bude na javnom popisu</strong>. Tek tada se pojave polja</li>
-                            <li>Obavezno upišite naziv, mjesto i županiju, opis (barem 50 znakova), odaberite što nudite (do 8 oznaka) i kontakt telefon</li>
-                            <li>Po želji dodajte sliku, e-mail, adresu, WhatsApp ili Viber, prodaju na kućnom pragu s vremenom kada se može doći te poveznice na web, Facebook i Instagram</li>
+                            <li>Obavezno upišite naziv, mjesto i županiju, opis (barem 50 znakova), odaberite što nudite (do 8 oznaka), kontakt telefon i adresu</li>
+                            <li>Na karti potražite adresu, a zatim <strong>kliknite točno na svoje dvorište</strong> ili mjesto prodaje. Pin možete povući. Pretraga samo približi kartu, a lokaciju postavljate vi</li>
+                            <li>Po želji dodajte sliku, e-mail, WhatsApp ili Viber, prodaju na kućnom pragu s vremenom kada se može doći te poveznice na web, Facebook i Instagram</li>
                             <li>Kliknite <strong>Spremi prezentaciju</strong></li>
                         </ol>
                         <ul class="list-disc pl-6 space-y-1">
                             <li><strong>Prva objava ide na pregled.</strong> Kad je odobrimo, javimo vam mailom. Ako nešto treba doraditi, u mailu i u profilu piše razlog. Izmjene već objavljene prezentacije vidljive su odmah.</li>
                             <li><strong>Broj telefona</strong> nije ispisan na stranici, nego se prikaže klikom na <strong>Prikaži broj</strong>. Tako ga roboti teže skupljaju.</li>
-                            <li><strong>Na karti</strong> se gospodarstvo prikazuje približno, oko sredine vaših parcela (na oko 1 km), nikad na točnoj adresi. Bez parcela nema ga na karti.</li>
+                            <li><strong>Na karti</strong> se gospodarstvo prikazuje točno ondje gdje ste postavili pin, a kupci uz njega dobiju poveznicu <strong>Upute za dolazak</strong>.</li>
                             <li>Ako u zadnjih godinu dana vodite evidenciju prskanja, gnojidbe ili berbe, uz prezentaciju piše <strong>Vodi evidenciju u AgroLogu</strong>. Sama evidencija nikad nije javna.</li>
                             <li>Kad maknete kvačicu i spremite, gospodarstvo odmah nestaje s popisa, a podaci ostaju za kasnije. Gumb <strong>Obriši prezentaciju</strong> briše sve, i sliku.</li>
                         </ul>

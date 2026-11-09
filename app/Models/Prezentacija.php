@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 /**
  * Javna prezentacija gospodarstva na /gospodarstva. Javna je samo kad je `vidljivo` (vlasnik) i `odobreno_at` (admin).
- * Lokacija na karti je približna (2 decimale ≈ 1 km), izračunata iz parcela, nikad iz adrese.
+ * Lokacija je pin koji vlasnik sam postavi na karti (pretraga adrese samo približi kartu, rezultat se ne sprema).
  */
 class Prezentacija extends Model
 {
@@ -22,7 +22,7 @@ class Prezentacija extends Model
 
     public const OZNAKE = ['Povrće', 'Voće', 'Jabuke', 'Grožđe', 'Vino', 'Rakija i likeri', 'Maslinovo ulje', 'Med', 'Mlijeko i sir', 'Jaja', 'Meso i suhomesnato',
         'Žitarice', 'Krmno bilje', 'Sadnice', 'Cvijeće', 'Ljekovito bilje', 'Džemovi i sokovi', 'Orašasti plodovi', 'Ekološka proizvodnja',
-        'Usluge mehanizacije', 'Agroturizam'];
+        'Usluge mehanizacije', 'Agroturizam', 'Ostalo'];
 
     public const ZUPANIJE = ['Bjelovarsko-bilogorska', 'Brodsko-posavska', 'Dubrovačko-neretvanska', 'Grad Zagreb', 'Istarska', 'Karlovačka',
         'Koprivničko-križevačka', 'Krapinsko-zagorska', 'Ličko-senjska', 'Međimurska', 'Osječko-baranjska', 'Požeško-slavonska',
@@ -115,7 +115,7 @@ class Prezentacija extends Model
         }
     }
 
-    /** Približna lokacija iz parcela korisnika (prosjek, 2 decimale). */
+    /** Sredina parcela korisnika: odakle se karta otvara dok pin nije postavljen. */
     public static function priblizno(int $userId): array
     {
         $p = Parcela::where('user_id', $userId)->whereNotNull('lat')->whereNotNull('lng')->get(['lat', 'lng']);

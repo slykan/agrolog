@@ -85,16 +85,16 @@
             @if($p->lat !== null)
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
                 <div class="mt-4 rounded-2xl overflow-hidden border border-gray-200 isolate">
-                    <div id="karta-gospodarstva" class="h-56" role="region" aria-label="Približna lokacija"></div>
+                    <div id="karta-gospodarstva" class="h-56" role="region" aria-label="Lokacija gospodarstva"></div>
                 </div>
-                <p class="mt-1 text-xs text-gray-500">Približna lokacija (oko 1 km).</p>
+                <a href="https://www.google.com/maps/dir/?api=1&destination={{ (float) $p->lat }},{{ (float) $p->lng }}" target="_blank" rel="noopener" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-green-700 underline">Upute za dolazak →</a>
                 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
                 <script>
                     (function () {
                         const t = [{{ (float) $p->lat }}, {{ (float) $p->lng }}];
-                        const map = L.map('karta-gospodarstva', { scrollWheelZoom: false }).setView(t, 11);
-                        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 13, attribution: '&copy; OpenStreetMap' }).addTo(map);
-                        L.circle(t, { radius: 1200, color: '#033b2c', weight: 2, fillColor: '#86bc25', fillOpacity: .3 }).addTo(map);
+                        const map = L.map('karta-gospodarstva', { scrollWheelZoom: false }).setView(t, 15);
+                        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+                        L.circleMarker(t, { radius: 10, color: '#033b2c', weight: 3, fillColor: '#86bc25', fillOpacity: 1 }).addTo(map);
                     })();
                 </script>
             @endif

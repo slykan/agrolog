@@ -3,7 +3,7 @@ const NAJMANJI_ZOOM = 14;
 const MAX_TOCAKA = 200;
 const NAJMANJA_SIGURNOST = 70;   // Esri ocjena pogotka, od 0 do 100
 
-async function traziEsri(upit, kljuc) {
+export async function traziEsri(upit, kljuc) {
     const adresa = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=5&countryCode=HRV&langCode=hr&outFields=Addr_type&singleLine=' + encodeURIComponent(upit)
         + (kljuc ? '&token=' + encodeURIComponent(kljuc) : '');
     const odgovor = await fetch(adresa);
@@ -27,7 +27,7 @@ async function traziEsri(upit, kljuc) {
         });
 }
 
-async function traziOpenMeteo(upit) {
+export async function traziOpenMeteo(upit) {
     const adresa = 'https://geocoding-api.open-meteo.com/v1/search?count=5&language=hr&countryCode=HR&name=' + encodeURIComponent(upit);
     const odgovor = await fetch(adresa);
     const podaci = odgovor.ok ? await odgovor.json() : {};
