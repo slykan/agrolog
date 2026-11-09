@@ -18,7 +18,8 @@ class Obavijest extends Model
     public static function primateljiSvihKanala()
     {
         return User::where(fn ($q) => $q->whereNull('obavijesti_odjava_at')
-            ->orWhere(fn ($q) => $q->where('push_obavijesti', true)->whereHas('pushPretplate')));
+            ->orWhere(fn ($q) => $q->where('push_obavijesti', true)
+                ->where(fn ($q) => $q->whereHas('pushPretplate')->orWhereHas('mobilePushDevices'))));
     }
 
     public static function primatelji()

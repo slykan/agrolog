@@ -4,6 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        @if(auth()->check() && ! request()->attributes->get('pristup'))
+            <meta name="agro-native-push" data-user="{{ auth()->id() }}" data-enabled="{{ auth()->user()->push_obavijesti ? '1' : '0' }}">
+        @endif
 
         <title>{{ config('app.name', 'Laravel') }}</title>
         {{-- push: nikad dok savjetnik radi u tuđem gospodarstvu --}}

@@ -5,6 +5,7 @@
 <div x-data="{
         vidljivo: false, ios: false, upute: false,
         init() {
+            if (/AgroLogNative\//.test(navigator.userAgent)) return;
             const instalirano = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
             let skriveno = false;
             try { skriveno = Date.now() < Number(localStorage.getItem('agrolog-instalacija-skriveno') || 0) } catch (e) {}

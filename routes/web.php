@@ -137,6 +137,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/obavijesti', [ProfileController::class, 'obavijesti'])->name('profile.obavijesti');
     Route::post('/push/pretplata', [\App\Http\Controllers\PushController::class, 'spremi'])->name('push.spremi');
+    Route::post('/push/mobile/device', [\App\Http\Controllers\MobilePushController::class, 'register'])->middleware('throttle:30,1')->name('push.mobile.register');
+    Route::post('/push/mobile/test', [\App\Http\Controllers\MobilePushController::class, 'test'])->middleware('throttle:5,1')->name('push.mobile.test');
     Route::delete('/push/pretplata', [\App\Http\Controllers\PushController::class, 'ukloni'])->name('push.ukloni');
     Route::post('/push/proba', [\App\Http\Controllers\PushController::class, 'proba'])->middleware('throttle:5,1')->name('push.proba');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

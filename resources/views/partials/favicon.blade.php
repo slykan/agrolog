@@ -12,5 +12,5 @@
 <script>
     // poziv za instalaciju (Android/Chrome) stigne rano — spremi ga da ga traka "Instaliraj" može kasnije pokazati
     window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); window.agroInstalacija = e; window.dispatchEvent(new Event('agro-instalacija')); });
-    if ('serviceWorker' in navigator) { window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); }); }
+    if ('serviceWorker' in navigator && ! /AgroLogNative\//.test(navigator.userAgent)) { window.addEventListener('load', function () { navigator.serviceWorker.register('/sw.js').catch(function () {}); }); }
 </script>

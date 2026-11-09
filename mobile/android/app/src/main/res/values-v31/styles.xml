@@ -1,0 +1,8 @@
+<resources>
+    <style name="AppLaunchTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:windowSplashScreenBackground">#F3F7F1</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">#F3F7F1</item>
+    </style>
+</resources>

@@ -17,7 +17,9 @@ class PushUpozorenja
     public static function posalji(): int
     {
         $poslano = 0;
-        User::where('push_obavijesti', true)->whereHas('pushPretplate')->chunkById(100, function ($korisnici) use (&$poslano) {
+        User::where('push_obavijesti', true)
+            ->where(fn ($q) => $q->whereHas('pushPretplate')->orWhereHas('mobilePushDevices'))
+            ->chunkById(100, function ($korisnici) use (&$poslano) {
             foreach ($korisnici as $user) {
                 $poslano += self::zaKorisnika($user) ? 1 : 0;
             }

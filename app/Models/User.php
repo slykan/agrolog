@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $attributes = ['push_obavijesti' => true];
 
     public function pushPretplate() { return $this->hasMany(PushPretplata::class); }
+    public function mobilePushDevices() { return $this->hasMany(MobilePushDevice::class); }
 
     /**
      * Get the attributes that should be cast.

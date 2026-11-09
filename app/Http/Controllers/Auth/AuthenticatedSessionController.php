@@ -36,6 +36,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $request->user()->mobilePushDevices()->where('session_hash', hash('sha256', $request->session()->getId()))->delete();
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

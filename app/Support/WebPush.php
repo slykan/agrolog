@@ -197,6 +197,6 @@ class WebPush
             $n += self::posalji($p, $naslov, $tekst, $url) ? 1 : 0;
         }
 
-        return $n;
+        return $n + MobilePush::korisniku($user, $naslov, $tekst, $url);
     }
 }

@@ -24,6 +24,26 @@
     </form>
 
     @if($user->push_obavijesti)
+        @if(str_contains(request()->userAgent() ?? '', 'AgroLogNative/'))
+            <div class="mt-4 rounded-lg bg-gray-50 p-3 text-sm"
+                 data-test-url="{{ route('push.mobile.test') }}"
+                 x-data="{ busy: false, poruka: '', async proba() {
+                    this.busy = true; this.poruka = '';
+                    try {
+                        const r = await fetch($el.dataset.testUrl, { method: 'POST', credentials: 'same-origin',
+                            headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content } });
+                        if (!r.ok) throw new Error();
+                        const d = await r.json();
+                        this.poruka = d.uredjaja > 0 ? 'Probna obavijest je poslana.' : 'Nema registriranog mobitela. Dopustite obavijesti u postavkama Androida i ponovno otvorite aplikaciju.';
+                    } catch (e) { this.poruka = 'Slanje nije uspjelo. Pokušajte ponovno.'; }
+                    finally { this.busy = false; }
+                 } }">
+                <p class="font-medium text-gray-800">Obavijesti na mobitelu</p>
+                <p class="mt-1 text-gray-600">Dopustite obavijesti kada Android zatraži. Dopuštenje možete promijeniti u postavkama mobitela za AgroLog.</p>
+                <button type="button" @click="proba()" :disabled="busy" class="btn-xs-green mt-2 disabled:opacity-50">Pošalji probnu obavijest</button>
+                <p x-show="poruka" x-cloak x-text="poruka" role="status" class="mt-2 text-gray-700"></p>
+            </div>
+        @else
         {{-- push traži i dopuštenje preglednika, posebno za svaki uređaj --}}
         <div class="mt-4 rounded-lg bg-gray-50 p-3 text-sm" x-data="{
                 stanje: '', poruka: '',
@@ -51,5 +71,6 @@
             </div>
             <p x-show="poruka" x-cloak x-text="poruka" class="mt-2 text-gray-700"></p>
         </div>
+        @endif
     @endif
 </section>

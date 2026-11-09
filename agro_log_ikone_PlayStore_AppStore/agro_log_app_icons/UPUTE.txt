@@ -1,0 +1,10 @@
+AGRO-LOG.APP — PNG ikone
+
+Google Play: Google_Play/Play_Store_512.png — 512x512, sRGB PNG, manje od 1024 KB.
+Apple App Store: Apple_App_Store/App_Store_1024.png — 1024x1024 PNG, bez transparentne pozadine.
+Apple_iOS_sizes: dodatne veličine za starije/različite iOS konfiguracije. Moderni Xcode može generirati manje veličine iz master ikone; za objavu je potreban Xcode build / asset catalog ili Icon Composer.
+Android_launcher: legacy mipmap PNG ikone za gustoće ekrana.
+Android_adaptive: foreground transparentni i background sloj, svaki 432x432 px (108dp pri xxxhdpi); u projektu je potrebno složiti Android adaptive icon XML resurs.
+Web_PWA: opcionalne favicon / PWA PNG dimenzije.
+
+Dizajn je izveden iz originalnog logotipa korisnika. Budući da je izvorni PNG relativno malen, za vrhunsku vektorsku oštrinu preporučuje se originalni SVG/AI logo.

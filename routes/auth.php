@@ -9,11 +9,20 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\Auth\MobileGoogleController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('auth/google', [SocialAuthController::class, 'redirect'])->name('auth.google');
 Route::get('auth/google/callback', [SocialAuthController::class, 'callback']);
+
+Route::middleware('throttle:20,1')->group(function () {
+    Route::get('auth/mobile/google', [MobileGoogleController::class, 'prepare'])->name('auth.mobile.google');
+    Route::get('auth/mobile/google/launch', [MobileGoogleController::class, 'launch'])
+        ->middleware('signed')->name('auth.mobile.google.launch');
+    Route::get('auth/mobile/google/return', [MobileGoogleController::class, 'bridge'])->name('auth.mobile.google.return');
+    Route::post('auth/mobile/google/complete', [MobileGoogleController::class, 'complete'])->name('auth.mobile.google.complete');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])

@@ -1,5 +1,12 @@
 <?php
 
+$firebaseCredentials = env('FIREBASE_CREDENTIALS', storage_path('app/private/firebase-service-account.json'));
+$firebaseProjectId = env('FIREBASE_PROJECT_ID');
+if (! $firebaseProjectId && is_readable($firebaseCredentials)) {
+    // Only the public project ID goes into config cache; private key data remains in its file.
+    $firebaseProjectId = json_decode(file_get_contents($firebaseCredentials), true)['project_id'] ?? null;
+}
+
 return [
 
     /*
@@ -43,6 +50,11 @@ return [
     'turnstile' => [
         'site_key' => env('CF_TURNSTILE_SITE_KEY'),
         'secret'   => env('CF_TURNSTILE_SECRET'),
+    ],
+
+    'firebase' => [
+        'project_id' => $firebaseProjectId,
+        'credentials' => $firebaseCredentials,
     ],
 
     'google' => [

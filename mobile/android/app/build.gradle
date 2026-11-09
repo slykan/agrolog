@@ -1,0 +1,30 @@
+plugins { id 'com.android.application' }
+
+// Configuration is supplied by the owner's Firebase project; never use placeholder keys.
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
+}
+
+android {
+    namespace 'app.agro_log.mobile'
+    compileSdk 36
+    defaultConfig {
+        applicationId 'app.agro_log.mobile'
+        minSdk 29
+        targetSdk 36
+        versionCode 4
+        versionName '0.4.0'
+        testInstrumentationRunner 'android.test.InstrumentationTestRunner'
+    }
+    buildFeatures { buildConfig true }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:35.1.0')
+    implementation 'com.google.firebase:firebase-messaging'
+    testImplementation 'junit:junit:4.13.2'
+}
