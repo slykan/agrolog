@@ -44,6 +44,12 @@
 
         {{-- kontakt --}}
         <aside class="lg:w-80 shrink-0">
+            @if($proizvodi->isNotEmpty())
+                <a href="{{ route('trznica', ['prodavac' => $p->slug]) }}" class="mb-4 flex items-center justify-between rounded-2xl bg-[#022a20] px-5 py-4 text-white hover:bg-[#033b2c] transition">
+                    <span><span class="block text-xs uppercase tracking-wide text-[#86bc25] font-bold">Tržnica</span><span class="font-bold">Svi proizvodi ({{ $proizvodi->count() }})</span></span>
+                    <span aria-hidden="true" class="text-xl">→</span>
+                </a>
+            @endif
             @include('gospodarstva._kontakt', ['p' => $p])
 
             @if($p->lat !== null)
@@ -69,7 +75,7 @@
         <section id="proizvodi" class="mt-12 scroll-mt-24">
             <div class="flex flex-wrap items-end justify-between gap-2">
                 <h2 class="text-2xl font-bold text-gray-900">Proizvodi</h2>
-                <a href="{{ route('trznica', ['prodavac' => $p->slug]) }}" class="text-sm font-medium text-green-700 underline">Svi oglasi na Tržnici →</a>
+                <a href="{{ route('trznica', ['prodavac' => $p->slug]) }}" class="text-sm font-medium text-green-700 underline">Svi proizvodi na Tržnici ({{ $proizvodi->count() }}) →</a>
             </div>
             <div class="mt-4 grid gap-4 grid-cols-2 lg:grid-cols-3">
                 @foreach($proizvodi->take(6) as $pr)

@@ -195,7 +195,7 @@ class PrezentacijaController extends Controller
             ->map(fn ($p) => ['n' => $p->naziv, 'm' => $p->mjesto, 'u' => route('gospodarstvo', $p->slug), 'lat' => (float) $p->lat, 'lng' => (float) $p->lng])->values();
 
         return view('gospodarstva.index', [
-            'gospodarstva' => $upit->orderByDesc('odobreno_at')->paginate(24)->withQueryString(),
+            'gospodarstva' => $upit->withCount(['proizvodi' => fn ($q) => $q->where('dostupno', true)])->orderByDesc('odobreno_at')->paginate(24)->withQueryString(),
             'karta' => $karta, 'q' => $q, 'oznaka' => $oznaka, 'zupanija' => $zupanija, 'prag' => $prag,
             'filtrirano' => $q !== '' || $oznaka || $zupanija || $prag,
         ]);

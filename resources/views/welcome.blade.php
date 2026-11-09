@@ -202,6 +202,47 @@
         </div>
     </section>
 
+    {{-- KUPUJMO HRVATSKO: Tržnica i Gospodarstva --}}
+    <section id="trznica" class="scroll-mt-24 py-20 bg-[#f3f7f1]">
+        <div class="max-w-6xl mx-auto px-6 grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div>
+                <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-green-700">
+                    <span class="w-2 h-2 rounded-full bg-[#86bc25]"></span> Novo · Tržnica i Gospodarstva
+                </span>
+                <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Kupujmo hrvatsko</h2>
+                <p class="mt-2 text-xl font-semibold text-green-800">Podržimo domaće. Uživajmo lokalno. Vjerujmo u naše ljude.</p>
+                <p class="mt-4 text-gray-600 text-lg leading-relaxed">Gospodarstva se besplatno predstave s opisom, slikom, kontaktom i lokacijom na karti, a proizvode stave na <strong>Tržnicu</strong> s cijenom. Kupac klikne oglas i vidi tko prodaje, kako ga nazvati i kako doći do njega. Bez posrednika i provizije.</p>
+                <ul class="mt-5 space-y-2 text-gray-700">
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Prezentacija gospodarstva uključuje se jednom kvačicom u profilu</li>
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Oglasi s cijenom po kg, litri, komadu ili staklenci</li>
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Svi oglasi jednog prodavača na jednom mjestu</li>
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Pregledamo svako gospodarstvo prije objave</li>
+                </ul>
+                <div class="mt-7 flex flex-wrap items-center gap-4">
+                    <a href="{{ route('trznica') }}" class="inline-flex items-center gap-2 bg-[#022a20] hover:bg-[#033b2c] text-white font-bold px-6 py-3 rounded-xl transition">Otvori Tržnicu <span aria-hidden="true">→</span></a>
+                    <a href="{{ route('gospodarstva') }}" class="font-semibold text-green-700 hover:underline">Gospodarstva &rarr;</a>
+                    <a href="{{ auth()->check() ? route('profile.edit') . '#prezentacija' : route('register') }}" class="font-semibold text-green-700 hover:underline">Predstavite svoje gospodarstvo &rarr;</a>
+                </div>
+            </div>
+            {{-- primjer oglasa (ilustracija) --}}
+            <div class="relative" aria-hidden="true">
+                <div class="rounded-3xl bg-white p-5 shadow-xl ring-1 ring-black/5 max-w-md lg:ml-auto">
+                    <div class="h-36 rounded-2xl bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 flex items-end p-4">
+                        <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-amber-900">Med</span>
+                    </div>
+                    <p class="mt-4 text-lg font-bold text-gray-900">Bagremov med</p>
+                    <p class="text-2xl font-extrabold text-green-800">9,50 € / staklenka</p>
+                    <div class="mt-4 rounded-xl border border-gray-200 p-3 text-sm">
+                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400">Prodaje</p>
+                        <p class="font-bold text-gray-900">OPG iz vašeg kraja</p>
+                        <p class="text-gray-500">kućni prag · pon–sub 8–18 h</p>
+                        <p class="mt-2 rounded-lg border border-green-600 px-3 py-1.5 text-center text-xs font-semibold text-green-800">Svi oglasi ovog prodavača</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- NOVO U AGROLOGU: upravljanje gospodarstvom (FIS provjera, skladište, troškovi i dobit, mehanizacija, savjetnik, izvještaji) --}}
     <section class="py-20 bg-white">
         <div class="max-w-6xl mx-auto px-6">
@@ -328,6 +369,9 @@
                     ['PDF za AGRONET', 'Službeni obrazac evidencije u jednom kliku — cijela tablica na A4 listu, spremna za ispis ili kontrolu.', 'M9 12h6m-6 4h4m4 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', false],
                     ['Izvoz u Excel i CSV', 'Evidencija u tablici za Excel — za savjetnika, zadrugu, kontrolu ili vlastitu arhivu.', 'M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3', false],
                     ['Povijest se čuva', 'Zamjena kulture na parceli bez gubitka starih zapisa — evidencija ostaje točna godinama.', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', false],
+                    ['Tržnica domaćih proizvoda', 'Kupujmo hrvatsko: med, voće, povrće, vino i ulje s cijenom. Uz svaki oglas piše tko prodaje i kako ga kontaktirati.', 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z', true],
+                    ['Gospodarstva na karti', 'Besplatna prezentacija gospodarstva s opisom, slikom, kontaktom i lokacijom, da vas kupci pronađu po mjestu i ponudi.', 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', true],
+                    ['Ostali radovi i vožnja', 'Oranje, rezidba, košnja i vožnja do parcele s troškom, pa vidite pravu cijenu proizvodnje po hektaru.', 'M13 10V3L4 14h7v7l9-11h-7z', true],
                 ];
             @endphp
             <div x-data="{ sve: false }">

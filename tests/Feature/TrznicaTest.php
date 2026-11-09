@@ -50,7 +50,8 @@ class TrznicaTest extends TestCase
         $drugi = $this->gospodarstvo(User::factory()->create());
         Proizvod::create(['prezentacija_id' => $drugi->id, 'naziv' => 'Lipov med', 'vrsta' => 'Med', 'cijena' => 8, 'jedinica' => 'kg']);
         $this->get(route('trznica', ['prodavac' => $p->slug]))->assertOk()->assertSee('Bagremov med')->assertDontSee('Lipov med')->assertSee('Svi oglasi ovog prodavača');
-        $this->get(route('gospodarstvo', $p->slug))->assertSee('Proizvodi')->assertSee('Bagremov med');
+        $this->get(route('gospodarstvo', $p->slug))->assertSee('Bagremov med')->assertSee('Svi proizvodi (1)');
+        $this->get(route('gospodarstva'))->assertSee('Proizvodi na Tržnici (1)');
         $this->get('/sitemap.xml')->assertSee(route('trznica.proizvod', $pr), false);
     }
 
@@ -101,6 +102,15 @@ class TrznicaTest extends TestCase
         $this->get(route('dashboard'))->assertSee('Dovršite predstavljanje gospodarstva');
         $this->post(route('profile.prezentacija.odustani'));
         $this->assertFalse($u->fresh()->zeli_prezentaciju);
+    }
+
+    public function test_slogan_i_novost(): void
+    {
+        $this->get(route('trznica'))->assertOk()->assertSee('Kupujmo hrvatsko')->assertSee('Vjerujmo u naše ljude');
+        $this->get(route('gospodarstva'))->assertOk()->assertSee('Kupujmo hrvatsko');
+        $this->get('/')->assertOk()->assertSee('id="trznica"', false)->assertSee('Otvori Tržnicu');
+        $this->assertSame('trznica-kupujmo-hrvatsko', \App\Http\Controllers\SadrzajController::novosti()[0]['slug']);
+        $this->get(route('novost', 'trznica-kupujmo-hrvatsko'))->assertOk()->assertSee('Svi oglasi ovog prodavača');
     }
 
     public function test_admin_poziva_na_popis_jednom(): void

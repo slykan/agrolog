@@ -10,7 +10,8 @@
 
     <span class="inline-block text-xs font-semibold uppercase tracking-widest text-green-600 bg-green-100 px-3 py-1 rounded-full mb-4">Gospodarstva</span>
     <h1 class="text-4xl font-bold text-gray-900 mb-3">Kupite izravno od proizvođača</h1>
-    <p class="text-lg text-gray-500 mb-8">Obiteljska gospodarstva koja koriste AgroLog. Potražite po mjestu ili onome što nude i javite im se izravno.</p>
+    <p class="text-lg text-gray-500 mb-6">Obiteljska gospodarstva koja koriste AgroLog. Potražite po mjestu ili onome što nude i javite im se izravno.</p>
+    @include('partials.kupujmo-hrvatsko', ['tekst' => 'Upoznajte obitelji koje stoje iza hrane na vašem stolu. Svako gospodarstvo s popisa ima ime, adresu i kontakt, a mnoga prodaju i na kućnom pragu.'])
 
     {{-- filteri --}}
     <form method="get" action="{{ route('gospodarstva') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -52,7 +53,9 @@
     @else
         <div class="mt-8 grid gap-5 sm:grid-cols-2">
             @foreach($gospodarstva as $g)
-                <a href="{{ route('gospodarstvo', $g->slug) }}" class="group block overflow-hidden rounded-2xl border border-gray-200 hover:border-green-400 hover:shadow-md transition">
+                {{-- kartica: cijela vodi na gospodarstvo, a donji red na njegove proizvode (zasebne poveznice, ne ugniježđene) --}}
+                <div class="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 hover:border-green-400 hover:shadow-md transition">
+                    <a href="{{ route('gospodarstvo', $g->slug) }}" class="block flex-1">
                     @if($g->slika)
                         <img src="{{ $g->slikaUrl() }}" alt="{{ $g->naziv }}" loading="lazy" class="h-44 w-full object-cover">
                     @else
@@ -68,7 +71,13 @@
                             @endforeach
                         </div>
                     </div>
-                </a>
+                    </a>
+                    @if($g->proizvodi_count)
+                        <a href="{{ route('trznica', ['prodavac' => $g->slug]) }}" class="flex items-center justify-between border-t border-gray-100 px-5 py-3 text-sm font-semibold text-green-800 hover:bg-green-50">
+                            <span>Proizvodi na Tržnici ({{ $g->proizvodi_count }})</span><span aria-hidden="true">→</span>
+                        </a>
+                    @endif
+                </div>
             @endforeach
         </div>
         <div class="mt-8">{{ $gospodarstva->links() }}</div>

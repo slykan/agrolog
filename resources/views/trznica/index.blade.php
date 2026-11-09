@@ -22,7 +22,8 @@
         </div>
     @else
         <h1 class="text-4xl font-bold text-gray-900 mb-3">Domaće, izravno od proizvođača</h1>
-        <p class="text-lg text-gray-500 mb-8">Proizvodi obiteljskih gospodarstava s cijenama. Javite se gospodarstvu i dogovorite kupnju izravno.</p>
+        <p class="text-lg text-gray-500 mb-6">Proizvodi obiteljskih gospodarstava s cijenama. Javite se gospodarstvu i dogovorite kupnju izravno.</p>
+        @include('partials.kupujmo-hrvatsko', ['tekst' => 'Med, voće, povrće, vino, ulje i sir od ljudi iz vašeg kraja. Bez posrednika: cijena ide gospodarstvu, a vi znate tko je i gdje je proizveo.'])
 
         <form method="get" action="{{ route('trznica') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <input type="search" name="q" value="{{ $q }}" placeholder="Proizvod, mjesto ili gospodarstvo" aria-label="Pretraga" class="form-input w-full sm:col-span-2 lg:col-span-1">
