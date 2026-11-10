@@ -366,7 +366,7 @@
     {{-- FEATURES --}}
     <section class="relative overflow-hidden py-20 bg-[#f3f7f1]">
         {{-- pozadina: mozaik svijetlih parcela, više traktora polako obrađuje red po red (iza kartica; samo dok je vidljivo) --}}
-        <div class="absolute inset-0 pointer-events-none" aria-hidden="true" x-data="poljaTraktori()"></div>
+        <div class="absolute inset-0 pointer-events-none no-print" aria-hidden="true" x-data="poljaTraktori()"></div>
         <div class="relative max-w-6xl mx-auto px-6">
             <div class="text-center mb-14" data-zaglavlje>
                 <span class="text-xs font-bold uppercase tracking-[0.3em] text-green-700">Što sve dobivate</span>

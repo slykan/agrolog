@@ -1,19 +1,16 @@
 package app.agro_log.mobile;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.URLUtil;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -196,21 +193,10 @@ public class MainActivity extends Activity {
                 if (request.isForMainFrame() && response.getStatusCode() >= 500) showError();
             }
         });
-        web.setDownloadListener((url, userAgent, disposition, mime, length) -> {
-            if (!NavigationPolicy.isInternal(url)) { toast("Ovo preuzimanje nije podržano."); return; }
-            try {
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                String cookie = CookieManager.getInstance().getCookie(url);
-                if (cookie != null) request.addRequestHeader("Cookie", cookie);
-                request.addRequestHeader("User-Agent", userAgent);
-                if (mime != null) request.setMimeType(mime);
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                    URLUtil.guessFileName(url, disposition, mime));
-                ((DownloadManager) getSystemService(DOWNLOAD_SERVICE)).enqueue(request);
-                toast("Izvještaj se preuzima u Preuzimanja.");
-            } catch (RuntimeException e) { toast("Preuzimanje nije uspjelo. Pokušajte ponovno."); }
-        });
+        // izvještaji (PDF, CSV, XLSX): preuzme se uz prijavu, spremi u Preuzimanja/AgroLog i odmah otvori
+        Preuzimanje preuzimanje = new Preuzimanje(this);
+        web.setDownloadListener((url, userAgent, disposition, mime, length) ->
+            preuzimanje.preuzmi(url, userAgent, disposition, mime));
         if (android.os.Build.VERSION.SDK_INT >= 33) {
             getOnBackInvokedDispatcher().registerOnBackInvokedCallback(0, this::goBack);
         }

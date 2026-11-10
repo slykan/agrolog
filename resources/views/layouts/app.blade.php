@@ -24,9 +24,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="relative min-h-screen bg-gray-100">
+        <div class="relative min-h-screen bg-gray-100 print:bg-white">
             {{-- nepomična pozadina od njiva (vidi se u razmacima oko sadržaja); manje traktora nego na naslovnici --}}
-            <div class="fixed inset-0 z-0 pointer-events-none" aria-hidden="true" x-data="poljaTraktori({ min: 2, max: 4 })"></div>
+            <div class="fixed inset-0 z-0 pointer-events-none no-print" aria-hidden="true" x-data="poljaTraktori({ min: 2, max: 4 })"></div>
             <div class="relative z-10">
             @include('layouts.navigation')
 

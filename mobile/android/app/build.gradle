@@ -5,15 +5,39 @@ if (file('google-services.json').exists()) {
     apply plugin: 'com.google.gms.google-services'
 }
 
+// Upload key lives outside git in AgroLog-backups/ (keystore.properties + agrolog-upload.jks).
+def keystoreFile = rootProject.file('../../AgroLog-backups/keystore.properties')
+def keystoreProps = new Properties()
+if (keystoreFile.exists()) {
+    keystoreFile.withInputStream { keystoreProps.load(it) }
+}
+
 android {
     namespace 'app.agro_log.mobile'
+    signingConfigs {
+        if (keystoreFile.exists()) {
+            upload {
+                storeFile new File(keystoreFile.parentFile, keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+    buildTypes {
+        release {
+            if (keystoreFile.exists()) {
+                signingConfig signingConfigs.upload
+            }
+        }
+    }
     compileSdk 36
     defaultConfig {
         applicationId 'app.agro_log.mobile'
         minSdk 29
         targetSdk 36
-        versionCode 5
-        versionName '0.5.0'
+        versionCode 7
+        versionName '0.5.2'
         testInstrumentationRunner 'android.test.InstrumentationTestRunner'
     }
     buildFeatures { buildConfig true }
