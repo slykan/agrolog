@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/prskanje', fn() => view('prskanje'))->name('prskanje');
     Route::get('/berba', fn() => view('berba'))->name('berba');
     Route::get('/radovi', fn() => view('radovi'))->name('radovi');
+    Route::get('/kalendar', fn() => view('kalendar'))->name('kalendar');
     Route::get('/prskanje/izvoz.csv', [EvidencijaIzvozController::class, 'prskanja'])->name('prskanje.csv');
     Route::get('/parcele/{parcela}/arkod', ParcelaArkodController::class)->name('parcela.arkod');
     Route::get('/skladiste', fn() => view('skladiste'))->name('skladiste');

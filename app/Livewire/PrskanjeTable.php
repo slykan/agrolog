@@ -11,7 +11,7 @@ use App\Livewire\Concerns\BiraSkladiste;
 
 class PrskanjeTable extends Component
 {
-    use BiraSkladiste;
+    use BiraSkladiste, \App\Livewire\Concerns\IzKalendara;
 
     public bool $showForm = false;
     public array $form = [
@@ -72,6 +72,16 @@ class PrskanjeTable extends Component
             $this->form['trgovacki_naziv_sredstva'] = $p->sredstvo;
             $this->updatedFormTrgovackiNazivSredstva($p->sredstvo);
             $this->form['kolicina_sredstva_l_ha'] = $p->doza ?? '';
+        } else {
+            $plan = $this->izKalendara('prskanje', 'datum_tretiranja', $otvori);
+            if ($plan?->kultura_id) {
+                $this->updatedFormKulturaId($plan->kultura_id);
+            }
+            if ($plan?->opis) {
+                $this->form['trgovacki_naziv_sredstva'] = $plan->opis;
+                $this->updatedFormTrgovackiNazivSredstva($plan->opis);
+            }
+            $this->showForm = $otvori;
         }
     }
 
@@ -255,6 +265,8 @@ class PrskanjeTable extends Component
     {
         $this->preporukaId = null;
         $this->preporukaOpis = '';
+        $this->planId = null;
+        $this->planOpis = '';
         $this->showForm = true;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -265,6 +277,8 @@ class PrskanjeTable extends Component
     {
         $this->preporukaId = null;
         $this->preporukaOpis = '';
+        $this->planId = null;
+        $this->planOpis = '';
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -325,8 +339,11 @@ class PrskanjeTable extends Component
         $data['skladiste_id'] = $this->skladisteZaSpremanje($data['skladiste_id'] ?? null);
         $zapis = Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
         \App\Support\Preporuke::zavrsiUnosom($this->preporukaId, auth()->id(), 'prskanje', $zapis->id);
+        $this->zatvoriPlan('prskanje', $zapis->id);
         $this->preporukaId = null;
         $this->preporukaOpis = '';
+        $this->planId = null;
+        $this->planOpis = '';
 
         $this->showForm = false;
         $this->showKulturaPicker = false;

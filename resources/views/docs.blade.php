@@ -57,6 +57,7 @@
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
                     <a href="#troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Troškovi i dobit</a>
                     <a href="#ostali-radovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Ostali radovi</a>
+                    <a href="#kalendar" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kalendar</a>
                     <a href="#opci-troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Opći troškovi i vožnja</a>
                     <a href="#mehanizacija" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Mehanizacija</a>
                     <a href="#izvoz" class="block text-gray-600 hover:text-green-700 py-1 transition">6. Ispis i izvoz</a>
@@ -442,6 +443,36 @@
                             <li>Vožnja autom do parcele nije rad na parceli. Upisuje se pod <a href="#opci-troskovi" class="text-green-700 hover:underline">Opći troškovi</a>, a AgroLog vas na to upozori ako je upišete među radove.</li>
                         </ul>
                         <p>Trošak radova ulazi u stupac <strong>Radovi i ostalo</strong> na stranici <a href="#troskovi" class="text-green-700 hover:underline">Troškovi</a>, u €/ha kulture i u dobit.</p>
+                    </div>
+                </section>
+
+                {{-- KALENDAR --}}
+                <section id="kalendar" class="scroll-mt-24">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Kalendar: što je napravljeno i što slijedi</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>U izborniku <strong>Aktivnosti → Kalendar</strong> vidite cijeli mjesec na jednom mjestu. Ništa ne treba upisivati posebno: kalendar sam skuplja ono što je već u AgroLogu.</p>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>Napravljeno:</strong> prskanja, gnojidbe, berbe i ostali radovi, svaka vrsta u svojoj boji, te servisi strojeva.</li>
+                            <li><strong>Karence:</strong> narančasta crta na dnu dana znači da je kultura pod karencom i berba još nije dozvoljena. Na dan kad karenca istječe piše <em>Kraj karence: smije se brati</em>. Karenca se zna samo za sredstva iz registra FIS-a.</li>
+                            <li><strong>Rokovi mehanizacije:</strong> registracija, tehnički, osiguranje i servis na datum isteka.</li>
+                            <li><strong>Preporuke savjetnika</strong> koje još niste odradili stoje na svom roku; ako rok prođe, označene su crveno.</li>
+                            <li><strong>Vrijeme:</strong> za idućih 7 dana uz datum je prognoza za područje vaših parcela. Zelena točkica znači da je dan povoljan za prskanje, crvena da nije.</li>
+                        </ul>
+                        <p>Gumbima iznad mreže uključujete i isključujete vrste, a izbornikom <strong>Sve parcele</strong> gledate samo jednu parcelu. Na mobitelu se umjesto mreže prikazuje popis dana.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Klik na dan</h3>
+                        <p>Klik na dan pokazuje sve što je toga dana napravljeno ili planirano. Za današnji ili raniji dan možete odmah <strong>upisati obavljeno</strong> (prskanje, gnojidbu, berbu ili rad): forma se otvori s tim datumom.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Planiranje poslova</h3>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Kliknite <strong>+ Planiraj posao</strong> ili dan pa <strong>+ Planiraj za …</strong></li>
+                            <li>Odaberite vrstu posla, kulturu i po želji sredstvo, gnojivo ili vrstu rada</li>
+                            <li>Kad posao obavite, kliknite <strong>Odrađeno, upiši</strong>: otvori se forma s kulturom i sredstvom iz plana. Provjerite podatke i spremite, a plan se sam zatvori</li>
+                        </ol>
+                        <p>Plan nije zapis u evidenciji i ne ide u izvještaje. Neodrađeni plan kojem je prošao datum označen je s <strong>kasni</strong>.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Obavijesti</h3>
+                        <p>Ako imate uključene obavijesti na uređaju, AgroLog ujutro javi što je danas planirano. Navečer, ako vas čeka prskanje (plan ili preporuka u iduća tri dana), javi je li sutra povoljan dan za prskanje.</p>
                     </div>
                 </section>
 

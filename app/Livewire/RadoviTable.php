@@ -12,6 +12,8 @@ use Livewire\Component;
 /** Ostali radovi na parceli (oranje, rezidba, košnja...) s troškom: vlastiti rad (gorivo + radni sati) ili usluga. */
 class RadoviTable extends Component
 {
+    use Concerns\IzKalendara;
+
     public bool $showForm = false;
     public ?int $editId = null;
     public array $form = [];
@@ -33,6 +35,11 @@ class RadoviTable extends Component
     {
         $this->godina = (int) date('Y');
         $this->form = $this->praznaForma();
+        $plan = $this->izKalendara('rad', 'datum', $otvori);
+        if ($plan?->opis) {
+            $this->form['vrsta'] = mb_substr($plan->opis, 0, 100);
+        }
+        $this->showForm = $otvori;
     }
 
     private function praznaForma(): array
@@ -162,6 +169,8 @@ class RadoviTable extends Component
 
     public function odustani(): void
     {
+        $this->planId = null;
+        $this->planOpis = '';
         $this->showForm = false;
         $this->editId = null;
         $this->resetErrorBag();
@@ -241,17 +250,25 @@ class RadoviTable extends Component
         $podaci = $this->podaci();
 
         if ($vise) {
-            \Illuminate\Support\Facades\DB::transaction(function () use ($podaci, $uid) {
+            $prvi = \Illuminate\Support\Facades\DB::transaction(function () use ($podaci, $uid) {
+                $prvi = null;
                 foreach ($this->raspodjela($podaci) as $p) {
-                    Rad::create($p + ['user_id' => $uid]);
+                    $zapis = Rad::create($p + ['user_id' => $uid]);
+                    $prvi ??= $zapis->id;
                 }
+
+                return $prvi;
             });
+            if ($prvi) {
+                $this->zatvoriPlan('rad', $prvi);
+            }
         } else {
             $podaci['trosak'] = Rad::izracunajTrosak($podaci, $this->kultura()?->posadjena_povrsina_ha);
             if ($this->editId) {
                 Rad::where('user_id', $uid)->findOrFail($this->editId)->update($podaci);
             } else {
-                Rad::create($podaci + ['user_id' => $uid]);
+                $zapis = Rad::create($podaci + ['user_id' => $uid]);
+                $this->zatvoriPlan('rad', $zapis->id);
             }
         }
         $this->viseKultura = false;

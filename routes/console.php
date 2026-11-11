@@ -45,5 +45,16 @@ Artisan::command('push:upozorenja', function () {
 
 Schedule::command('push:upozorenja')->dailyAt('07:30');
 
+Artisan::command('kalendar:jutro', function () {
+    $this->info('Poslano korisnicima: ' . \App\Support\KalendarObavijesti::jutro());
+})->purpose('Push: što je danas planirano u kalendaru');
+
+Artisan::command('kalendar:vecer', function () {
+    $this->info('Poslano korisnicima: ' . \App\Support\KalendarObavijesti::vecer());
+})->purpose('Push: je li sutra povoljno za prskanje koje čeka (plan ili preporuka)');
+
+Schedule::command('kalendar:jutro')->dailyAt('06:30')->timezone('Europe/Zagreb');
+Schedule::command('kalendar:vecer')->dailyAt('18:00')->timezone('Europe/Zagreb');
+
 // red čekanja (obavijesti mailom): obrađuje se svake minute preko cron schedule:run
 Schedule::command('queue:work database --stop-when-empty --max-time=50 --tries=3')->everyMinute()->withoutOverlapping();

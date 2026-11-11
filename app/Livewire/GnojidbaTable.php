@@ -10,7 +10,7 @@ use App\Support\Gnojiva;
 
 class GnojidbaTable extends Component
 {
-    use BiraSkladiste;
+    use BiraSkladiste, \App\Livewire\Concerns\IzKalendara;
 
     public bool $showForm = false;
     public array $form = [
@@ -52,6 +52,13 @@ class GnojidbaTable extends Component
             $this->form['tip_gnojiva'] = $p->sredstvo;
             $this->updatedFormTipGnojiva($p->sredstvo);
             $this->form['kolicina_kg_ha'] = $p->doza ?? '';
+        } else {
+            $plan = $this->izKalendara('gnojidba', 'datum', $otvori);
+            if ($plan?->opis) {
+                $this->form['tip_gnojiva'] = $plan->opis;
+                $this->updatedFormTipGnojiva($plan->opis);
+            }
+            $this->showForm = $otvori;
         }
     }
 
@@ -217,6 +224,8 @@ class GnojidbaTable extends Component
     {
         $this->preporukaId = null;
         $this->preporukaOpis = '';
+        $this->planId = null;
+        $this->planOpis = '';
         $this->showForm = true;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -227,6 +236,8 @@ class GnojidbaTable extends Component
     {
         $this->preporukaId = null;
         $this->preporukaOpis = '';
+        $this->planId = null;
+        $this->planOpis = '';
         $this->showForm = false;
         $this->showKulturaPicker = false;
         $this->formKulturaSearch = '';
@@ -259,8 +270,11 @@ class GnojidbaTable extends Component
 
         $zapis = Gnojidba::create(Gnojidba::sHranivima(array_merge($this->form, ['user_id' => auth()->id(), 'skladiste_id' => $this->skladisteZaSpremanje($this->form['skladiste_id'] ?? null)])));
         \App\Support\Preporuke::zavrsiUnosom($this->preporukaId, auth()->id(), 'gnojidba', $zapis->id);
+        $this->zatvoriPlan('gnojidba', $zapis->id);
         $this->preporukaId = null;
         $this->preporukaOpis = '';
+        $this->planId = null;
+        $this->planOpis = '';
 
         $this->showForm = false;
         $this->showKulturaPicker = false;

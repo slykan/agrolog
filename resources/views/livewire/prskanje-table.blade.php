@@ -1,4 +1,11 @@
 <div>
+    <div wire:key="plan-traka">
+    @if($planOpis)
+        <div class="mb-3 rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-800">
+            <strong>Unos iz kalendara</strong> (planirano: {{ $planOpis }}). Upišite ono što je stvarno napravljeno; spremanjem se plan zatvara.
+        </div>
+    @endif
+    </div>
     <div wire:key="preporuka-traka">
     @if($preporukaOpis)
         <div class="mb-3 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900">

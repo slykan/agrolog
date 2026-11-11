@@ -12,6 +12,8 @@ use Livewire\Component;
 /** Berba i žetva: više zapisa po kulturi, provjera karence pri unosu i prihod za Troškove. */
 class BerbaTable extends Component
 {
+    use Concerns\IzKalendara;
+
     public bool $showForm = false;
     public ?int $editId = null;
     public array $form = [];
@@ -28,6 +30,11 @@ class BerbaTable extends Component
     {
         $this->godina = (int) date('Y');
         $this->form = $this->praznaForma();
+        $plan = $this->izKalendara('berba', 'datum', $otvori);
+        if ($plan?->opis) {
+            $this->form['napomena'] = mb_substr($plan->opis, 0, 500);
+        }
+        $this->showForm = $otvori;
     }
 
     private function praznaForma(): array
@@ -59,6 +66,8 @@ class BerbaTable extends Component
 
     public function odustani(): void
     {
+        $this->planId = null;
+        $this->planOpis = '';
         $this->showForm = false;
         $this->editId = null;
         $this->resetErrorBag();
@@ -101,7 +110,8 @@ class BerbaTable extends Component
         if ($this->editId) {
             Berba::where('user_id', auth()->id())->findOrFail($this->editId)->update($podaci);
         } else {
-            Berba::create($podaci + ['user_id' => auth()->id()]);
+            $zapis = Berba::create($podaci + ['user_id' => auth()->id()]);
+            $this->zatvoriPlan('berba', $zapis->id);
         }
         $this->godina = (int) substr($this->form['datum'], 0, 4);
         $this->odustani();
