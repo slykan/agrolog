@@ -99,5 +99,6 @@
     {{-- FOOTER --}}
     @include('partials.footer')
 
+    @include('partials.tawk')
 </body>
 </html>

@@ -91,5 +91,6 @@
             </div>
         </div>
         @include('partials.instaliraj')
-    </body>
+        @include('partials.tawk')
+</body>
 </html>

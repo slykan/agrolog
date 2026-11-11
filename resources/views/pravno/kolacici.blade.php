@@ -52,7 +52,7 @@
 
     <section>
         <h2 class="{{ $n }}">6. Vanjski servisi</h2>
-        <p>Karta, prognoza, fontovi i prijava Googleom dohvaćaju se od vanjskih pružatelja, koji pritom vide vašu IP adresu. Vidi <a href="{{ route('privacy') }}" class="text-green-700 hover:underline">Pravila privatnosti</a>.</p>
+        <p>Karta, prognoza, fontovi i prijava Googleom dohvaćaju se od vanjskih pružatelja, koji pritom vide vašu IP adresu. Chat uživo u kutu stranice pruža Tawk.to, koji u pregledniku sprema svoje kolačiće i lokalnu pohranu (npr. twk_uuid, TawkConnectionTime) kako bi razgovor ostao povezan i kako bismo vidjeli da ste na stranici. Vidi <a href="{{ route('privacy') }}" class="text-green-700 hover:underline">Pravila privatnosti</a>.</p>
     </section>
 
     <section>
