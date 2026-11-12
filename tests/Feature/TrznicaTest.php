@@ -125,4 +125,21 @@ class TrznicaTest extends TestCase
         Mail::assertSentCount(1);
         $this->actingAs(User::factory()->create())->post(route('admin.korisnik.pozovi-popis', $u))->assertForbidden();
     }
+
+    public function test_naslovnica_izdvaja_proizvode_tek_od_cetiri_i_naredba_primjera(): void
+    {
+        $u = User::factory()->create();
+        $this->get(route('home'))->assertOk()->assertDontSee('Izdvajamo proizvode');
+
+        $this->artisan('trznica:primjeri', ['email' => $u->email])->assertExitCode(1);
+        $p = $this->gospodarstvo($u);
+        $this->artisan('trznica:primjeri', ['email' => $u->email])->assertExitCode(0);
+        $this->artisan('trznica:primjeri', ['email' => $u->email])->assertExitCode(0);
+        $this->assertSame(8, $p->proizvodi()->count());
+
+        $this->get(route('home'))->assertOk()->assertSee('Izdvajamo proizvode')->assertSee('Bagremov med')->assertSee('🍯', false);
+
+        $this->artisan('trznica:primjeri', ['email' => $u->email, '--obrisi' => true])->assertExitCode(0);
+        $this->assertSame(0, $p->proizvodi()->count());
+    }
 }

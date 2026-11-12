@@ -221,47 +221,6 @@
         </div>
     </section>
 
-    {{-- KUPUJMO HRVATSKO: Tržnica i Gospodarstva --}}
-    <section id="trznica" class="scroll-mt-24 py-20 bg-[#f3f7f1]">
-        <div class="max-w-6xl mx-auto px-6 grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div>
-                <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-green-700">
-                    <span class="w-2 h-2 rounded-full bg-[#86bc25]"></span> Novo · Tržnica i Gospodarstva
-                </span>
-                <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Kupujmo hrvatsko</h2>
-                <p class="mt-2 text-xl font-semibold text-green-800">Podržimo domaće. Uživajmo lokalno. Vjerujmo u naše ljude.</p>
-                <p class="mt-4 text-gray-600 text-lg leading-relaxed">Gospodarstva se besplatno predstave s opisom, slikom, kontaktom i lokacijom na karti, a proizvode stave na <strong>Tržnicu</strong> s cijenom. Kupac klikne oglas i vidi tko prodaje, kako ga nazvati i kako doći do njega. Bez posrednika i provizije.</p>
-                <ul class="mt-5 space-y-2 text-gray-700">
-                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Prezentacija gospodarstva uključuje se jednom kvačicom u profilu</li>
-                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Oglasi s cijenom po kg, litri, komadu ili staklenci</li>
-                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Svi oglasi jednog prodavača na jednom mjestu</li>
-                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Pregledamo svako gospodarstvo prije objave</li>
-                </ul>
-                <div class="mt-7 flex flex-wrap items-center gap-4">
-                    <a href="{{ route('trznica') }}" class="inline-flex items-center gap-2 bg-[#022a20] hover:bg-[#033b2c] text-white font-bold px-6 py-3 rounded-xl transition">Otvori Tržnicu <span aria-hidden="true">→</span></a>
-                    <a href="{{ route('gospodarstva') }}" class="font-semibold text-green-700 hover:underline">Gospodarstva &rarr;</a>
-                    <a href="{{ auth()->check() ? route('profile.edit') . '#prezentacija' : route('register') }}" class="font-semibold text-green-700 hover:underline">Predstavite svoje gospodarstvo &rarr;</a>
-                </div>
-            </div>
-            {{-- primjer oglasa (ilustracija) --}}
-            <div class="relative" aria-hidden="true">
-                <div class="rounded-3xl bg-white p-5 shadow-xl ring-1 ring-black/5 max-w-md lg:ml-auto">
-                    <div class="h-36 rounded-2xl bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 flex items-end p-4">
-                        <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-amber-900">Med</span>
-                    </div>
-                    <p class="mt-4 text-lg font-bold text-gray-900">Bagremov med</p>
-                    <p class="text-2xl font-extrabold text-green-800">9,50 € / staklenka</p>
-                    <div class="mt-4 rounded-xl border border-gray-200 p-3 text-sm">
-                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400">Prodaje</p>
-                        <p class="font-bold text-gray-900">OPG iz vašeg kraja</p>
-                        <p class="text-gray-500">kućni prag · pon–sub 8–18 h</p>
-                        <p class="mt-2 rounded-lg border border-green-600 px-3 py-1.5 text-center text-xs font-semibold text-green-800">Svi oglasi ovog prodavača</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     {{-- NOVO U AGROLOGU: upravljanje gospodarstvom (FIS provjera, skladište, troškovi i dobit, mehanizacija, savjetnik, izvještaji) --}}
     <section class="py-20 bg-white">
         <div class="max-w-6xl mx-auto px-6">
@@ -446,6 +405,88 @@
                 @endforeach
             </div>
         </div>
+    </section>
+
+    {{-- KUPUJMO HRVATSKO: Tržnica i Gospodarstva --}}
+    <section id="trznica" class="scroll-mt-24 py-20 bg-[#f3f7f1]">
+        <div class="max-w-6xl mx-auto px-6 grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div>
+                <span class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.3em] text-green-700">
+                    <span class="w-2 h-2 rounded-full bg-[#86bc25]"></span> Novo · Tržnica i Gospodarstva
+                </span>
+                <h2 class="mt-3 text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Kupujmo hrvatsko</h2>
+                <p class="mt-2 text-xl font-semibold text-green-800">Podržimo domaće. Uživajmo lokalno. Vjerujmo u naše ljude.</p>
+                <p class="mt-4 text-gray-600 text-lg leading-relaxed">Gospodarstva se besplatno predstave s opisom, slikom, kontaktom i lokacijom na karti, a proizvode stave na <strong>Tržnicu</strong> s cijenom. Kupac klikne oglas i vidi tko prodaje, kako ga nazvati i kako doći do njega. Bez posrednika i provizije.</p>
+                <ul class="mt-5 space-y-2 text-gray-700">
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Prezentacija gospodarstva uključuje se jednom kvačicom u profilu</li>
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Oglasi s cijenom po kg, litri, komadu ili staklenci</li>
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Svi oglasi jednog prodavača na jednom mjestu</li>
+                    <li class="flex gap-2"><span class="text-green-700" aria-hidden="true">✓</span> Pregledamo svako gospodarstvo prije objave</li>
+                </ul>
+                <div class="mt-7 flex flex-wrap items-center gap-4">
+                    <a href="{{ route('trznica') }}" class="inline-flex items-center gap-2 bg-[#022a20] hover:bg-[#033b2c] text-white font-bold px-6 py-3 rounded-xl transition">Otvori Tržnicu <span aria-hidden="true">→</span></a>
+                    <a href="{{ route('gospodarstva') }}" class="font-semibold text-green-700 hover:underline">Gospodarstva &rarr;</a>
+                    <a href="{{ auth()->check() ? route('profile.edit') . '#prezentacija' : route('register') }}" class="font-semibold text-green-700 hover:underline">Predstavite svoje gospodarstvo &rarr;</a>
+                </div>
+            </div>
+            {{-- primjer oglasa (ilustracija) --}}
+            <div class="relative" aria-hidden="true">
+                <div class="rounded-3xl bg-white p-5 shadow-xl ring-1 ring-black/5 max-w-md lg:ml-auto">
+                    <div class="h-36 rounded-2xl bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 flex items-end p-4">
+                        <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-amber-900">Med</span>
+                    </div>
+                    <p class="mt-4 text-lg font-bold text-gray-900">Bagremov med</p>
+                    <p class="text-2xl font-extrabold text-green-800">9,50 € / staklenka</p>
+                    <div class="mt-4 rounded-xl border border-gray-200 p-3 text-sm">
+                        <p class="text-[11px] font-semibold uppercase tracking-wide text-gray-400">Prodaje</p>
+                        <p class="font-bold text-gray-900">OPG iz vašeg kraja</p>
+                        <p class="text-gray-500">kućni prag · pon–sub 8–18 h</p>
+                        <p class="mt-2 rounded-lg border border-green-600 px-3 py-1.5 text-center text-xs font-semibold text-green-800">Svi oglasi ovog prodavača</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Izdvajamo proizvode: najnoviji javni oglasi, 4 po stranici, sami se vrte (stoje dok je miš iznad ili ako korisnik ne želi animacije) --}}
+        @php
+            $izdvojeni = \App\Models\Proizvod::javni()->with('prezentacija')->latest('updated_at')->take(8)->get();
+        @endphp
+        @if($izdvojeni->count() >= 4)
+            <div class="max-w-6xl mx-auto px-6 mt-16"
+                 x-data="{
+                     str: 0, ukupno: 1, t: null,
+                     izmjeri() { const s = this.$refs.traka; this.ukupno = Math.max(1, Math.round(s.scrollWidth / s.clientWidth)); this.str = Math.min(this.ukupno - 1, Math.round(s.scrollLeft / s.clientWidth)) },
+                     idi(i) { const s = this.$refs.traka; this.str = (i + this.ukupno) % this.ukupno; s.scrollTo({ left: this.str * s.clientWidth, behavior: 'smooth' }) },
+                     kreni() { clearInterval(this.t); if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; this.t = setInterval(() => { if (! document.hidden) this.idi(this.str + 1) }, 6000) },
+                     stani() { clearInterval(this.t) },
+                 }"
+                 x-init="$nextTick(() => { izmjeri(); kreni() })" @resize.window.debounce.200ms="izmjeri()"
+                 @mouseenter="stani()" @mouseleave="kreni()" @focusin="stani()">
+                <div class="flex items-end justify-between gap-4 mb-5">
+                    <h3 class="text-2xl font-extrabold text-gray-900 tracking-tight">Izdvajamo proizvode</h3>
+                    <div class="flex items-center gap-3">
+                        <div class="hidden sm:flex items-center gap-1.5" x-show="ukupno > 1">
+                            <template x-for="i in ukupno" :key="i">
+                                <button type="button" @click="idi(i - 1); kreni()" class="h-2 rounded-full transition-all" :class="str === i - 1 ? 'w-6 bg-green-700' : 'w-2 bg-green-700/25'" :aria-label="'Stranica ' + i"></button>
+                            </template>
+                        </div>
+                        <button type="button" @click="idi(str - 1); kreni()" x-show="ukupno > 1" class="h-9 w-9 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50" aria-label="Prethodni">‹</button>
+                        <button type="button" @click="idi(str + 1); kreni()" x-show="ukupno > 1" class="h-9 w-9 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-50" aria-label="Sljedeći">›</button>
+                    </div>
+                </div>
+                <div x-ref="traka" @scroll.debounce.150ms="izmjeri()"
+                     class="flex snap-x snap-mandatory overflow-x-auto -mx-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    @foreach($izdvojeni as $pr)
+                        <div class="snap-start shrink-0 basis-[80%] sm:basis-1/2 lg:basis-1/4 px-2">
+                            @include('trznica._kartica', ['pr' => $pr])
+                        </div>
+                    @endforeach
+                </div>
+                <div class="mt-5 text-center">
+                    <a href="{{ route('trznica') }}" class="font-semibold text-green-700 hover:underline">Svi proizvodi na Tržnici &rarr;</a>
+                </div>
+            </div>
+        @endif
     </section>
 
     {{-- STATS --}}
