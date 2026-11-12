@@ -432,8 +432,9 @@
             {{-- primjer oglasa (ilustracija) --}}
             <div class="relative" aria-hidden="true">
                 <div class="rounded-3xl bg-white p-5 shadow-xl ring-1 ring-black/5 max-w-md lg:ml-auto">
-                    <div class="h-36 rounded-2xl bg-gradient-to-br from-amber-200 via-amber-300 to-amber-500 flex items-end p-4">
-                        <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-amber-900">Med</span>
+                    <div class="relative h-36 rounded-2xl bg-gradient-to-br from-[#f7fbf5] to-[#e8f3e3] flex items-end p-4">
+                        <span class="absolute inset-0 flex items-center justify-center text-6xl">🍯</span>
+                        <span class="relative rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-gray-800">Med</span>
                     </div>
                     <p class="mt-4 text-lg font-bold text-gray-900">Bagremov med</p>
                     <p class="text-2xl font-extrabold text-green-800">9,50 € / staklenka</p>

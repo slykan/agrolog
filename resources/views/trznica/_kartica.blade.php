@@ -3,9 +3,8 @@
     @if($pr->slika)
         <img src="{{ $pr->slikaUrl() }}" alt="{{ $pr->naziv }}" loading="lazy" class="h-40 w-full object-cover">
     @else
-        @php [$ikona, $boje] = $pr->izgled(); @endphp
-        <div class="relative h-40 flex items-end p-3" style="background: linear-gradient(135deg, {{ $boje }})">
-            <span class="absolute inset-0 flex items-center justify-center text-6xl drop-shadow-sm transition group-hover:scale-110" aria-hidden="true">{{ $ikona }}</span>
+        <div class="relative h-40 flex items-end p-3 bg-gradient-to-br from-[#f7fbf5] to-[#e8f3e3]">
+            <span class="absolute inset-0 flex items-center justify-center text-6xl transition group-hover:scale-110" aria-hidden="true">{{ $pr->ikona() }}</span>
             <span class="relative rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-semibold text-gray-800">{{ $pr->vrsta }}</span>
         </div>
     @endif
