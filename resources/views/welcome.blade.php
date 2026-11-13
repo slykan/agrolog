@@ -653,5 +653,6 @@
             };
         }
     </script>
+    @include('partials.puls')
 </body>
 </html>

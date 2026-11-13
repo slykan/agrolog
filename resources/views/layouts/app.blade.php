@@ -91,5 +91,6 @@
             </div>
         </div>
         @include('partials.instaliraj')
+        @include('partials.puls')
     </body>
 </html>

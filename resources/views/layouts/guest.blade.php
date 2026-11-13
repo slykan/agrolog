@@ -27,5 +27,6 @@
                 {{ $slot }}
             </div>
         </div>
+        @include('partials.puls')
     </body>
 </html>

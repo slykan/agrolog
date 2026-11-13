@@ -52,7 +52,7 @@
 
     <section>
         <h2 class="{{ $n }}">6. Vanjski servisi</h2>
-        <p>Karta, prognoza, fontovi i prijava Googleom dohvaćaju se od vanjskih pružatelja, koji pritom vide vašu IP adresu. Vidi <a href="{{ route('privacy') }}" class="text-green-700 hover:underline">Pravila privatnosti</a>.</p>
+        <p>Karta, prognoza, fontovi i prijava Googleom dohvaćaju se od vanjskih pružatelja, koji pritom vide vašu IP adresu. Posjećenost stranice mjerimo alatom Puls (on-click.hr), koji ne sprema kolačiće ni vašu IP adresu, nego samo anonimne podatke o otvorenim stranicama, izvoru posjeta, državi i vrsti uređaja. Vidi <a href="{{ route('privacy') }}" class="text-green-700 hover:underline">Pravila privatnosti</a>.</p>
     </section>
 
     <section>

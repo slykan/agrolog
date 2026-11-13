@@ -99,5 +99,6 @@
     {{-- FOOTER --}}
     @include('partials.footer')
 
+    @include('partials.puls')
 </body>
 </html>
