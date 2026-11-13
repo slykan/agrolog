@@ -27,6 +27,5 @@
                 {{ $slot }}
             </div>
         </div>
-        @include('partials.tawk')
-</body>
+    </body>
 </html>

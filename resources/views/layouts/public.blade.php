@@ -74,6 +74,5 @@
 
     @include('partials.footer')
     @stack('scripts')
-    @include('partials.tawk')
 </body>
 </html>

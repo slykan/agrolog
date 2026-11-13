@@ -653,6 +653,5 @@
             };
         }
     </script>
-    @include('partials.tawk')
 </body>
 </html>
