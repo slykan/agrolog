@@ -57,6 +57,7 @@
                     <a href="#skladiste" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Skladište</a>
                     <a href="#troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Troškovi i dobit</a>
                     <a href="#ostali-radovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Ostali radovi</a>
+                    <a href="#gorivo" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Gorivo po danu</a>
                     <a href="#kalendar" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Kalendar</a>
                     <a href="#opci-troskovi" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Opći troškovi i vožnja</a>
                     <a href="#mehanizacija" class="block text-green-700 font-semibold hover:text-green-800 py-1 transition">★ Mehanizacija</a>
@@ -408,6 +409,7 @@
                             <li><strong>Nabava</strong> su ulazi na skladište s upisanom cijenom, po mjesecima i po vrsti (zaštita bilja, gnojivo). Prijenosi između skladišta i inventure se ne broje.</li>
                             <li><strong>Utrošak</strong> je doza × površina iz svakog zapisa prskanja i gnojidbe, pomnožena s prosječnom nabavnom cijenom tog sredstva ili gnojiva.</li>
                             <li><strong>Radovi i ostalo</strong> su <a href="#ostali-radovi" class="text-green-700 hover:underline">ostali radovi</a> (oranje, rezidba, košnja…) i <a href="#opci-troskovi" class="text-green-700 hover:underline">opći troškovi</a> koje ste vezali uz kulturu.</li>
+                            <li><strong>Gorivo</strong> je <a href="#gorivo" class="text-green-700 hover:underline">gorivo upisano po danu</a>, podijeljeno na prskanja, gnojidbe i radove tog dana po hektarima.</li>
                             <li>Tablica <strong>Trošak po parceli i kulturi</strong> pokazuje iznos za zaštitu, gnojidbu, radove i ostalo, ukupno i po hektaru. Gumbima <strong>Parcela / Kultura</strong> desno birate grupiranje, a graf ispod pokazuje isto.</li>
                             <li><strong>Mehanizacija</strong> na dnu zbraja troškove servisa iz <a href="#mehanizacija" class="text-green-700 hover:underline">servisne knjige</a> i iznose uz rokove (registracija, osiguranje…). Gore su zbrojevi <strong>Trošak mehanizacije</strong>, <strong>Opći troškovi</strong> i <strong>Sveukupni trošak</strong> (parcele + mehanizacija + opći troškovi).</li>
                             <li>Razdoblje birate kao i na početnoj: ova godina, prošla, 12 mjeseci ili od–do.</li>
@@ -435,7 +437,7 @@
                             <li>Odaberite tko je radio i upišite trošak (može i bez troška)</li>
                         </ol>
                         <ul class="list-disc pl-6 space-y-1">
-                            <li><strong>Vlastiti rad:</strong> po želji odaberite stroj iz Mehanizacije i sate rada, a za trošak upišite gorivo (L × €/L) i rad (radni sati × €/h). Dva radnika po 8 sati su 16 radnih sati. Cijene goriva i sata pamte se za sljedeći unos.</li>
+                            <li><strong>Vlastiti rad:</strong> po želji odaberite stroj iz Mehanizacije i sate rada, a za trošak upišite gorivo (L × €/L) i rad (radni sati × €/h). Dva radnika po 8 sati su 16 radnih sati. Cijene goriva i sata pamte se za sljedeći unos. Ako gorivo ne upišete ovdje, rad ulazi u <a href="#gorivo" class="text-green-700 hover:underline">gorivo po danu</a>.</li>
                             <li><strong>Usluga:</strong> kad posao radi netko drugi, npr. susjed ore za 60 €/ha. Upišite cijenu po hektaru ili ukupno i po želji izvođača. Po hektaru se računa na obrađenu površinu ili, ako je ne upišete, na cijelu površinu kulture.</li>
                             <li>Gumb <strong>Kopiraj</strong> upisuje isti rad s današnjim datumom, npr. drugu košnju.</li>
                             <li><strong>Rad na više kultura odjednom</strong>, npr. oranje tri parcele u jednom danu: uz polje Kultura kliknite <strong>rad na više kultura</strong> i označite kulture (ili <strong>označi sve</strong>). Gorivo, radne sate i ukupnu cijenu upišite za cijeli posao, a AgroLog ih raspodijeli po hektarima i spremi zaseban zapis za svaku kulturu. Usluga po hektaru ostaje ista cijena po hektaru za svaku kulturu.</li>
@@ -443,6 +445,36 @@
                             <li>Vožnja autom do parcele nije rad na parceli. Upisuje se pod <a href="#opci-troskovi" class="text-green-700 hover:underline">Opći troškovi</a>, a AgroLog vas na to upozori ako je upišete među radove.</li>
                         </ul>
                         <p>Trošak radova ulazi u stupac <strong>Radovi i ostalo</strong> na stranici <a href="#troskovi" class="text-green-700 hover:underline">Troškovi</a>, u €/ha kulture i u dobit.</p>
+                    </div>
+                </section>
+
+                {{-- GORIVO PO DANU --}}
+                <section id="gorivo" class="scroll-mt-24">
+                    <div class="flex items-center gap-3 mb-5">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">★</div>
+                        <h2 class="text-2xl font-bold text-gray-900">Gorivo po danu</h2>
+                    </div>
+                    <div class="space-y-4 text-gray-600 leading-relaxed">
+                        <p>Koliko je goriva otišlo na pojedinu parcelu teško je znati, ali koliko ste natočili za cijeli dan rada znate. Zato se gorivo upisuje <strong>jednom za cijeli dan</strong>, a AgroLog ga sam podijeli na poslove tog dana po hektarima. Gorivo se vidi samo u <a href="#troskovi" class="text-green-700 hover:underline">Troškovima</a>, ne u evidenciji prskanja i gnojidbe ni u izvozu za Ministarstvo.</p>
+                        <ol class="list-decimal pl-6 space-y-1">
+                            <li>Spremite prvo prskanje ili gnojidbu tog dana. Otvori se prozor <strong>⛽ Gorivo za dd.mm.gggg.</strong> s popisom svih poslova tog dana.</li>
+                            <li>Upišite <strong>ukupno natočeno</strong> za taj dan u litrama i cijenu po litri (pamti se zadnja upisana). Možete upisati i samo iznos u eurima.</li>
+                            <li>Uz svaki posao odmah piše koliko eura otpada na njega. Kliknite <strong>Spremi</strong>.</li>
+                        </ol>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li><strong>Upisujete red po red?</strong> Prozor se otvara samo za prvi posao dana. Svaki sljedeći posao tog dana sam ulazi u raspodjelu i ništa ne trebate označavati, a AgroLog kratko javi „Uključeno u gorivo za …”.</li>
+                            <li><strong>Ne upisujte gorivo uz svaku parcelu.</strong> Upisuje se jednom za dan, pa se isti trošak ne može zbrojiti dvaput.</li>
+                            <li><strong>Unijet ću na kraju dana:</strong> prozor se taj dan više ne otvara, a na vrhu stranice ostaje podsjetnik <em>Gorivo za … još nije uneseno – Unesi</em>.</li>
+                            <li><strong>Posao koji nije trošio ovo gorivo</strong> (npr. leđna prskalica) odznačite kvačicom u prozoru. To se pamti, a novi poslovi tog dana i dalje ulaze sami.</li>
+                            <li>Više sredstava u istom prskanju iste parcele broji se kao jedan prolaz. <a href="#ostali-radovi" class="text-green-700 hover:underline">Ostali radovi</a> ulaze u raspodjelu samo ako uz njih niste već upisali gorivo.</li>
+                        </ul>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Ispravak goriva</h3>
+                        <p>Uz svaki red u evidenciji prskanja i gnojidbe je gumb <strong>⛽</strong>. Kad je gorivo za taj dan upisano, na njemu piše koliko, npr. <strong>⛽ 95 L</strong>. Kliknite ga, ispravite litre (npr. na 105) i spremite. Gorivo za dan možete otvoriti i u <a href="#kalendar" class="text-green-700 hover:underline">Kalendaru</a> (klik na dan → ⛽ Gorivo) te na Troškovima, gdje je popis <strong>Gorivo po danima</strong> s gumbom <strong>+ Gorivo za dan</strong> za naknadni upis. Uređivanje prskanja ili gnojidbe ne pita ponovno za gorivo.</p>
+                        <h3 class="font-semibold text-gray-800 text-lg mt-6">Gdje se vidi</h3>
+                        <p>Na Troškovima u stupcu <strong>Gorivo</strong> po parceli i kulturi, u €/ha i u dobiti. Gorivo upisano za dan bez ijednog posla ulazi samo u sveukupni trošak.</p>
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800">
+                            <strong>Ne pratite gorivo?</strong> U prozoru kliknite <strong>Ne pratim gorivo – ne prikazuj više</strong>. Uključiti ga možete kad god želite: <strong>Profil → Trošak goriva</strong>.
+                        </div>
                     </div>
                 </section>
 
@@ -576,6 +608,7 @@
                             <li>Naziv gospodarstva, MIPG broj, OIB</li>
                             <li>Ime i prezime, e-mail adresa, lozinka</li>
                             <li><a href="#gospodarstva" class="text-green-700 hover:underline">Prezentacija na AgroLogu</a>: po želji javno predstavljanje gospodarstva</li>
+                            <li><strong>Trošak goriva</strong>: uključuje ili isključuje pitanje za <a href="#gorivo" class="text-green-700 hover:underline">gorivo po danu</a> nakon prskanja i gnojidbe</li>
                         </ul>
                         <p>U istom padajućem izborniku pod imenom su i ove <strong>Upute</strong>, a u profilu i <a href="#savjetnik" class="text-green-700 hover:underline">pristup savjetniku</a>.</p>
 
