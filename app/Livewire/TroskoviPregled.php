@@ -107,6 +107,7 @@ class TroskoviPregled extends Component
                     : $g->map(fn ($r) => $r['kultura'] . ' ' . $r['godina'] . '.')->unique()->implode(', '),
                 'ha' => $ha, 'szb' => round((float) $g->sum('szb'), 2), 'gnojivo' => round((float) $g->sum('gnojivo'), 2),
                 'radovi' => round((float) $g->sum('radovi'), 2),
+                'gorivo' => round((float) $g->sum('gorivo'), 2),
                 'ukupno' => round($ukupno, 2), 'po_ha' => $ha > 0 ? round($ukupno / $ha, 2) : null,
             ];
         })->sortByDesc('ukupno')->values();

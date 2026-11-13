@@ -251,6 +251,10 @@
                                 <a href="{{ route('gnojidba', ['datum' => $dan]) }}" class="rounded-md border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50">Gnojidba</a>
                                 <a href="{{ route('berba', ['datum' => $dan]) }}" class="rounded-md border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50">Berba</a>
                                 <a href="{{ route('radovi', ['datum' => $dan]) }}" class="rounded-md border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50">Rad</a>
+                                @php $gorivoDan = \App\Models\GorivoDan::where('user_id', auth()->id())->whereDate('datum', $dan)->first(); @endphp
+                                @if($gorivoDan || auth()->user()->prati_gorivo)
+                                    <button type="button" x-on:click="Livewire.dispatch('gorivo-otvori', { datum: '{{ $dan }}' })" class="rounded-md border px-2 py-1 {{ $gorivoDan ? 'border-orange-300 bg-orange-50 text-orange-900' : 'border-gray-300 text-gray-700 hover:bg-gray-50' }}">⛽ Gorivo{{ $gorivoDan ? ': ' . number_format((float) $gorivoDan->iznos, 2, ',', '.') . ' €' : '' }}</button>
+                                @endif
                             </div>
                         @endif
                         <button type="button" wire:click="noviPlan('{{ $dan }}')" class="mt-2 text-sm font-medium text-green-700 underline">+ Planiraj za {{ $hrDatum($dan) }}</button>

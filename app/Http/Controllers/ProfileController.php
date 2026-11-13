@@ -49,6 +49,14 @@ class ProfileController extends Controller
         return Redirect::to(route('profile.edit') . '#obavijesti')->with('status', 'obavijesti-spremljene');
     }
 
+    /** Praćenje troška goriva: popup za gorivo nakon prskanja i gnojidbe. */
+    public function gorivo(Request $request): RedirectResponse
+    {
+        $request->user()->forceFill(['prati_gorivo' => $request->boolean('prati'), 'gorivo_kasnije' => null])->save();
+
+        return Redirect::to(route('profile.edit') . '#gorivo')->with('status', 'gorivo-spremljeno');
+    }
+
     /**
      * Delete the user's account.
      */

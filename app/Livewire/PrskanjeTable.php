@@ -11,7 +11,7 @@ use App\Livewire\Concerns\BiraSkladiste;
 
 class PrskanjeTable extends Component
 {
-    use BiraSkladiste, \App\Livewire\Concerns\IzKalendara;
+    use BiraSkladiste, \App\Livewire\Concerns\IzKalendara, \App\Livewire\Concerns\JaviGorivo;
 
     public bool $showForm = false;
     public array $form = [
@@ -340,6 +340,7 @@ class PrskanjeTable extends Component
         $zapis = Prskanje::create(array_merge($data, ['user_id' => auth()->id()]));
         \App\Support\Preporuke::zavrsiUnosom($this->preporukaId, auth()->id(), 'prskanje', $zapis->id);
         $this->zatvoriPlan('prskanje', $zapis->id);
+        $this->javiGorivo($data['datum_tretiranja']);
         $this->preporukaId = null;
         $this->preporukaOpis = '';
         $this->planId = null;
@@ -386,6 +387,7 @@ class PrskanjeTable extends Component
                 'tretirana_povrsina_ha' => $kultura->posadjena_povrsina_ha,
             ]));
         }
+        $this->javiGorivo($data['datum_tretiranja']);
 
         $this->showForm = false;
         $this->showKulturaPicker = false;
@@ -471,6 +473,7 @@ class PrskanjeTable extends Component
             'sustav_proizvodnje'        => $row->sustav_proizvodnje,
             'skladiste_id'              => $row->skladiste_id,
         ]);
+        $this->javiGorivo(now()->toDateString());
     }
 
     public function deleteRow(int $id): void

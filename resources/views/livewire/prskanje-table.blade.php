@@ -327,6 +327,11 @@
                         </td>
                         @endif
                         <td class="mob-puna mob-akcije px-2 py-2 border border-gray-200 no-print whitespace-nowrap text-center">
+                            @php $gd = $row->datum_tretiranja?->format('Y-m-d'); $gorivoDan = $gd ? ($this->gorivoDani()[$gd] ?? null) : null; @endphp
+                            @if($gd && ($gorivoDan || $this->pratiGorivo()))
+                                <button type="button" x-on:click="Livewire.dispatch('gorivo-otvori', { datum: '{{ $gd }}' })" title="Gorivo za {{ $row->datum_tretiranja->format('d.m.Y.') }}"
+                                        class="inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs align-middle {{ $gorivoDan ? 'bg-orange-50 text-orange-800 hover:bg-orange-100' : 'text-gray-400 hover:text-orange-700' }}">⛽@if($gorivoDan)<span>{{ $gorivoDan }}</span>@endif</button>
+                            @endif
                             <button wire:click="startEdit({{ $row->id }})" wire:confirm="Urediti ovaj zapis?" class="btn-icon-green" title="Uredi">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l6.586-6.586a2 2 0 112.828 2.828L11.828 13.828A2 2 0 0110 14H8v-2a2 2 0 01.586-1.414z"/>

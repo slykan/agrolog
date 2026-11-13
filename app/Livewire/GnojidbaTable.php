@@ -10,7 +10,7 @@ use App\Support\Gnojiva;
 
 class GnojidbaTable extends Component
 {
-    use BiraSkladiste, \App\Livewire\Concerns\IzKalendara;
+    use BiraSkladiste, \App\Livewire\Concerns\IzKalendara, \App\Livewire\Concerns\JaviGorivo;
 
     public bool $showForm = false;
     public array $form = [
@@ -271,6 +271,7 @@ class GnojidbaTable extends Component
         $zapis = Gnojidba::create(Gnojidba::sHranivima(array_merge($this->form, ['user_id' => auth()->id(), 'skladiste_id' => $this->skladisteZaSpremanje($this->form['skladiste_id'] ?? null)])));
         \App\Support\Preporuke::zavrsiUnosom($this->preporukaId, auth()->id(), 'gnojidba', $zapis->id);
         $this->zatvoriPlan('gnojidba', $zapis->id);
+        $this->javiGorivo($zapis->datum?->format('Y-m-d'));
         $this->preporukaId = null;
         $this->preporukaOpis = '';
         $this->planId = null;
@@ -313,6 +314,7 @@ class GnojidbaTable extends Component
         foreach ($kulture as $kultura) {
             Gnojidba::create(array_merge($data, ['kultura_id' => $kultura->id]));
         }
+        $this->javiGorivo($data['datum']);
 
         $this->showForm = false;
         $this->showKulturaPicker = false;
@@ -376,6 +378,7 @@ class GnojidbaTable extends Component
             'kg_n_ha'        => $row->kg_n_ha,
             'skladiste_id'   => $row->skladiste_id,
         ]);
+        $this->javiGorivo(now()->toDateString());
     }
 
     public function deleteRow(int $id): void

@@ -159,8 +159,9 @@ class DashKartice
         $szb = (float) $t['redovi']->sum('szb');
         $gnojivo = (float) $t['redovi']->sum('gnojivo');
         $radovi = (float) $t['redovi']->sum('radovi') + $t['opci_nevezano'];
+        $gorivo = (float) $t['redovi']->sum('gorivo') + $t['gorivo_nevezano'];
         $meh = (float) Troskovi::mehanizacija($user, $od, $do)['ukupno'];
-        $ukupno = $szb + $gnojivo + $radovi + $meh;
+        $ukupno = $szb + $gnojivo + $radovi + $gorivo + $meh;
 
         return [
             'ruta' => 'troskovi', 'naslov' => 'Troškovi', 'opis' => 'Trošak po parceli i kulturi, dobit po hektaru.', 'ikona' => 'troskovi',
@@ -171,6 +172,7 @@ class DashKartice
                 ['naziv' => 'zaštita', 'broj' => $szb, 'boja' => self::PRSKANJE],
                 ['naziv' => 'gnojidba', 'broj' => $gnojivo, 'boja' => self::GNOJIDBA],
                 ['naziv' => 'radovi i ostalo', 'broj' => $radovi, 'boja' => self::RADOVI],
+                ['naziv' => 'gorivo', 'broj' => $gorivo, 'boja' => Gorivo::BOJA],
                 ['naziv' => 'mehanizacija', 'broj' => $meh, 'boja' => '#6b7280'],
             ],
             'prazno' => $ukupno <= 0 ? 'Upišite cijene uz nabavu →' : null,

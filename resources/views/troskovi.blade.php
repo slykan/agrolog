@@ -8,6 +8,9 @@
                 <livewire:troskovi-pregled />
             </div>
             <div class="mt-4 sm:mt-6">
+                <livewire:gorivo-unos popis />
+            </div>
+            <div class="mt-4 sm:mt-6">
                 <livewire:opci-troskovi />
             </div>
         </div>

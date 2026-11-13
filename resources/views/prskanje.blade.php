@@ -6,6 +6,7 @@
         {{-- tablica evidencije je široka: puna širina ekrana --}}
         <div class="mx-auto px-2 sm:px-4 lg:px-6">
             <div class="bg-white shadow rounded-lg p-6">
+                <livewire:gorivo-unos />
                 <livewire:prskanje-table />
             </div>
             {{-- prijedlozi za trgovački naziv: sredstva koja je korisnik već koristio + registar FIS-a --}}

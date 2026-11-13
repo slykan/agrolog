@@ -4,9 +4,10 @@
         $n = count($mjeseci);
         $svaki = max(1, (int) ceil($n / 12));
         $najveci = collect($mjeseci)->sortByDesc(fn ($m) => $m['szb'] + $m['gnojivo'])->keys()->first();
-        $boje = ['gnojivo' => '#008300', 'szb' => '#2a78d6', 'radovi' => \App\Support\DashKartice::RADOVI];   // iste boje kao na početnoj
-        $nazivi = ['szb' => 'Zaštita bilja', 'gnojivo' => 'Gnojivo', 'radovi' => 'Radovi i ostalo'];
-        $sveukupno = $utroseno + $meh['ukupno'] + $opci_nevezano;
+        $boje = ['gnojivo' => '#008300', 'szb' => '#2a78d6', 'radovi' => \App\Support\DashKartice::RADOVI, 'gorivo' => \App\Support\Gorivo::BOJA];   // iste boje kao na početnoj
+        $nazivi = ['szb' => 'Zaštita bilja', 'gnojivo' => 'Gnojivo', 'radovi' => 'Radovi i ostalo', 'gorivo' => 'Gorivo'];
+        $imaGorivo = $grupe->sum('gorivo') > 0;
+        $sveukupno = $utroseno + $meh['ukupno'] + $opci_nevezano + $gorivo_nevezano;
         $eur = fn ($v, $d = 2) => number_format((float) $v, $d, ',', '.') . ' €';
     @endphp
 
@@ -64,7 +65,7 @@
         <div class="rounded-xl border border-green-200 bg-green-50 p-4">
             <p class="text-sm font-medium text-green-800">Sveukupni trošak</p>
             <p class="text-3xl font-bold text-green-900 leading-tight">{{ $eur($sveukupno, 0) }}</p>
-            <p class="text-xs text-green-800/80">parcele + mehanizacija + opći troškovi</p>
+            <p class="text-xs text-green-800/80">parcele + mehanizacija + opći troškovi{{ $gorivo_nevezano > 0 ? ' + gorivo bez posla' : '' }}</p>
         </div>
     </div>
 
@@ -171,7 +172,7 @@
                     @else
                         Sve kulture na parceli zajedno; € / ha na površinu parcele.
                     @endif
-                    Utrošak = doza × površina po prosječnoj nabavnoj cijeni. Radovi i ostalo = ostali radovi i opći troškovi vezani uz kulturu.
+                    Utrošak = doza × površina po prosječnoj nabavnoj cijeni. Radovi i ostalo = ostali radovi i opći troškovi vezani uz kulturu.@if($imaGorivo) Gorivo = gorivo upisano po danu, podijeljeno na poslove tog dana po hektarima.@endif
                 </p>
             </div>
             <div class="inline-flex shrink-0 rounded-lg border border-gray-200 bg-gray-50 p-0.5 text-sm" role="group" aria-label="Trošak po">
@@ -194,6 +195,7 @@
                         <th class="px-4 py-2 text-right">Zaštita bilja</th>
                         <th class="px-4 py-2 text-right">Gnojivo</th>
                         <th class="px-4 py-2 text-right">Radovi i ostalo</th>
+                        @if($imaGorivo)<th class="px-4 py-2 text-right">Gorivo</th>@endif
                         <th class="px-4 py-2 text-right">Trošak</th>
                         <th class="px-4 py-2 text-right">€ / ha</th>
                     </tr>
@@ -207,6 +209,7 @@
                             <td data-label="Zaštita bilja" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['szb']) }}</td>
                             <td data-label="Gnojivo" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['gnojivo']) }}</td>
                             <td data-label="Radovi i ostalo" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['radovi']) }}</td>
+                            @if($imaGorivo)<td data-label="Gorivo" class="px-4 py-2 text-right text-gray-700">{{ $eur($r['gorivo']) }}</td>@endif
                             <td data-label="Trošak" class="px-4 py-2 text-right text-gray-900">{{ $eur($r['ukupno']) }}</td>
                             <td data-label="€ / ha" class="px-4 py-2 text-right font-semibold text-gray-900">{{ $r['po_ha'] !== null ? $eur($r['po_ha']) : '—' }}</td>
                         </tr>
@@ -219,6 +222,7 @@
                         <td data-label="Zaštita bilja" class="px-4 py-2 text-right">{{ $eur($grupe->sum('szb')) }}</td>
                         <td data-label="Gnojivo" class="px-4 py-2 text-right">{{ $eur($grupe->sum('gnojivo')) }}</td>
                         <td data-label="Radovi i ostalo" class="px-4 py-2 text-right">{{ $eur($grupe->sum('radovi')) }}</td>
+                        @if($imaGorivo)<td data-label="Gorivo" class="px-4 py-2 text-right">{{ $eur($grupe->sum('gorivo')) }}</td>@endif
                         <td data-label="Trošak" class="px-4 py-2 text-right">{{ $eur($utroseno) }}</td>
                         <td data-label="€ / ha" class="px-4 py-2 text-right">{{ $poHaGrupe !== null ? $eur($poHaGrupe) : '—' }}</td>
                     </tr>
@@ -237,6 +241,7 @@
                         <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm" style="background: {{ $boje['szb'] }}"></span>Zaštita bilja</span>
                         <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm" style="background: {{ $boje['gnojivo'] }}"></span>Gnojivo</span>
                         @if($grupe->sum('radovi') > 0)<span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm" style="background: {{ $boje['radovi'] }}"></span>Radovi i ostalo</span>@endif
+                        @if($imaGorivo)<span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm" style="background: {{ $boje['gorivo'] }}"></span>Gorivo</span>@endif
                     </div>
                 </div>
                 <div class="space-y-2" role="img" aria-label="Trošak po {{ $grupa === 'kultura' ? 'kulturi' : 'parceli' }}">
@@ -244,9 +249,10 @@
                         <div class="group relative grid grid-cols-[6.5rem_1fr_auto] sm:grid-cols-[9rem_1fr_9rem] items-center gap-3 text-sm">
                             <span class="truncate text-gray-800" title="{{ $r['opis'] }}">{{ $r['naziv'] }}</span>
                             <div class="h-5 flex rounded-r overflow-hidden" style="width: {{ max(1, $r['ukupno'] / $najvise * 100) }}%">
-                                @if($r['szb'] > 0)<div class="h-full {{ $r['gnojivo'] > 0 || $r['radovi'] > 0 ? 'border-r-2 border-white' : '' }}" style="flex: {{ $r['szb'] }} 1 0; background: {{ $boje['szb'] }}"></div>@endif
-                                @if($r['gnojivo'] > 0)<div class="h-full {{ $r['radovi'] > 0 ? 'border-r-2 border-white' : '' }}" style="flex: {{ $r['gnojivo'] }} 1 0; background: {{ $boje['gnojivo'] }}"></div>@endif
-                                @if($r['radovi'] > 0)<div class="h-full" style="flex: {{ $r['radovi'] }} 1 0; background: {{ $boje['radovi'] }}"></div>@endif
+                                @if($r['szb'] > 0)<div class="h-full {{ $r['gnojivo'] > 0 || $r['radovi'] > 0 || $r['gorivo'] > 0 ? 'border-r-2 border-white' : '' }}" style="flex: {{ $r['szb'] }} 1 0; background: {{ $boje['szb'] }}"></div>@endif
+                                @if($r['gnojivo'] > 0)<div class="h-full {{ $r['radovi'] > 0 || $r['gorivo'] > 0 ? 'border-r-2 border-white' : '' }}" style="flex: {{ $r['gnojivo'] }} 1 0; background: {{ $boje['gnojivo'] }}"></div>@endif
+                                @if($r['radovi'] > 0)<div class="h-full {{ $r['gorivo'] > 0 ? 'border-r-2 border-white' : '' }}" style="flex: {{ $r['radovi'] }} 1 0; background: {{ $boje['radovi'] }}"></div>@endif
+                                @if($r['gorivo'] > 0)<div class="h-full" style="flex: {{ $r['gorivo'] }} 1 0; background: {{ $boje['gorivo'] }}"></div>@endif
                             </div>
                             <span class="text-right whitespace-nowrap"><span class="font-medium text-gray-900">{{ $eur($r['ukupno'], 0) }}</span> <span class="text-xs text-gray-500">· {{ $r['po_ha'] !== null ? $eur($r['po_ha'], 0) . '/ha' : '—' }}</span></span>
                             <div class="pointer-events-none absolute left-28 sm:left-40 bottom-full mb-1 z-10 hidden group-hover:block whitespace-nowrap rounded-lg bg-gray-900 text-white text-xs px-3 py-2 shadow-lg">
@@ -254,6 +260,7 @@
                                 <div>Zaštita bilja: {{ $eur($r['szb']) }}</div>
                                 <div>Gnojivo: {{ $eur($r['gnojivo']) }}</div>
                                 @if($r['radovi'] > 0)<div>Radovi i ostalo: {{ $eur($r['radovi']) }}</div>@endif
+                                @if($r['gorivo'] > 0)<div>Gorivo: {{ $eur($r['gorivo']) }}</div>@endif
                                 <div class="text-gray-300 mt-1">{{ $eur($r['ukupno']) }} · {{ number_format($r['ha'], 2, ',', '.') }} ha · {{ $r['po_ha'] !== null ? $eur($r['po_ha']) . '/ha' : '—' }}</div>
                             </div>
                         </div>
@@ -271,7 +278,7 @@
         <div class="px-4 pt-4 pb-2 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
             <div>
                 <h4 class="font-semibold text-gray-800">Prihod i dobit po {{ $grupa === 'kultura' ? 'kulturi' : 'parceli' }}</h4>
-                <p class="text-xs text-gray-500">Prihod = prinos × površina × cijena + potpore. Trošak = sredstva, gnojiva i radovi iz evidencije + opći troškovi vezani uz kulturu + sjeme i ostali troškovi upisani uz kulturu.</p>
+                <p class="text-xs text-gray-500">Prihod = prinos × površina × cijena + potpore. Trošak = sredstva, gnojiva, radovi i gorivo iz evidencije + opći troškovi vezani uz kulturu + sjeme i ostali troškovi upisani uz kulturu.</p>
             </div>
             @php $ukDobit = $dobit->whereNotNull('dobit')->sum('dobit'); @endphp
             @if($dobit->whereNotNull('dobit')->isNotEmpty())

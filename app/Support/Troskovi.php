@@ -19,7 +19,7 @@ use Illuminate\Support\Carbon;
 class Troskovi
 {
     /** Trošak kulture po vrsti: zaštita, gnojivo, ostali radovi, opći troškovi vezani uz kulturu. */
-    private const PRAZNO = ['szb' => 0.0, 'gnojivo' => 0.0, 'radovi' => 0.0, 'ostalo' => 0.0];
+    private const PRAZNO = ['szb' => 0.0, 'gnojivo' => 0.0, 'radovi' => 0.0, 'ostalo' => 0.0, 'gorivo' => 0.0];
 
     /**
      * Troškovi mehanizacije u razdoblju: servisi (datum servisa) i iznosi uz rokove — registracija, osiguranje,
@@ -112,17 +112,24 @@ class Troskovi
             $poKulturi[$o->kultura_id] ??= self::PRAZNO;
             $poKulturi[$o->kultura_id]['ostalo'] += (float) $o->iznos;
         }
+        // gorivo po danu, podijeljeno na poslove tog dana po hektarima
+        $gorivo = Gorivo::raspodjela($user, $odS, $doS);
+        foreach ($gorivo['po_kulturi'] as $kid => $eur) {
+            $poKulturi[$kid] ??= self::PRAZNO;
+            $poKulturi[$kid]['gorivo'] += $eur;
+        }
 
         $kulture = Kultura::with('parcela')->whereIn('id', array_keys($poKulturi))->get()->keyBy('id');
         $redovi = collect($poKulturi)->map(function ($t, $id) use ($kulture) {
             $k = $kulture[$id] ?? null;
             $ha = (float) ($k?->posadjena_povrsina_ha ?? 0);
-            $ukupno = $t['szb'] + $t['gnojivo'] + $t['radovi'] + $t['ostalo'];
+            $ukupno = $t['szb'] + $t['gnojivo'] + $t['radovi'] + $t['ostalo'] + $t['gorivo'];
 
             return [
                 'kultura_id' => $id, 'parcela_id' => $k?->parcela_id, 'parcela_ha' => (float) ($k?->parcela?->povrsina_ha ?? 0),
                 'arkod' => $k?->parcela?->arkod_broj, 'kultura' => $k?->naziv, 'godina' => $k?->godina, 'ha' => $ha,
                 'szb' => round($t['szb'], 2), 'gnojivo' => round($t['gnojivo'], 2), 'radovi' => round($t['radovi'] + $t['ostalo'], 2),
+                'gorivo' => round($t['gorivo'], 2),
                 'ukupno' => round($ukupno, 2),
                 'po_ha' => $ha > 0 ? round($ukupno / $ha, 2) : null,
             ];
@@ -132,6 +139,8 @@ class Troskovi
             'nabava' => $nabava,
             'opci_ukupno' => round((float) $opci->sum('iznos'), 2),
             'opci_nevezano' => round((float) $opci->whereNull('kultura_id')->sum('iznos'), 2),
+            'gorivo_ukupno' => $gorivo['ukupno'],
+            'gorivo_nevezano' => round($gorivo['nevezano'], 2),
             'redovi' => $redovi,
             'artikli' => collect($poArtiklu)->sortByDesc('iznos')->values(),
             'bez_cijene' => $bezCijene,

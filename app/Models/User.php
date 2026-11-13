@@ -17,7 +17,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $attributes = ['push_obavijesti' => true];
+    protected $attributes = ['push_obavijesti' => true, 'prati_gorivo' => true];
 
     public function pushPretplate() { return $this->hasMany(PushPretplata::class); }
     public function mobilePushDevices() { return $this->hasMany(MobilePushDevice::class); }
