@@ -10,6 +10,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
+            // Puls statistika preko vlastite domene: bez web middlewarea (bez sesije, kolačića i CSRF-a)
+            \Illuminate\Support\Facades\Route::get('/s/app.js', [\App\Http\Controllers\PulsProxyController::class, 'skripta']);
+            \Illuminate\Support\Facades\Route::post('/s/e', [\App\Http\Controllers\PulsProxyController::class, 'dogadaj'])->middleware('throttle:120,1');
             \Illuminate\Support\Facades\Route::middleware('web')->group(__DIR__.'/../routes/gospodarstva.php');
         },
     )

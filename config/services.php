@@ -63,4 +63,12 @@ return [
         'redirect'      => env('GOOGLE_REDIRECT_URI'),
     ],
 
+
+    // Puls (puls.on-click.hr): statistika posjeta; s ključem ide preko /s/ na agro-log.app da je blokeri (Brave) ne zaustave
+    'puls' => [
+        'url' => env('PULS_URL', 'https://puls.on-click.hr'),
+        'site' => env('PULS_SITE', 'xoezhr0zcs'),
+        'key' => env('PULS_PROXY_KEY'),
+    ],
+
 ];
