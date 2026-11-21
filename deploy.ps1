@@ -1,9 +1,9 @@
 $winscp = "C:\Program Files (x86)\WinSCP\WinSCP.com"
 
-Write-Host "Deploying agrolog na vps.on-click.hr..." -ForegroundColor Cyan
+Write-Host "Deploying agrolog na vps2.on-click.hr..." -ForegroundColor Cyan
 
 & $winscp /command `
-    "open agrolog@vps.on-click.hr" `
+    "open agrolog@vps2.on-click.hr" `
     "call bash ~/agrolog/deploy.sh" `
     "exit"
 

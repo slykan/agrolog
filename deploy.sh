@@ -8,7 +8,9 @@ set -euo pipefail
 
 deploy() {
     cd ~/agrolog
-    local php=/opt/cpanel/ea-php83/root/usr/bin/php
+    # PHP 8.3: Hestia (vps2) /usr/bin/php8.3, stari cPanel ea-php83
+    local php=/usr/bin/php8.3
+    [ -x "$php" ] || php=/opt/cpanel/ea-php83/root/usr/bin/php
 
     if [ "${1:-}" != "--nakon-mergea" ]; then
         # public/build se uvijek gradi iznova (npm run build ispod), pa se prvo vraća na stanje iz gita
