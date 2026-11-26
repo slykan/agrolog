@@ -150,7 +150,7 @@
                             <li>Kliknite <strong>+ Nova parcela</strong></li>
                             <li>Upišite <strong>ARKOD broj</strong> i kliknite izvan polja (ili tipku Tab)</li>
                             <li>AgroLog parcelu potraži u javnom ARKOD-u i pokaže je na <strong>satelitskoj karti</strong> — uz kartu piše službena površina, vrsta uporabe (oranica, vinograd…) i lokalni naziv</li>
-                            <li>Po želji upišite <strong>Naziv (vlastiti)</strong>, npr. „Iza kuće” ili „Kod bunara”. Naziv se zatim pokazuje uz ARKOD broj svugdje u aplikaciji: kod prskanja, gnojidbe, berbe, radova, troškova, skladišta i na karti.</li>
+                            <li><strong>Naziv (vlastiti)</strong> popuni se sam domaćim nazivom iz ARKOD-a, ako ga parcela ima. Možete ga promijeniti ili upisati svoj, npr. „Iza kuće” ili „Kod bunara”. Naziv se zatim pokazuje uz ARKOD broj svugdje u aplikaciji: kod prskanja, gnojidbe, berbe, radova, troškova, skladišta i na karti.</li>
                             <li>Površina se upiše sama; ako je parcela vaša, kliknite <strong>Potvrdi i spremi</strong></li>
                             <li>Automatski se otvara forma za dodavanje kulture</li>
                         </ol>

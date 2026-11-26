@@ -43,6 +43,42 @@ class ParcelaNazivTest extends TestCase
         $this->assertNull($p->fresh()->naziv);
     }
 
+    public function test_naziv_se_predlozi_iz_arkoda_a_vlastiti_se_ne_prepisuje(): void
+    {
+        Cache::flush();
+        Http::fake(fn () => Http::response(file_get_contents(base_path('tests/fixtures/arkod-1515096.xml'))));
+        $u = User::factory()->create();
+
+        Livewire::actingAs($u)->test(ParcelaManager::class)
+            ->set('showParcelaForm', true)
+            ->set('parcelaForm.arkod_broj', '1515096')
+            ->assertSet('parcelaForm.naziv', 'Kod Petrosa');
+
+        Livewire::actingAs($u)->test(ParcelaManager::class)
+            ->set('showParcelaForm', true)
+            ->set('parcelaForm.naziv', 'Velika njiva')
+            ->set('parcelaForm.arkod_broj', '1515096')
+            ->assertSet('parcelaForm.naziv', 'Velika njiva');
+
+        $this->assertNull(Parcela::nazivIzArkoda('  '));
+        $this->assertNull(Parcela::nazivIzArkoda('12'));
+        $this->assertSame('Šumska Livada', Parcela::nazivIzArkoda('ŠUMSKA  LIVADA'));
+    }
+
+    public function test_migracija_popuni_postojece_parcele_iz_arkoda(): void
+    {
+        $u = User::factory()->create();
+        $a = Parcela::create(['user_id' => $u->id, 'arkod_broj' => '1', 'povrsina_ha' => 1, 'arkod_naziv' => 'KOD PETROSA']);
+        $b = Parcela::create(['user_id' => $u->id, 'arkod_broj' => '2', 'povrsina_ha' => 1, 'arkod_naziv' => 'DOLJE', 'naziv' => 'Moja']);
+        $c = Parcela::create(['user_id' => $u->id, 'arkod_broj' => '3', 'povrsina_ha' => 1]);
+
+        (require database_path('migrations/2026_11_26_110000_parcele_naziv_iz_arkoda.php'))->up();
+
+        $this->assertSame('Kod Petrosa', $a->fresh()->naziv);
+        $this->assertSame('Moja', $b->fresh()->naziv);
+        $this->assertNull($c->fresh()->naziv);
+    }
+
     public function test_naziv_se_vidi_u_prskanju_gnojidbi_i_trazilici(): void
     {
         $u = User::factory()->create();

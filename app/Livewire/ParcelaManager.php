@@ -134,6 +134,10 @@ class ParcelaManager extends Component
         if (blank($this->parcelaForm['povrsina_ha'] ?? null)) {
             $this->parcelaForm['povrsina_ha'] = $this->arkodNadjen['povrsina_ha'];
         }
+        // domaći naziv iz ARKOD-a kao prijedlog; ako ga nema ili je korisnik već upisao svoj, polje ostaje kako je
+        if (blank($this->parcelaForm['naziv'] ?? null)) {
+            $this->parcelaForm['naziv'] = (string) Parcela::nazivIzArkoda($this->arkodNadjen['naziv'] ?? null);
+        }
         $this->dispatch('arkod-pregled', poligon: $this->arkodNadjen['poligon']);
     }
 

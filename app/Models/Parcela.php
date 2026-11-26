@@ -52,6 +52,17 @@ class Parcela extends Model
         return (string) $broj . self::dodatak($naziv);
     }
 
+    /** Domaći naziv iz ARKOD-a ("KOD PETROSA") kao prijedlog vlastitog naziva: "Kod Petrosa". */
+    public static function nazivIzArkoda(?string $arkodNaziv): ?string
+    {
+        $n = trim(preg_replace('/\s+/u', ' ', (string) $arkodNaziv));
+        if ($n === '' || ! preg_match('/\p{L}/u', $n)) {
+            return null;
+        }
+
+        return mb_substr(mb_convert_case(mb_strtolower($n), MB_CASE_TITLE), 0, 60);
+    }
+
     private static function dodatak(?string $naziv): string
     {
         return filled($naziv) ? ' · ' . trim($naziv) : '';
