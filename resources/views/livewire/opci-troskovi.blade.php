@@ -84,7 +84,7 @@
                     <select wire:model="form.kultura_id" class="form-input w-full mt-1 block">
                         <option value="">— cijelo gospodarstvo —</option>
                         @foreach($kulture as $k)
-                            <option value="{{ $k->id }}">{{ $k->arkod_broj }} · {{ $k->naziv }}</option>
+                            <option value="{{ $k->id }}">{{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} · {{ $k->naziv }}</option>
                         @endforeach
                     </select>
                     @error('form.kultura_id')<span class="text-red-500">{{ $message }}</span>@enderror
@@ -161,7 +161,7 @@
                                 @if($t->km !== null)<span class="block text-xs font-normal text-gray-500">{{ $kmT($t->ukupno_km) }}{{ $t->povratno ? ' (tamo i natrag)' : '' }} × {{ number_format((float) $t->cijena_km, 2, ',', '.') }} €/km</span>@endif
                                 @if($t->klijent_id)<span class="block text-xs font-normal text-blue-800">Klijent: {{ $t->klijent?->name ?? 'bivši klijent' }}</span>@endif
                             </td>
-                            <td data-label="Kultura" class="px-4 py-2 text-gray-600">{{ $t->kultura ? $t->kultura->parcela?->arkod_broj . ' · ' . $t->kultura->naziv : 'cijelo gospodarstvo' }}</td>
+                            <td data-label="Kultura" class="px-4 py-2 text-gray-600">{{ $t->kultura ? \App\Models\Parcela::kratko($t->kultura->parcela?->arkod_broj, $t->kultura->parcela?->naziv) . ' · ' . $t->kultura->naziv : 'cijelo gospodarstvo' }}</td>
                             <td data-label="Iznos" class="px-4 py-2 text-right whitespace-nowrap font-medium">{{ $eur($t->iznos) }}</td>
                             <td class="mob-puna mob-akcije px-4 py-2 text-right whitespace-nowrap">
                                 <button wire:click="uredi({{ $t->id }})" class="btn-xs-blue">Uredi</button>

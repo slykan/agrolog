@@ -61,6 +61,7 @@
                 $zaKartu = $parcele->map(fn ($p) => [
                     'id'      => $p->id,
                     'arkod'   => $p->arkod_broj,
+                    'naziv'   => $p->rucno_ucrtana ? null : $p->naziv,
                     'poligon' => $p->arkod_poligon,
                     'ha'      => (float) $p->povrsina_ha,
                     'kulture' => $p->kulture->whereNull('zavrsena_at')->pluck('naziv')->join(', '),
@@ -246,11 +247,12 @@
                             });
                             map.setView([45.1, 16.4], 7);   // Hrvatska dok se parcele ne učitaju
                             const sloj = L.featureGroup().addTo(map);
+                            const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
                             const crtaj = (p) => {
                                 if (!p.poligon) return;
                                 L.polygon(p.poligon, { color: '#86bc25', weight: 2.5, fillOpacity: 0.3 })
-                                    .bindTooltip(String(p.arkod), { permanent: true, direction: 'center', className: 'agro-oznaka' })
-                                    .bindPopup(`<b>ARKOD ${p.arkod}</b><br>${p.ha.toFixed(2).replace('.', ',')} ha<br>${p.kulture || 'bez aktivnih kultura'}<br><a href="{{ route('parcele') }}">Parcele &amp; Kulture →</a>`)
+                                    .bindTooltip(esc(p.naziv || p.arkod), { permanent: true, direction: 'center', className: 'agro-oznaka' })
+                                    .bindPopup(`<b>ARKOD ${esc(p.arkod)}</b>${p.naziv ? ' · ' + esc(p.naziv) : ''}<br>${p.ha.toFixed(2).replace('.', ',')} ha<br>${p.kulture || 'bez aktivnih kultura'}<br><a href="{{ route('parcele') }}">Parcele &amp; Kulture →</a>`)
                                     .addTo(sloj);
                             };
                             const prilagodi = () => { if (sloj.getLayers().length) map.fitBounds(sloj.getBounds(), { padding: [30, 30], maxZoom: 16 }); };
@@ -360,7 +362,7 @@
                     <tbody>
                         @foreach($parcele as $parcela)
                         <tr class="border-b border-gray-50">
-                            <td class="py-1.5 font-medium text-gray-800">{{ $parcela->arkod_broj }}</td>
+                            <td class="py-1.5 font-medium text-gray-800"><x-parcela :broj="$parcela->arkod_broj" :naziv="$parcela->rucno_ucrtana ? null : $parcela->naziv" /></td>
                             <td class="py-1.5 text-right text-gray-500">{{ number_format($parcela->povrsina_ha, 2) }} ha</td>
                             <td class="py-1.5 pl-6 text-gray-600">
                                 {{ $parcela->kulture->map(fn($k) => $k->naziv.' ('.$k->godina.')')->join(', ') ?: '—' }}

@@ -49,7 +49,7 @@ class Kalendar
         $savjetnik = (bool) request()->attributes->get('savjetnik');
 
         $naParceli = fn ($q) => $parcelaId ? $q->whereHas('kultura', fn ($k) => $k->where('parcela_id', $parcelaId)) : $q;
-        $sa = ['kultura:id,parcela_id,naziv', 'kultura.parcela:id,arkod_broj,rucno_ucrtana'];
+        $sa = ['kultura:id,parcela_id,naziv', 'kultura.parcela:id,arkod_broj,naziv,rucno_ucrtana'];
         $d = collect();
 
         $osnova = function ($zapis, string $grupa, string $naslov, ?string $detalj, ?string $link, $datum) {
@@ -58,7 +58,7 @@ class Kalendar
             return [
                 'datum' => Carbon::parse($datum)->format('Y-m-d'), 'grupa' => $grupa, 'boja' => self::GRUPE[$grupa][1],
                 'naslov' => $naslov, 'detalj' => $detalj,
-                'kultura' => $k?->naziv, 'parcela' => $k?->parcela ? Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana) : null,
+                'kultura' => $k?->naziv, 'parcela' => $k?->parcela ? Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana, $k->parcela->naziv) : null,
                 'kultura_id' => $k?->id, 'parcela_id' => $k?->parcela_id, 'link' => $link, 'stanje' => null, 'plan_id' => null,
             ];
         };
@@ -156,7 +156,7 @@ class Kalendar
      */
     public static function karence(User $user, Carbon $od, Carbon $do, ?int $parcelaId = null): array
     {
-        $q = Prskanje::with(['kultura.parcela:id,arkod_broj,rucno_ucrtana'])->where('user_id', $user->id)
+        $q = Prskanje::with(['kultura.parcela:id,arkod_broj,naziv,rucno_ucrtana'])->where('user_id', $user->id)
             ->whereBetween('datum_tretiranja', [$od->copy()->subDays(180)->toDateString(), $do->toDateString()])
             ->whereNotNull('trgovacki_naziv_sredstva');
         if ($parcelaId) {
@@ -184,7 +184,7 @@ class Kalendar
             $karence[] = [
                 'od' => $p->datum_tretiranja->copy(), 'do' => $kraj, 'dana' => $reg['karenca_dana'], 'sredstvo' => $s->naziv,
                 'kultura' => $k->naziv, 'kultura_id' => $k->id, 'parcela_id' => $k->parcela_id,
-                'parcela' => $k->parcela ? Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana) : null,
+                'parcela' => $k->parcela ? Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana, $k->parcela->naziv) : null,
             ];
         }
 

@@ -185,9 +185,9 @@ class KalendarPregled extends Component
             $tjedni[intdiv((int) round($pocetak->diffInDays($d)), 7)][] = $d->format('Y-m-d');
         }
 
-        $parcele = Parcela::where('user_id', $user->id)->orderBy('arkod_broj')->get(['id', 'arkod_broj', 'rucno_ucrtana']);
+        $parcele = Parcela::where('user_id', $user->id)->orderBy('arkod_broj')->get(['id', 'arkod_broj', 'naziv', 'rucno_ucrtana']);
         $kulture = $this->showPlan
-            ? Kultura::with('parcela:id,arkod_broj,rucno_ucrtana')->where('user_id', $user->id)
+            ? Kultura::with('parcela:id,arkod_broj,naziv,rucno_ucrtana')->where('user_id', $user->id)
                 ->where(fn ($q) => $q->whereNull('zavrsena_at')->orWhere('zavrsena_at', '>=', now()->subYear()->toDateString()))
                 ->orderBy('naziv')->get(['id', 'parcela_id', 'naziv', 'zavrsena_at'])
             : collect();

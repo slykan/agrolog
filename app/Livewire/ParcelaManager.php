@@ -14,7 +14,7 @@ use Illuminate\Validation\Rule;
 class ParcelaManager extends Component
 {
     public bool $showParcelaForm = false;
-    public array $parcelaForm = ['arkod_broj' => '', 'povrsina_ha' => ''];
+    public array $parcelaForm = ['arkod_broj' => '', 'naziv' => '', 'povrsina_ha' => ''];
     public ?int $editParcelaId = null;
 
     public bool $showKulturaForm = false;
@@ -163,6 +163,7 @@ class ParcelaManager extends Component
 
         $this->dispatch('arkod-karta',
             arkod: $p->arkod_broj,
+            vlastiti: $p->rucno_ucrtana ? null : $p->naziv,
             poligon: $p->arkod_poligon,
             povrsina: (float) $p->povrsina_ha,
             arkodPovrsina: $p->arkod_povrsina_ha !== null ? (float) $p->arkod_povrsina_ha : null,
@@ -197,7 +198,7 @@ class ParcelaManager extends Component
             return null;
         }
 
-        $podaci = array_merge($this->parcelaForm, Parcela::ucrtanaPolja($poligon));
+        $podaci = array_merge($this->parcelaForm, Parcela::ucrtanaPolja($poligon), ['naziv' => null]);
         if ($this->editParcelaId) {
             $parcela = Parcela::where('id', $this->editParcelaId)->where('user_id', auth()->id())->firstOrFail();
             $parcela->update($podaci);
@@ -222,8 +223,9 @@ class ParcelaManager extends Component
 
         $this->validate([
             'parcelaForm.arkod_broj'  => 'required|string|max:20',
+            'parcelaForm.naziv'       => 'nullable|string|max:60',
             'parcelaForm.povrsina_ha' => 'required|numeric|min:0.01',
-        ]);
+        ], [], ['parcelaForm.naziv' => 'naziv parcele']);
 
         $parcela = null;
 
@@ -233,7 +235,7 @@ class ParcelaManager extends Component
 
         if ($this->editParcelaId) {
             $stara = Parcela::where('id', $this->editParcelaId)->where('user_id', auth()->id())->firstOrFail();
-            $podaci = ['arkod_broj' => $this->parcelaForm['arkod_broj'], 'povrsina_ha' => $this->parcelaForm['povrsina_ha'], 'rucno_ucrtana' => false];
+            $podaci = ['arkod_broj' => $this->parcelaForm['arkod_broj'], 'naziv' => $this->parcelaForm['naziv'] ?? null, 'povrsina_ha' => $this->parcelaForm['povrsina_ha'], 'rucno_ucrtana' => false];
             if ($arkod) {
                 $podaci += $arkod;
             } elseif ($stara->arkod_broj !== $this->parcelaForm['arkod_broj']) {
@@ -255,7 +257,7 @@ class ParcelaManager extends Component
 
         $this->showParcelaForm = false;
         $this->editParcelaId = null;
-        $this->parcelaForm = ['arkod_broj' => '', 'povrsina_ha' => ''];
+        $this->parcelaForm = ['arkod_broj' => '', 'naziv' => '', 'povrsina_ha' => ''];
 
         // Automatski otvori formu za unos kulture samo za novu parcelu
         if ($parcela && !$isEdit) {
@@ -297,7 +299,7 @@ class ParcelaManager extends Component
     {
         $p = Parcela::where('user_id', auth()->id())->findOrFail($id);
         $this->editParcelaId = $id;
-        $this->parcelaForm = ['arkod_broj' => $p->arkod_broj, 'povrsina_ha' => $p->povrsina_ha];
+        $this->parcelaForm = ['arkod_broj' => $p->arkod_broj, 'naziv' => (string) $p->naziv, 'povrsina_ha' => $p->povrsina_ha];
         $this->rucnoUnos = $p->rucno_ucrtana;
         $this->rucniPoligon = $p->rucno_ucrtana ? $p->arkod_poligon : null;
         $this->resetArkod();
@@ -312,7 +314,7 @@ class ParcelaManager extends Component
         $this->rucnoUnos = false;
         $this->rucniPoligon = null;
         $this->resetArkod();
-        $this->parcelaForm = ['arkod_broj' => '', 'povrsina_ha' => ''];
+        $this->parcelaForm = ['arkod_broj' => '', 'naziv' => '', 'povrsina_ha' => ''];
         $this->clearValidation();
     }
 
@@ -327,7 +329,7 @@ class ParcelaManager extends Component
             || \App\Models\Berba::whereIn('kultura_id', $kultureIds)->exists()
             || \App\Models\Rad::whereIn('kultura_id', $kultureIds)->exists();
         if ($imaZapise) {
-            $this->poruka = "Parcela {$parcela->arkod_broj} ima zapise gnojidbe, prskanja, berbe ili radova i ne može se obrisati — evidenciju je obvezno čuvati.";
+            $this->poruka = "Parcela " . Parcela::kratko($parcela->arkod_broj, $parcela->naziv) . " ima zapise gnojidbe, prskanja, berbe ili radova i ne može se obrisati — evidenciju je obvezno čuvati.";
             return;
         }
 
@@ -361,7 +363,7 @@ class ParcelaManager extends Component
         $slobodno = $this->slobodnoHa($parcelaId, date('Y'));
         if ($slobodno < 0.01) {
             $p = Parcela::where('user_id', auth()->id())->find($parcelaId);
-            $this->poruka = "Parcela {$p?->arkod_broj} je popunjena (" . number_format((float) $p?->povrsina_ha, 2, ',', '.') . ' ha) za ' . date('Y') . '. Za novu kulturu klikni „Zamijeni kulturu” ili „Završi” uz postojeću, a kod nasada „Iskrči”.';
+            $this->poruka = "Parcela " . Parcela::kratko($p?->arkod_broj, $p?->naziv) . " je popunjena (" . number_format((float) $p?->povrsina_ha, 2, ',', '.') . ' ha) za ' . date('Y') . '. Za novu kulturu klikni „Zamijeni kulturu” ili „Završi” uz postojeću, a kod nasada „Iskrči”.';
             $this->showKulturaForm = false;
             return;
         }

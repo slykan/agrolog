@@ -4,7 +4,7 @@
 @endphp
 <div class="bg-blue-50 border-t border-blue-200 p-4">
     @if($stara)
-        <h3 class="font-semibold text-gray-700 mb-1">Zamijeni kulturu na parceli {{ $stara->parcela?->arkod_broj }}</h3>
+        <h3 class="font-semibold text-gray-700 mb-1">Zamijeni kulturu na parceli {{ \App\Models\Parcela::kratko($stara->parcela?->arkod_broj, $stara->parcela?->naziv) }}</h3>
         <p class="text-sm text-gray-600 mb-3">
             <strong class="uppercase">{{ $stara->naziv }} ({{ $stara->godina }})</strong> bit će označena kao završena i
             ostaje u evidenciji sa svim zapisima gnojidbe i prskanja. Nova kultura dobiva svoju, praznu evidenciju.

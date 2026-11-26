@@ -18,6 +18,7 @@
                 @error('parcelaForm.arkod_broj')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 <p class="mt-1 text-[11px] text-gray-500">Ne znate broj? <a href="https://preglednik.arkod.hr/ARKOD-Web/" target="_blank" rel="noopener" class="text-green-700 underline">ARKOD preglednik</a> · <a href="{{ route('docs') }}#sto-je-arkod" target="_blank" class="text-green-700 underline">Što je ARKOD?</a></p>
             </div>
+            @include('livewire.partials.parcela-naziv-polje')
             <div>
                 <label class="block text-xs text-gray-600 mb-1">Površina (ha)</label>
                 <input type="number" wire:key="povrsina-{{ $arkodNadjen['id'] ?? 'x' }}-{{ $parcelaForm['povrsina_ha'] }}" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
@@ -62,6 +63,7 @@
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
                         </button>
                         <span class="font-bold text-green-800 text-lg">{{ $parcela->arkod_broj }}</span>
+                        @if($parcela->naziv && ! $parcela->rucno_ucrtana)<span class="font-semibold text-gray-700">· {{ $parcela->naziv }}</span>@endif
                         @if($parcela->rucno_ucrtana)<span class="text-[11px] rounded bg-gray-100 text-gray-600 px-1.5 py-0.5" title="Nije službena ARKOD parcela">ručno ucrtana</span>@endif
                     </span>
                     <span class="text-sm text-gray-600">{{ number_format($parcela->povrsina_ha, 2) }} ha</span>
@@ -99,6 +101,7 @@
                         <input type="text" wire:model.live.blur="parcelaForm.arkod_broj" placeholder="npr. 1708275" class="form-input w-40" inputmode="numeric">
                         @error('parcelaForm.arkod_broj')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
+                    @include('livewire.partials.parcela-naziv-polje')
                     <div>
                         <label class="block text-xs text-gray-600 mb-1">Površina (ha)</label>
                         <input type="number" wire:key="povrsina-{{ $arkodNadjen['id'] ?? 'x' }}-{{ $parcelaForm['povrsina_ha'] }}" wire:model="parcelaForm.povrsina_ha" step="0.01" placeholder="1.60" class="form-input w-28">
@@ -308,7 +311,7 @@
          class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4">
         <div @click.outside="otvoren = false" class="w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-xl">
             <div class="flex items-center justify-between border-b px-5 py-3">
-                <h3 class="font-semibold text-gray-800"><span x-text="d.rucno ? '' : 'ARKOD '"></span><span x-text="d.arkod"></span> <span x-show="d.rucno" class="ml-1 text-xs font-normal text-gray-500">ručno ucrtana</span></h3>
+                <h3 class="font-semibold text-gray-800"><span x-text="d.rucno ? '' : 'ARKOD '"></span><span x-text="d.arkod"></span><span x-show="d.vlastiti" class="font-normal text-gray-500" x-text="' · ' + d.vlastiti"></span> <span x-show="d.rucno" class="ml-1 text-xs font-normal text-gray-500">ručno ucrtana</span></h3>
                 <button type="button" @click="otvoren = false" class="w-8 h-8 rounded-full text-gray-500 hover:bg-gray-100" aria-label="Zatvori">&#10005;</button>
             </div>
             <div x-show="d.poligon" x-ref="karta" class="h-[60vh] bg-gray-100"></div>

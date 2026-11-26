@@ -32,7 +32,7 @@ class Gorivo
     {
         $doIskl = \Illuminate\Support\Carbon::parse($do)->addDay()->toDateString();   // datumi mogu biti spremljeni s vremenom (sqlite)
         $u = fn (string $col) => fn ($q) => $q->where($col, '>=', $od)->where($col, '<', $doIskl);
-        $sa = ['kultura:id,parcela_id,naziv,posadjena_povrsina_ha', 'kultura.parcela:id,arkod_broj,rucno_ucrtana'];
+        $sa = ['kultura:id,parcela_id,naziv,posadjena_povrsina_ha', 'kultura.parcela:id,arkod_broj,naziv,rucno_ucrtana'];
         $redovi = collect();
 
         foreach (Prskanje::with($sa)->where('user_id', $uid)->where($u('datum_tretiranja'))->get() as $p) {
@@ -57,7 +57,7 @@ class Gorivo
                     return [
                         'kljuc' => $kljuc, 'vrsta' => $prvi['vrsta'], 'naziv' => self::NAZIVI[$prvi['vrsta']],
                         'kultura_id' => $k->id, 'kultura' => $k->naziv,
-                        'parcela' => $k->parcela ? Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana) : null,
+                        'parcela' => $k->parcela ? Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana, $k->parcela->naziv) : null,
                         'ha' => round($ha, 2),
                         'detalj' => $g->pluck('detalj')->filter()->unique()->implode(', '),
                     ];

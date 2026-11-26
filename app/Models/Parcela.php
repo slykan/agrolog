@@ -8,7 +8,7 @@ class Parcela extends Model
 {
     protected $table = 'parcele';
     protected $fillable = [
-        'user_id', 'arkod_broj', 'povrsina_ha',
+        'user_id', 'arkod_broj', 'naziv', 'povrsina_ha',
         'arkod_poligon', 'lat', 'lng', 'arkod_povrsina_ha', 'arkod_naziv', 'arkod_vrsta_uporabe', 'arkod_provjereno_at', 'rucno_ucrtana',
     ];
     protected $casts = ['arkod_poligon' => 'array', 'arkod_provjereno_at' => 'datetime', 'rucno_ucrtana' => 'boolean'];
@@ -40,10 +40,28 @@ class Parcela extends Model
         return array_merge(self::arkodPolja(null), ['rucno_ucrtana' => true, 'arkod_poligon' => $poligon, 'lat' => $lat, 'lng' => $lng]);
     }
 
-    /** Oznaka za ispise i izvoze, da se ručno ucrtana parcela ne može zamijeniti sa službenom. */
-    public static function oznaka(?string $broj, $rucno): string
+    /** Oznaka za ispise i izvoze, da se ručno ucrtana parcela ne može zamijeniti sa službenom; vlastiti naziv ide iza broja. */
+    public static function oznaka(?string $broj, $rucno, ?string $naziv = null): string
     {
-        return $rucno ? 'Ručno ucrtana: ' . $broj : (string) $broj;
+        return ($rucno ? 'Ručno ucrtana: ' . $broj : (string) $broj) . self::dodatak($naziv);
+    }
+
+    /** ARKOD broj s vlastitim nazivom za kratke popise i padajuće izbornike: "1708275 · Iza kuće". */
+    public static function kratko(?string $broj, ?string $naziv = null): string
+    {
+        return (string) $broj . self::dodatak($naziv);
+    }
+
+    private static function dodatak(?string $naziv): string
+    {
+        return filled($naziv) ? ' · ' . trim($naziv) : '';
+    }
+
+    /** Vlastiti naziv parcele; ručno ucrtana ga nema jer joj je naziv već u arkod_broj. */
+    public function setNazivAttribute($value): void
+    {
+        $value = trim((string) $value);
+        $this->attributes['naziv'] = $value === '' ? null : mb_substr($value, 0, 60);
     }
 
     public function user() { return $this->belongsTo(User::class); }

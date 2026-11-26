@@ -22,7 +22,7 @@
             <select wire:model.live="kulturaFilter" aria-label="Kultura" class="form-input w-64 max-w-full">
                 <option value="">Sve kulture</option>
                 @foreach($kulture as $k)
-                    <option value="{{ $k->id }}">{{ $k->arkod_broj }} · {{ $k->naziv }}</option>
+                    <option value="{{ $k->id }}">{{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} · {{ $k->naziv }}</option>
                 @endforeach
             </select>
         </div>
@@ -38,7 +38,7 @@
                     <select wire:model.live="form.kultura_id" class="form-input w-full mt-1 block">
                         <option value="">Odaberite…</option>
                         @foreach($kulture as $k)
-                            <option value="{{ $k->id }}">{{ $k->arkod_broj }} · {{ $k->naziv }}{{ $k->sorta ? ' (' . $k->sorta . ')' : '' }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
+                            <option value="{{ $k->id }}">{{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} · {{ $k->naziv }}{{ $k->sorta ? ' (' . $k->sorta . ')' : '' }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
                         @endforeach
                     </select>
                     @error('form.kultura_id')<span class="text-red-500">{{ $message }}</span>@enderror
@@ -168,7 +168,7 @@
                     @foreach($berbe as $b)
                         <tr wire:key="berba-{{ $b->id }}" class="border-t border-gray-100 hover:bg-gray-50">
                             <td data-label="Datum" class="px-4 py-2 whitespace-nowrap">{{ $b->datum->format('d.m.Y.') }}</td>
-                            <td data-label="ARKOD" class="px-4 py-2 text-gray-600">{{ $b->kultura?->parcela?->arkod_broj }}</td>
+                            <td data-label="ARKOD" class="px-4 py-2 text-gray-600"><x-parcela :broj="$b->kultura?->parcela?->arkod_broj" :naziv="$b->kultura?->parcela?->naziv" /></td>
                             <td class="mob-puna px-4 py-2 font-medium text-gray-800">
                                 {{ $b->kultura?->naziv }}
                                 @if($b->sorta || $b->klasa)<span class="font-normal text-gray-500"> · {{ collect([$b->sorta, $b->klasa])->filter()->implode(', ') }}</span>@endif

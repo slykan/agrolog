@@ -79,7 +79,7 @@
                 <h3 class="font-semibold text-gray-800 mb-3">Parcele i kulture</h3>
                 @forelse ($parcele as $p)
                     <div class="py-2 border-b border-gray-100 last:border-0 text-sm">
-                        <span class="font-semibold text-gray-800">{{ $p->rucno_ucrtana ? \App\Models\Parcela::oznaka($p->arkod_broj, true) : 'ARKOD ' . $p->arkod_broj }}</span>
+                        <span class="font-semibold text-gray-800">{{ $p->rucno_ucrtana ? \App\Models\Parcela::oznaka($p->arkod_broj, true) : 'ARKOD ' . \App\Models\Parcela::kratko($p->arkod_broj, $p->naziv) }}</span>
                         <span class="text-gray-500">· {{ $ha($p->povrsina_ha) }}</span>
                         <div class="text-gray-600 mt-0.5">
                             @forelse ($p->kulture as $kult)
@@ -101,7 +101,7 @@
                     <h3 class="font-semibold text-gray-800 mb-3">Zadnja prskanja</h3>
                     @forelse ($prskanja as $pr)
                         <div class="py-1.5 border-b border-gray-100 last:border-0 text-sm flex justify-between gap-3">
-                            <span>{{ $pr->trgovacki_naziv_sredstva ?: '—' }} <span class="text-gray-400">· {{ $pr->kultura?->naziv }}{{ $pr->kultura?->parcela ? ', ARKOD ' . $pr->kultura->parcela->arkod_broj : '' }}</span></span>
+                            <span>{{ $pr->trgovacki_naziv_sredstva ?: '—' }} <span class="text-gray-400">· {{ $pr->kultura?->naziv }}{{ $pr->kultura?->parcela ? ', ARKOD ' . \App\Models\Parcela::kratko($pr->kultura->parcela->arkod_broj, $pr->kultura->parcela->naziv) : '' }}</span></span>
                             <span class="text-gray-500 whitespace-nowrap">{{ $pr->datum_tretiranja?->format('d.m.Y.') }}</span>
                         </div>
                     @empty
@@ -112,7 +112,7 @@
                     <h3 class="font-semibold text-gray-800 mb-3">Zadnje gnojidbe</h3>
                     @forelse ($gnojidbe as $g)
                         <div class="py-1.5 border-b border-gray-100 last:border-0 text-sm flex justify-between gap-3">
-                            <span>{{ $g->tip_gnojiva ?: '—' }} <span class="text-gray-400">· {{ $g->kultura?->naziv }}{{ $g->kultura?->parcela ? ', ARKOD ' . $g->kultura->parcela->arkod_broj : '' }}</span></span>
+                            <span>{{ $g->tip_gnojiva ?: '—' }} <span class="text-gray-400">· {{ $g->kultura?->naziv }}{{ $g->kultura?->parcela ? ', ARKOD ' . \App\Models\Parcela::kratko($g->kultura->parcela->arkod_broj, $g->kultura->parcela->naziv) : '' }}</span></span>
                             <span class="text-gray-500 whitespace-nowrap">{{ $g->datum ? \Illuminate\Support\Carbon::parse($g->datum)->format('d.m.Y.') : '' }}</span>
                         </div>
                     @empty

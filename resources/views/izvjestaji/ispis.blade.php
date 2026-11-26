@@ -90,7 +90,7 @@
                             <td class="br">{{ $loop->iteration }}</td>
                             <td>{{ $r->datum_tretiranja->format('d.m.Y.') }}</td>
                             <td>{{ $r->vrijeme_od ? substr($r->vrijeme_od, 0, 5) : '' }}{{ $r->vrijeme_do ? '–' . substr($r->vrijeme_do, 0, 5) : '' }}</td>
-                            <td>{{ \App\Models\Parcela::oznaka($r->arkod_broj, $r->rucno_ucrtana) }}</td>
+                            <td>{{ \App\Models\Parcela::oznaka($r->arkod_broj, $r->rucno_ucrtana, $r->parcela_naziv) }}</td>
                             <td>{{ $r->kultura_naziv }}@if($r->eppo_kod) ({{ $r->eppo_kod }})@endif</td>
                             <td class="br">{{ $b($r->povrsina) }}</td>
                             <td>{{ $r->trgovacki_naziv_sredstva }}</td>
@@ -118,7 +118,7 @@
                         <tr>
                             <td class="br">{{ $loop->iteration }}</td>
                             <td>{{ $r->datum->format('d.m.Y.') }}</td>
-                            <td>{{ \App\Models\Parcela::oznaka($r->arkod_broj, $r->rucno_ucrtana) }}</td>
+                            <td>{{ \App\Models\Parcela::oznaka($r->arkod_broj, $r->rucno_ucrtana, $r->parcela_naziv) }}</td>
                             <td>{{ $r->kultura_naziv }}</td>
                             <td class="br">{{ $b($r->povrsina) }}</td>
                             <td>{{ $r->tip_gnojiva }}</td>
@@ -154,7 +154,7 @@
                         <tr>
                             <td class="br">{{ $loop->iteration }}</td>
                             <td>{{ $r->datum->format('d.m.Y.') }}</td>
-                            <td>{{ \App\Models\Parcela::oznaka($r->kultura?->parcela?->arkod_broj, $r->kultura?->parcela?->rucno_ucrtana) }}</td>
+                            <td>{{ \App\Models\Parcela::oznaka($r->kultura?->parcela?->arkod_broj, $r->kultura?->parcela?->rucno_ucrtana, $r->kultura?->parcela?->naziv) }}</td>
                             <td>{{ $r->kultura?->naziv }}</td>
                             <td>{{ $r->sorta }}</td>
                             <td>{{ $r->klasa }}</td>

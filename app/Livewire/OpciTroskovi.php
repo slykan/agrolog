@@ -167,7 +167,7 @@ class OpciTroskovi extends Component
             ? Kultura::join('parcele', 'parcele.id', '=', 'kulture.parcela_id')->where('kulture.user_id', $uid)
                 ->where(fn ($q) => $q->whereNull('kulture.zavrsena_at')->orWhere('kulture.zavrsena_at', '>=', now()->subYear()->toDateString())
                     ->orWhere('kulture.id', (int) ($this->form['kultura_id'] ?? 0)))
-                ->orderBy('parcele.arkod_broj')->orderBy('kulture.naziv')->select('kulture.*', 'parcele.arkod_broj')->get()
+                ->orderBy('parcele.arkod_broj')->orderBy('kulture.naziv')->select('kulture.*', 'parcele.arkod_broj', 'parcele.naziv as parcela_naziv')->get()
             : collect();
 
         return view('livewire.opci-troskovi', [

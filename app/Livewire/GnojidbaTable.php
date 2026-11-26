@@ -115,10 +115,10 @@ class GnojidbaTable extends Component
             ->whereYear('gnojidbe.datum', $godina)
             ->join('kulture', 'kulture.id', '=', 'gnojidbe.kultura_id')
             ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
-            ->selectRaw('kulture.id, kulture.naziv, kulture.posadjena_povrsina_ha, parcele.arkod_broj,
+            ->selectRaw('kulture.id, kulture.naziv, kulture.posadjena_povrsina_ha, parcele.arkod_broj, parcele.naziv as parcela_naziv,
                 SUM(gnojidbe.kg_n_ha) as n_ukupno,
                 SUM(CASE WHEN gnojidbe.organsko THEN gnojidbe.kg_n_ha ELSE 0 END) as n_stajski')
-            ->groupBy('kulture.id', 'kulture.naziv', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj')
+            ->groupBy('kulture.id', 'kulture.naziv', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj', 'parcele.naziv')
             ->orderBy('parcele.arkod_broj')
             ->get();
 
@@ -139,7 +139,7 @@ class GnojidbaTable extends Component
             ->where('kulture.user_id', auth()->id())
             ->orderBy('parcele.arkod_broj')
             ->orderBy('kulture.naziv')
-            ->select('kulture.*', 'parcele.arkod_broj', 'parcele.povrsina_ha')
+            ->select('kulture.*', 'parcele.arkod_broj', 'parcele.naziv as parcela_naziv', 'parcele.povrsina_ha')
             ->get();
     }
 
@@ -153,6 +153,7 @@ class GnojidbaTable extends Component
         $search = mb_strtolower($this->formKulturaSearch);
         return $aktivne->filter(fn($k) =>
             str_contains(mb_strtolower($k->arkod_broj), $search) ||
+            str_contains(mb_strtolower((string) $k->parcela_naziv), $search) ||
             str_contains(mb_strtolower($k->naziv), $search)
         );
     }
@@ -181,12 +182,12 @@ class GnojidbaTable extends Component
         $query = Gnojidba::where('gnojidbe.user_id', auth()->id())
             ->join('kulture', 'kulture.id', '=', 'gnojidbe.kultura_id')
             ->join('parcele', 'parcele.id', '=', 'kulture.parcela_id')
-            ->select('gnojidbe.*', 'kulture.naziv as kultura_naziv', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj', 'parcele.povrsina_ha')
+            ->select('gnojidbe.*', 'kulture.naziv as kultura_naziv', 'kulture.posadjena_povrsina_ha', 'parcele.arkod_broj', 'parcele.naziv as parcela_naziv', 'parcele.povrsina_ha')
             ->orderByDesc('gnojidbe.datum')
             ->orderByDesc('gnojidbe.id');
 
         if ($this->filters['arkod']) {
-            $query->where('parcele.arkod_broj', 'like', '%' . $this->filters['arkod'] . '%');
+            $query->where(fn ($q) => $q->where('parcele.arkod_broj', 'like', '%' . $this->filters['arkod'] . '%')->orWhere('parcele.naziv', 'like', '%' . $this->filters['arkod'] . '%'));
         }
         if ($this->filters['kultura']) {
             $query->where('kulture.naziv', 'like', '%' . $this->filters['kultura'] . '%');
@@ -200,6 +201,7 @@ class GnojidbaTable extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('parcele.arkod_broj', 'like', '%' . $this->search . '%')
+                  ->orWhere('parcele.naziv', 'like', '%' . $this->search . '%')
                   ->orWhere('kulture.naziv', 'like', '%' . $this->search . '%')
                   ->orWhere('gnojidbe.tip_gnojiva', 'like', '%' . $this->search . '%');
             });

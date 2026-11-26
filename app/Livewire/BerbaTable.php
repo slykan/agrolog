@@ -138,7 +138,7 @@ class BerbaTable extends Component
             ->where(fn ($q) => $q->whereNull('kulture.zavrsena_at')->orWhere('kulture.zavrsena_at', '>=', now()->subYear()->toDateString())
                 ->orWhere('kulture.id', (int) ($this->form['kultura_id'] ?? 0)))
             ->orderByRaw('kulture.zavrsena_at IS NOT NULL')->orderBy('parcele.arkod_broj')->orderBy('kulture.naziv')
-            ->select('kulture.*', 'parcele.arkod_broj')->get();
+            ->select('kulture.*', 'parcele.arkod_broj', 'parcele.naziv as parcela_naziv')->get();
 
         $godine = Berba::where('user_id', $uid)->pluck('datum')->map(fn ($d) => (int) $d->format('Y'))
             ->push((int) date('Y'), $this->godina)->unique()->sortDesc()->values();
@@ -161,7 +161,7 @@ class BerbaTable extends Component
             $kg = (float) $g->sum('kolicina_kg');
             $ha = (float) $k->posadjena_povrsina_ha;
 
-            return ['naziv' => $k->naziv, 'arkod' => $k->parcela?->arkod_broj, 'kg' => $kg, 'broj' => $g->count(),
+            return ['naziv' => $k->naziv, 'arkod' => \App\Models\Parcela::kratko($k->parcela?->arkod_broj, $k->parcela?->naziv), 'kg' => $kg, 'broj' => $g->count(),
                 't_ha' => $ha > 0 ? round($kg / 1000 / $ha, 2) : null, 'iznos' => round((float) $g->sum(fn ($b) => $b->iznos ?? 0), 2)];
         })->sortByDesc('kg')->values();
 

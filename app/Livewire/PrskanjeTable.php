@@ -138,7 +138,7 @@ class PrskanjeTable extends Component
             ->where('kulture.user_id', auth()->id())
             ->orderBy('parcele.arkod_broj')
             ->orderBy('kulture.naziv')
-            ->select('kulture.*', 'parcele.arkod_broj', 'parcele.povrsina_ha')
+            ->select('kulture.*', 'parcele.arkod_broj', 'parcele.naziv as parcela_naziv', 'parcele.povrsina_ha')
             ->get();
     }
 
@@ -152,6 +152,7 @@ class PrskanjeTable extends Component
         $search = mb_strtolower($this->formKulturaSearch);
         return $aktivne->filter(fn($k) =>
             str_contains(mb_strtolower($k->arkod_broj), $search) ||
+            str_contains(mb_strtolower((string) $k->parcela_naziv), $search) ||
             str_contains(mb_strtolower($k->naziv), $search)
         );
     }
@@ -185,6 +186,7 @@ class PrskanjeTable extends Component
                 'kulture.naziv as kultura_naziv',
                 'kulture.posadjena_povrsina_ha',
                 'parcele.arkod_broj',
+                'parcele.naziv as parcela_naziv',
                 'parcele.povrsina_ha'
             )
             ->orderByDesc('prskanja.datum_tretiranja')
@@ -194,7 +196,7 @@ class PrskanjeTable extends Component
             $query->where('prskanja.datum_tretiranja', $this->filters['datum']);
         }
         if ($this->filters['arkod']) {
-            $query->where('parcele.arkod_broj', 'like', '%' . $this->filters['arkod'] . '%');
+            $query->where(fn ($q) => $q->where('parcele.arkod_broj', 'like', '%' . $this->filters['arkod'] . '%')->orWhere('parcele.naziv', 'like', '%' . $this->filters['arkod'] . '%'));
         }
         if ($this->filters['kultura']) {
             $query->where('kulture.naziv', 'like', '%' . $this->filters['kultura'] . '%');
@@ -205,6 +207,7 @@ class PrskanjeTable extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('parcele.arkod_broj', 'like', '%' . $this->search . '%')
+                  ->orWhere('parcele.naziv', 'like', '%' . $this->search . '%')
                   ->orWhere('kulture.naziv', 'like', '%' . $this->search . '%')
                   ->orWhere('prskanja.trgovacki_naziv_sredstva', 'like', '%' . $this->search . '%');
             });

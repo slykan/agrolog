@@ -72,7 +72,7 @@
                     @endphp
                     <span class="rounded-md border px-2 py-1 {{ $preko ? 'border-red-300 bg-red-50 text-red-800' : 'border-gray-200 bg-white text-gray-700' }}"
                           title="{{ $preko ? 'Iz stajskog gnoja preko ' . $bilanca['granica'] . ' kg N/ha' : '' }}">
-                        <b>{{ $r->arkod_broj }}</b> {{ $r->naziv }}:
+                        <b><x-parcela :broj="$r->arkod_broj" :naziv="$r->parcela_naziv" /></b> {{ $r->naziv }}:
                         {{ number_format((float) $r->n_ukupno, 0, ',', '.') }}
                         @if((float) $r->n_stajski > 0)<span class="text-xs">(stajski {{ number_format((float) $r->n_stajski, 0, ',', '.') }})</span>@endif
                     </span>
@@ -158,7 +158,7 @@
                             <button type="button" wire:click="openKulturaPicker" class="form-input w-full bg-white flex items-center justify-between gap-2 text-left">
                                 <span>
                                     @if($this->selectedKultura)
-                                        {{ $this->selectedKultura->arkod_broj }} — {{ $this->selectedKultura->naziv }} ({{ $this->selectedKultura->posadjena_povrsina_ha }} ha)
+                                        <x-parcela :broj="$this->selectedKultura->arkod_broj" :naziv="$this->selectedKultura->parcela_naziv" /> — {{ $this->selectedKultura->naziv }} ({{ $this->selectedKultura->posadjena_povrsina_ha }} ha)
                                     @else
                                         <span class="text-gray-400">-- odaberi jednu --</span>
                                     @endif
@@ -178,7 +178,7 @@
                                 <div class="max-h-48 overflow-y-auto border border-gray-200 bg-white rounded shadow-sm">
                                     @forelse($this->filteredKulture as $k)
                                         <button type="button" wire:key="gno-opt-{{ $k->id }}" wire:click="selectKultura({{ $k->id }})" class="block w-full text-left px-2 py-1 text-sm hover:bg-gray-50">
-                                            {{ $k->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)
+                                            <x-parcela :broj="$k->arkod_broj" :naziv="$k->parcela_naziv" /> — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)
                                         </button>
                                     @empty
                                         <div class="px-2 py-2 text-sm text-gray-400">Nema rezultata.</div>
@@ -251,7 +251,7 @@
                         <td data-label="Parcela i kultura" class="mob-puna p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','povrsina','kultura'], $visibleColumns)) }}">
                             <select wire:model="editForm.kultura_id" class="form-input w-full">
                                 @foreach($this->kulture as $k)
-                                    <option value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} {{ $k->godina }} ({{ $k->posadjena_povrsina_ha }} ha){{ $k->zavrsena_at ? ' — završena' : '' }}</option>
+                                    <option value="{{ $k->id }}">{{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} — {{ $k->naziv }} {{ $k->godina }} ({{ $k->posadjena_povrsina_ha }} ha){{ $k->zavrsena_at ? ' — završena' : '' }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -289,7 +289,7 @@
                         {{-- View mode --}}
                         <td class="mob-skrij px-2 py-2 border border-gray-200 text-center">{{ $loop->iteration }}</td>
                         @if(in_array('datum', $visibleColumns))<td data-label="Datum" class="px-3 py-2 border border-gray-200">{{ $row->datum->format('d.m.Y') }}</td>@endif
-                        @if(in_array('arkod', $visibleColumns))<td data-label="ARKOD" class="px-3 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
+                        @if(in_array('arkod', $visibleColumns))<td data-label="ARKOD" class="px-3 py-2 border border-gray-200"><x-parcela :broj="$row->arkod_broj" :naziv="$row->parcela_naziv" /></td>@endif
                         @if(in_array('kultura', $visibleColumns))<td data-label="Kultura" class="px-3 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
                         @if(in_array('povrsina', $visibleColumns))<td data-label="Površina (ha)" class="px-3 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
                         @if(in_array('gnojivo', $visibleColumns))<td data-label="Gnojivo" class="mob-puna px-3 py-2 border border-gray-200">{{ $row->tip_gnojiva }}</td>@endif

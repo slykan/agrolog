@@ -42,7 +42,7 @@ class Upozorenja
         foreach (ProvjeraSzb::aktivneKarence($user) as $kar) {
             $stavke->push([
                 'kljuc' => 'karenca-' . $kar['kultura']->id . '-' . $kar['do']->format('Ymd'),
-                'naslov' => 'Karenca: ' . $kar['kultura']->naziv . ' (' . $kar['kultura']->parcela?->arkod_broj . ')',
+                'naslov' => 'Karenca: ' . $kar['kultura']->naziv . ' (' . \App\Models\Parcela::kratko($kar['kultura']->parcela?->arkod_broj, $kar['kultura']->parcela?->naziv) . ')',
                 'tekst' => 'Berba/žetva ne prije ' . $kar['do']->format('d.m.Y.') . ' · ' . $kar['sredstvo'],
                 'link' => route('prskanje'),
                 'razina' => 'info',

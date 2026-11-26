@@ -95,7 +95,7 @@ class RadoviTable extends Component
             ->where(fn ($q) => $q->whereNull('kulture.zavrsena_at')->orWhere('kulture.zavrsena_at', '>=', now()->subYear()->toDateString())
                 ->orWhere('kulture.id', (int) ($this->form['kultura_id'] ?? 0)))
             ->orderByRaw('kulture.zavrsena_at IS NOT NULL')->orderBy('parcele.arkod_broj')->orderBy('kulture.naziv')
-            ->select('kulture.*', 'parcele.arkod_broj', 'parcele.rucno_ucrtana')->get();
+            ->select('kulture.*', 'parcele.arkod_broj', 'parcele.naziv as parcela_naziv', 'parcele.rucno_ucrtana')->get();
     }
 
     /**

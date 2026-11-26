@@ -131,7 +131,7 @@
                             <button type="button" wire:click="openKulturaPicker" class="form-input w-full bg-white flex items-center justify-between gap-2 text-left">
                                 <span>
                                     @if($this->selectedKultura)
-                                        {{ $this->selectedKultura->arkod_broj }} — {{ $this->selectedKultura->naziv }} ({{ $this->selectedKultura->posadjena_povrsina_ha }} ha)
+                                        <x-parcela :broj="$this->selectedKultura->arkod_broj" :naziv="$this->selectedKultura->parcela_naziv" /> — {{ $this->selectedKultura->naziv }} ({{ $this->selectedKultura->posadjena_povrsina_ha }} ha)
                                     @else
                                         <span class="text-gray-400">-- odaberi jednu --</span>
                                     @endif
@@ -151,7 +151,7 @@
                                 <div class="max-h-48 overflow-y-auto border border-gray-200 bg-white rounded shadow-sm">
                                     @forelse($this->filteredKulture as $k)
                                         <button type="button" wire:key="prs-opt-{{ $k->id }}" wire:click="selectKultura({{ $k->id }})" class="block w-full text-left px-2 py-1 text-sm hover:bg-gray-50">
-                                            {{ $k->arkod_broj }} — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)
+                                            <x-parcela :broj="$k->arkod_broj" :naziv="$k->parcela_naziv" /> — {{ $k->naziv }} ({{ $k->posadjena_povrsina_ha }} ha)
                                         </button>
                                     @empty
                                         <div class="px-2 py-2 text-sm text-gray-400">Nema rezultata.</div>
@@ -251,7 +251,7 @@
                         <td data-label="Parcela i kultura" class="mob-puna p-1 border border-gray-200" colspan="{{ count(array_intersect(['arkod','kultura','vel_povrsina'], $visibleColumns)) }}">
                             <select wire:model="editForm.kultura_id" class="form-input w-full">
                                 @foreach($this->kulture as $k)
-                                    <option value="{{ $k->id }}">{{ $k->arkod_broj }} — {{ $k->naziv }} {{ $k->godina }}{{ $k->zavrsena_at ? ' (završena)' : '' }}</option>
+                                    <option value="{{ $k->id }}">{{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} — {{ $k->naziv }} {{ $k->godina }}{{ $k->zavrsena_at ? ' (završena)' : '' }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -312,7 +312,7 @@
                     @else
                         <td class="mob-skrij px-2 py-2 border border-gray-200 text-center">{{ $loop->iteration }}</td>
                         @if(in_array('datum', $visibleColumns))<td data-label="Datum" class="px-2 py-2 border border-gray-200">{{ $row->datum_tretiranja->format('d.m.Y') }}</td>@endif
-                        @if(in_array('arkod', $visibleColumns))<td data-label="ARKOD" class="px-2 py-2 border border-gray-200">{{ $row->arkod_broj }}</td>@endif
+                        @if(in_array('arkod', $visibleColumns))<td data-label="ARKOD" class="px-2 py-2 border border-gray-200"><x-parcela :broj="$row->arkod_broj" :naziv="$row->parcela_naziv" /></td>@endif
                         @if(in_array('kultura', $visibleColumns))<td data-label="Kultura" class="px-2 py-2 border border-gray-200 uppercase">{{ $row->kultura_naziv }}</td>@endif
                         @if(in_array('vel_povrsina', $visibleColumns))<td data-label="Vel. površine (ha)" class="px-2 py-2 border border-gray-200 text-right">{{ number_format($row->posadjena_povrsina_ha, 2) }}</td>@endif
                         @if(in_array('tret_povrsina', $visibleColumns))<td data-label="Tretirana (ha)" class="px-2 py-2 border border-gray-200 text-right">{{ number_format($row->tretirana_povrsina_ha, 2) }}</td>@endif

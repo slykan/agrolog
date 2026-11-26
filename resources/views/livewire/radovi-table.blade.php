@@ -22,7 +22,7 @@
             <select wire:model.live="kulturaFilter" aria-label="Kultura" class="form-input w-64 max-w-full">
                 <option value="">Sve kulture</option>
                 @foreach($kulture as $k)
-                    <option value="{{ $k->id }}">{{ $k->arkod_broj }} · {{ $k->naziv }}</option>
+                    <option value="{{ $k->id }}">{{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} · {{ $k->naziv }}</option>
                 @endforeach
             </select>
         </div>
@@ -48,7 +48,7 @@
                                 @php $oznacena = in_array((string) $k->id, array_map('strval', $odabrane), true); @endphp
                                 <label wire:key="vk-{{ $k->id }}-{{ $oznacena ? 1 : 0 }}" class="flex items-center gap-2 text-sm text-gray-800">
                                     <input type="checkbox" wire:model.live="odabrane" value="{{ $k->id }}" @checked($oznacena) class="rounded border-gray-300 text-green-700">
-                                    {{ $k->arkod_broj }} · {{ $k->naziv }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha
+                                    {{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} · {{ $k->naziv }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha
                                 </label>
                             @endforeach
                         </div>
@@ -64,7 +64,7 @@
                         <select wire:model.live="form.kultura_id" class="form-input w-full mt-1 block">
                             <option value="">Odaberite…</option>
                             @foreach($kulture as $k)
-                                <option value="{{ $k->id }}">{{ $k->arkod_broj }} · {{ $k->naziv }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
+                                <option value="{{ $k->id }}">{{ \App\Models\Parcela::kratko($k->arkod_broj, $k->parcela_naziv) }} · {{ $k->naziv }} · {{ number_format($k->posadjena_povrsina_ha, 2, ',', '.') }} ha{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
                             @endforeach
                         </select>
                         @error('form.kultura_id')<span class="text-red-500">{{ $message }}</span>@enderror
@@ -229,7 +229,7 @@
                     @foreach($radovi as $r)
                         <tr wire:key="rad-{{ $r->id }}" class="border-t border-gray-100 hover:bg-gray-50">
                             <td data-label="Datum" class="px-4 py-2 whitespace-nowrap">{{ $r->datum->format('d.m.Y.') }}</td>
-                            <td data-label="Parcela" class="px-4 py-2 text-gray-600">{{ $r->kultura?->parcela?->arkod_broj }} · {{ $r->kultura?->naziv }}</td>
+                            <td data-label="Parcela" class="px-4 py-2 text-gray-600"><x-parcela :broj="$r->kultura?->parcela?->arkod_broj" :naziv="$r->kultura?->parcela?->naziv" /> · {{ $r->kultura?->naziv }}</td>
                             <td class="mob-puna px-4 py-2 font-medium text-gray-800">
                                 {{ $r->vrsta }}
                                 @if($r->povrsina_ha)<span class="font-normal text-gray-500"> · {{ $broj($r->povrsina_ha) }} ha</span>@endif

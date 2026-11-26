@@ -127,7 +127,7 @@ class Troskovi
 
             return [
                 'kultura_id' => $id, 'parcela_id' => $k?->parcela_id, 'parcela_ha' => (float) ($k?->parcela?->povrsina_ha ?? 0),
-                'arkod' => $k?->parcela?->arkod_broj, 'kultura' => $k?->naziv, 'godina' => $k?->godina, 'ha' => $ha,
+                'arkod' => \App\Models\Parcela::kratko($k?->parcela?->arkod_broj, $k?->parcela?->naziv), 'kultura' => $k?->naziv, 'godina' => $k?->godina, 'ha' => $ha,
                 'szb' => round($t['szb'], 2), 'gnojivo' => round($t['gnojivo'], 2), 'radovi' => round($t['radovi'] + $t['ostalo'], 2),
                 'gorivo' => round($t['gorivo'], 2),
                 'ukupno' => round($ukupno, 2),

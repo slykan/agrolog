@@ -16,7 +16,7 @@ class Preporuke
             return null;
         }
 
-        return $p->rucno_ucrtana ? $p->arkod_broj . ' (ručno ucrtana)' : 'ARKOD ' . $p->arkod_broj;
+        return $p->rucno_ucrtana ? $p->arkod_broj . ' (ručno ucrtana)' : 'ARKOD ' . \App\Models\Parcela::kratko($p->arkod_broj, $p->naziv);
     }
 
     /** Javlja agronomu što je gospodarstvo napravilo s preporukom. */

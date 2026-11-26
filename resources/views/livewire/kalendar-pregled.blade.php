@@ -23,7 +23,7 @@
             <select wire:model.live="parcela" aria-label="Parcela" class="form-input w-56 max-w-full">
                 <option value="">Sve parcele</option>
                 @foreach($parcele as $p)
-                    <option value="{{ $p->id }}">{{ \App\Models\Parcela::oznaka($p->arkod_broj, $p->rucno_ucrtana) }}</option>
+                    <option value="{{ $p->id }}">{{ \App\Models\Parcela::oznaka($p->arkod_broj, $p->rucno_ucrtana, $p->naziv) }}</option>
                 @endforeach
             </select>
             <button type="button" wire:click="noviPlan" class="btn-primary">+ Planiraj posao</button>
@@ -67,7 +67,7 @@
                     <select wire:model.live="plan.kultura_id" class="form-input mt-1 block w-full">
                         <option value="">Odaberite…</option>
                         @foreach($kulture as $k)
-                            <option value="{{ $k->id }}">{{ $k->parcela ? \App\Models\Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana) . ' · ' : '' }}{{ $k->naziv }}{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
+                            <option value="{{ $k->id }}">{{ $k->parcela ? \App\Models\Parcela::oznaka($k->parcela->arkod_broj, $k->parcela->rucno_ucrtana, $k->parcela->naziv) . ' · ' : '' }}{{ $k->naziv }}{{ $k->zavrsena_at ? ' · završena' : '' }}</option>
                         @endforeach
                     </select>
                     @error('plan.kultura_id')<span class="text-red-500">{{ $message }}</span>@enderror

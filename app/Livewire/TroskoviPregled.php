@@ -54,7 +54,7 @@ class TroskoviPregled extends Component
 
             return [
                 'kultura_id' => $k->id, 'parcela_id' => $k->parcela_id, 'parcela_ha' => (float) ($k->parcela?->povrsina_ha ?? 0),
-                'arkod' => $k->parcela?->arkod_broj, 'kultura' => $k->naziv, 'godina' => $k->godina, 'ha' => (float) $k->posadjena_povrsina_ha,
+                'arkod' => \App\Models\Parcela::kratko($k->parcela?->arkod_broj, $k->parcela?->naziv), 'kultura' => $k->naziv, 'godina' => $k->godina, 'ha' => (float) $k->posadjena_povrsina_ha,
                 'trosak' => round($trosak, 2), 'prihod' => $pr['prihod'], 'berbe_bez_cijene' => $b['bez_cijene'] ?? 0,
             ];
         });
