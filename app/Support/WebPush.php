@@ -51,18 +51,29 @@ class WebPush
         return false;
     }
 
-    /** Novi P-256 par: [privatni PEM, javni 65 bajtova]. Prazna konfiguracija jer OpenSSL na Windowsu inače ne nađe svoju. */
+    /**
+     * Novi P-256 par: [privatni PEM, javni 65 bajtova].
+     * Prazna konfiguracija samo na Windowsu (OpenSSL inače ne nađe svoju); na Linuxu (PHP 8.3 / OpenSSL 3)
+     * prazna konfiguracija daje "Private key length must be at least 384 bits, configured to 0".
+     */
     private static function noviPar(): array
     {
-        $cnf = tempnam(sys_get_temp_dir(), 'agro');
-        file_put_contents($cnf, "[req]\ndistinguished_name=r\n[r]\n");
+        $cnf = null;
+        $opcije = [];
+        if (PHP_OS_FAMILY === 'Windows') {
+            $cnf = tempnam(sys_get_temp_dir(), 'agro');
+            file_put_contents($cnf, "[req]\ndistinguished_name=r\n[r]\n");
+            $opcije = ['config' => $cnf];
+        }
         try {
-            $k = openssl_pkey_new(['curve_name' => 'prime256v1', 'private_key_type' => OPENSSL_KEYTYPE_EC, 'config' => $cnf]);
-            if (! $k || ! openssl_pkey_export($k, $pem, null, ['config' => $cnf])) {
+            $k = openssl_pkey_new(['curve_name' => 'prime256v1', 'private_key_type' => OPENSSL_KEYTYPE_EC] + $opcije);
+            if (! $k || ! openssl_pkey_export($k, $pem, null, $opcije)) {
                 throw new \RuntimeException('OpenSSL: ključ nije izrađen');
             }
         } finally {
-            @unlink($cnf);
+            if ($cnf) {
+                @unlink($cnf);
+            }
         }
         $d = openssl_pkey_get_details($k)['ec'];
 
